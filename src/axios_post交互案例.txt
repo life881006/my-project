@@ -1,0 +1,33 @@
+		var _this = this;//获取vue组件对象
+  		var p = {};
+  		p.sql = "select * from subject";
+  		axios({
+             method: 'post',
+             url: global.url_base,//url_base为全局变量，调用时前面加global,参数在util->config.js中
+             /*
+             //getData为全局方法，方法加入到vue中，调用前需加this，方法在util->methods.js中。这里必须使用【qs】库进行转换,解决传递数组变成对象的问题
+             */
+             data: qs.stringify(this.getData("HX_API","/https/subject/query.do",p)),
+             dataType: 'JSON'
+             /*
+            transformRequest: [//这里可以在发送请求之前对请求数据做处理
+		      function (data) { // 解决传递数组变成对象的问题
+		        return data
+		      }
+		    ],
+		    transformResponse: [function (data) {// 这里提前处理返回的数据
+				return data;
+			}],
+		    */
+        }).then(function(response) {
+            _this.vHtml = response.data;
+        }).catch(function(error) {
+            console.log(error)
+        });
+        
+        /*均完成后返回*/
+        axios.all([get1(), get2()]).then(
+        axios.spread(function (res1, res2) {
+		// 只有两个请求都完成才会成功，否则会被catch捕获
+		})
+		);
