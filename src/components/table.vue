@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div id="mainTableArea">
 		<headerNav></headerNav>
 		<el-table 
 			ref="multipleTable" 
@@ -12,32 +12,32 @@
 			>
 			<el-table-column fixed align="center" type="selection" width="55">
 			</el-table-column>
-			<el-table-column prop="serialNumber" sortable align="center" label="序号" width="80">
+			<el-table-column prop="serialNumber" sortable align="center" label="序号" width="100">
 				<template slot-scope="scope">{{ scope.row.serialNumber }}</template>
 			</el-table-column>
-			<el-table-column prop="icon" align="center" label="荣誉图标" width="120">
+			<el-table-column prop="icon" align="center" label="荣誉图标" min-width="14%">
 				<template scope="scope">
-					<img :src="scope.row.icon" width="80px" height="80px" />
+					<img :src="scope.row.icon" min-width="80px" height="80px" />
 				</template>
 			</el-table-column>
-			<el-table-column align="center" prop="name" label="名称" width="160" show-overflow-tooltip>
+			<el-table-column align="center" prop="name" label="名称" min-width="14%" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column align="center" prop="awardRule" label="规则" width="120">
+			<el-table-column align="center" prop="awardRule" label="规则" min-width="16%">
 				<template slot-scope="scope">
 					<span v-if="scope.row.awardRule==0">按排名</span>
 					<span v-else="">按分值</span>
 				</template>
 			</el-table-column>
-			<el-table-column align="center" label="取前几名" prop="ranking" width="100">
+			<el-table-column align="center" label="取前几名" prop="ranking" min-width="12%">
 	
 			</el-table-column>
-			<el-table-column align="center" label="起始值" prop="beginValue" width="80">
+			<el-table-column align="center" label="起始值" prop="beginValue" min-width="12%">
 	
 			</el-table-column>
-			<el-table-column align="center" label="结束值" prop="endValue" width="80">
+			<el-table-column align="center" label="结束值" prop="endValue" min-width="12%">
 	
 			</el-table-column>
-			<el-table-column align="center" label="操作">
+			<el-table-column align="center" label="操作" min-width="12%">
 				<template slot-scope="scope">
 				<el-button size="mini" type="danger" @click="deleteThis(scope.$index,scope.row)">删除</el-button>
 				</template>
@@ -58,7 +58,7 @@
 				</el-dropdown>
 			</el-col>
 			<el-col :xs="16" :sm="16" :md="16" :lg="16">
-				<pagination @pSize="getPageSize" @cPage="getCurrentPage" :currentPage="currentPage" :everyPage="everyPage" :totalCount="totalCount" :pageSizes="pageSizes"></pagination>
+				<pagination @pSize="getPageSize" @cPage="getCurrentPage" :currentPage="currentPage" :everyPage="everyPage" :totalCount="totalCount"></pagination>
 			</el-col>
 		</div>
 		
@@ -76,7 +76,7 @@
 		"beginIndex": 0,
 		"currentPage": 1,
 		"totalCount": 8,
-		"everyPage": 8
+		"everyPage":1,
 	};
 	const tableInfo = {
 		"data": [{
@@ -169,23 +169,13 @@
 				totalCount:pageInfo.totalCount,
 				everyPage:pageInfo.everyPage,
 				currentPage:pageInfo.currentPage,
-				pageSizes:[],
 			}
 		},
-		mounted(){
-			let totalCount = pageInfo.totalCount;
-			let everyPage = pageInfo.everyPage;
-			if(totalCount<everyPage){
-				this.everyPage=totalCount
-			}
-			const number=this.everyPage;
-			let pageSize = [];
-			let pageLength=parseInt(totalCount/number);
-			for(var i = 1;i<=pageLength;i++){
-				pageSize.push(i*number);
-			}
-			this.pageSizes = pageSize;
-			this.everyPage = number;
+		created(){
+			let tableH = document.documentElement.clientHeight-200;
+			pageInfo.everyPage=parseInt(tableH/53);
+			console.log(pageInfo.everyPage);
+			//this.everyPage = number;
 		},
 		components:{headerNav,pagination},
 		methods: {

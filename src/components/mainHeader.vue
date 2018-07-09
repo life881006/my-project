@@ -7,7 +7,7 @@
 		<el-col class="pull-right" :xs="8" :sm="8" :md="8" :lg="8">
 			<el-tooltip class="notice" @click="" content="系统通知"><i class="el-icon-erp-notice el-icon-big"></i></el-tooltip>
 			<el-dropdown class="functionalIcon" trigger="click">
-				<el-tooltip class="el-dropdown-link" effect="dark" content="修改基本信息" placement="right">
+				<el-tooltip class="el-dropdown-link" effect="dark" content="修改基本信息">
 					<i class="el-icon-setting el-icon-big"></i>
 				</el-tooltip>
 				<el-dropdown-menu slot="dropdown">
@@ -18,7 +18,7 @@
 				</el-dropdown-menu>
 			</el-dropdown>
 			<el-dropdown class="functionalIcon" trigger="click">
-				<el-tooltip class="el-dropdown-link" effect="dark" content="切换模块" placement="right">
+				<el-tooltip class="el-dropdown-link" effect="dark" content="切换模块">
 					<i class="el-icon-menu el-icon-big"></i>
 				</el-tooltip>
 				<el-dropdown-menu slot="dropdown">
