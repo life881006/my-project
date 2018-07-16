@@ -173,6 +173,9 @@
 		created(){
 			if(pageInfo.totalCount<global.everyPage){
 				this.everyPage = pageInfo.totalCount;
+			}else{
+				this.everyPage = global.everyPage;
+				
 			}
 			//console.log(pageInfo.everyPage);
 			//this.everyPage = number;

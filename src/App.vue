@@ -19,11 +19,11 @@
 						<el-submenu v-for="module in asideModules" :key="module.id" :index="module.serialNumber+''">
 							<template slot="title">
 								<i class="el-icon-message"></i>
-								<span slot="title">{{ module.itemName }}</span>
+								<span slot="title">{{ module.name }}</span>
 							</template>
-							<el-menu-item-group>
-								<span slot="title">{{module.itemName}}</span>
-								<el-menu-item v-for="moduleItem in module.children" :key="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
+							<el-menu-item-group v-for="modulePItem in module.children" :key="modulePItem.id" :index="modulePItem.serialNumber+''">
+								<span slot="title">{{modulePItem.itemName}}</span>
+								<el-menu-item style="padding-left:50px" v-for="moduleItem in modulePItem.children" :key="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
 									<!--<router-link :to="{path:'/table'}">-->
 									{{moduleItem.itemName}}
 									<!--</router-link>-->
@@ -2616,7 +2616,6 @@
 	
 	function getChildrenItem() {
 		const moduleArr = modules.functionalModules;
-		console.log(moduleArr);
 		
 		let moduleListArr = {};
 		let serialNumber = 0;
@@ -2624,11 +2623,12 @@
 		let mainArr = [];
 		for(let m = 0; m < moduleArr.length; m++) {
 			let muduleFirstLevelItem = [];
-			let muduleFirstLevelObj = {};
+			let muduleFirstLevelObj = moduleArr[m];
 			let childrenList = [];
 				childrenList = moduleArr[m].functionalItems;
 				
-				childrenList.serialNumber = m;
+				muduleFirstLevelObj.serialNumber = m;
+				muduleFirstLevelObj.functionalItems = undefined;
 				for(let i = 0; i < childrenList.length; i++) {
 					let pItem ;
 					if(childrenList[i].pid === "0") {
@@ -2651,9 +2651,8 @@
 				muduleFirstLevelObj.children = muduleFirstLevelItem;
 				mainArr.push(muduleFirstLevelObj);
 		}
-		
-		console.log(mainArr);
-		return pArr;
+		console.log(mainArr)
+		return mainArr;
 	}
 
 	export default {
@@ -2674,9 +2673,9 @@
 		},
 		created: function(){
 			this.asideModules = getChildrenItem(modules.functionalModules);
-			this.defaultSerialNumber = this.asideModules[0].serialNumber+"";//获取默认打开菜单的序号
-			this.defaultActive = this.asideModules[0].children[0].serialNumber;//给默认打开菜单的第一项加样式
-			this.get(this.asideModules[0].children[0]);//打开默认第一项
+			this.defaultSerialNumber = "0";//获取默认打开菜单的序号
+			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式
+			this.get(this.asideModules[0].children[0].children[0]);//打开默认第一项
 		},
 		mounted: function() {
 			document.getElementById('layout').style.height = this.screenHeight + "px"; //页面初始化
