@@ -22,7 +22,7 @@
 					<i class="el-icon-menu el-icon-big"></i>
 				</el-tooltip>
 				<el-dropdown-menu slot="dropdown">
-					<el-dropdown-item v-for="item in mainUser.functionalModules">
+					<el-dropdown-item v-for="item in mainUser.functionalModules" :key="item.id">
 						<a @click="gotoOtherModule(item.id,item.name)">
 							<i class="el-icon-edit"></i>{{item.name}}
 						</a>

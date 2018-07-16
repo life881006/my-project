@@ -33,6 +33,7 @@
 
 <script>
 	import addTable from "./addTable"
+	
 	export default {		
 		data(){
 			return {

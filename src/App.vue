@@ -4,14 +4,26 @@
 			<el-aside width="{showWidth}">
 				<!--<h1 class='logoImg'>
 				<img src="./assets/logo.png"/>
+				<a class="hideOrShow" v-model="isCollapse">eee</a>
 			</h1>-->
-				<div class='menuTitle'>{{ModuleName}}</div>
+				
 				<div id='menu'>
-					<el-menu :default-openeds="['0']" unique-opened-router>
-						<el-submenu v-for="(module,index) in asideModules" :index="index+''">
-							<template slot="title"><i class="el-icon-message"></i>{{ module.itemName }}</template>
+					<el-menu 
+						:default-openeds="[defaultSerialNumber]" 
+						:default-active="defaultActive" 
+						background-color="#545c64" 
+					    text-color="#fff" 
+					    active-text-color="#ffd04b" 
+					    :collapse="isCollapse" 
+						unique-opened-router>
+						<el-submenu v-for="module in asideModules" :key="module.id" :index="module.serialNumber+''">
+							<template slot="title">
+								<i class="el-icon-message"></i>
+								<span slot="title">{{ module.itemName }}</span>
+							</template>
 							<el-menu-item-group>
-								<el-menu-item v-for="(moduleItem,childIndex) in module.children" :index="index+'-'+childIndex" @click="get(moduleItem)">
+								<span slot="title">{{module.itemName}}</span>
+								<el-menu-item v-for="moduleItem in module.children" :key="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
 									<!--<router-link :to="{path:'/table'}">-->
 									{{moduleItem.itemName}}
 									<!--</router-link>-->
@@ -23,6 +35,12 @@
 			</el-aside>
 			<el-container>
 				<el-header>
+					<!--导航菜单折叠
+					<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+					  <el-radio-button :label="false">&gt;</el-radio-button>
+					  <el-radio-button :label="true">&lt;</el-radio-button>
+					</el-radio-group>
+					-->
 					<mainHeader></mainHeader>
 				</el-header>
 
@@ -44,74 +62,6 @@
 
 	</div>
 </template>
-
-<style type="text/css" scoped>
-	.logoImg {
-		text-align: center;
-	}
-	
-	#menu {
-		border-right: 1px solid #e6e6e6;
-		overflow-y: auto;
-		background-color: #fff;
-	}
-	
-	#menu::-webkit-scrollbar {
-		width: 0px
-	}
-	
-	.el-aside {
-		background-color: #000000;
-	}
-	
-	.el-menu {
-		background-color: #fff;
-		border-right: 0px;
-	}
-	
-	.el-header,
-	.el-footer {
-		line-height: 60px;
-	}
-	
-	.el-header {
-		border-bottom: 1px solid #DCDCDC
-	}
-	/*.el-footer{border-top:1px solid #DCDCDC}*/
-	
-	.menuTitle {
-		background-color: #fff;
-		color: #303133;
-		height: 56px;
-		line-height: 56px;
-		padding: 0px 20px;
-		border-right: 1px solid #e6e6e6;
-	}
-	
-	@media only screen and (min-width: 100px) and (max-width: 768px) {
-		.el-aside {
-			width: 150px
-		}
-	}
-	
-	@media only screen and (min-width: 769px) and (max-width: 970px) {
-		.el-aside {
-			width: 200px
-		}
-	}
-	
-	@media only screen and (min-width: 970px) and (max-width: 1170px) {
-		.el-aside {
-			width: 250px
-		}
-	}
-	
-	@media only screen and (min-width: 1170px) {
-		.el-aside {
-			width: 280px
-		}
-	}
-</style>
 
 <script>
 	import tableM from './components/table'
@@ -2663,32 +2613,46 @@
 		}]
 	};
 	const moduleId = "26cfdd0ae80e4e33ae86ad137c506375";
-	const moduleArr = module.functionalModules;
-	let moduleName = "";
-
-	function getChildrenItem(moduleArr) {
-		let childrenList = [];
+	
+	function getChildrenItem() {
+		const moduleArr = modules.functionalModules;
+		console.log(moduleArr);
+		
 		let moduleListArr = {};
+		let serialNumber = 0;
 		let pArr = [];
-		for(let i = 0; i < moduleArr.length; i++) {
-			if(moduleArr[i].id == moduleId) {
-				moduleName = moduleArr[i].name;
-				childrenList = moduleArr[i].functionalItems;
-			}
-		}
-		for(let i = 0; i < childrenList.length; i++) {
-			if(childrenList[i].pid == 0) {
-				let thisP = childrenList[i];
-				let thisC = [];
-				pArr.push(childrenList[i]);
-				for(let j = 0; j < childrenList.length; j++) {
-					if(childrenList[i].id == childrenList[j].pid) {
-						thisC.push(childrenList[j]);
+		let mainArr = [];
+		for(let m = 0; m < moduleArr.length; m++) {
+			let muduleFirstLevelItem = [];
+			let muduleFirstLevelObj = {};
+			let childrenList = [];
+				childrenList = moduleArr[m].functionalItems;
+				
+				childrenList.serialNumber = m;
+				for(let i = 0; i < childrenList.length; i++) {
+					let pItem ;
+					if(childrenList[i].pid === "0") {
+						
+						pItem = childrenList[i];
+						let cItem = [];
+						pItem.serialNumber = m+"-"+i;
+						for(let j = 0; j < childrenList.length; j++) {
+							if(childrenList[i].id == childrenList[j].pid) {
+								cItem.push(childrenList[j]);
+								childrenList[j].serialNumber = m+"-"+i+"-"+j;
+							}
+						}
+						pItem.children = cItem;
+					}
+					if(pItem!=undefined){
+					muduleFirstLevelItem.push(pItem);
 					}
 				}
-				thisP.children = thisC;
-			}
+				muduleFirstLevelObj.children = muduleFirstLevelItem;
+				mainArr.push(muduleFirstLevelObj);
 		}
+		
+		console.log(mainArr);
 		return pArr;
 	}
 
@@ -2697,18 +2661,10 @@
 		data: function() {
 			return {
 
-				screenHeight: document.documentElement.clientHeight - 62,
-				screeWidth: document.documentElement.clientWidth,
-
-				//vHtml: "<p>aaa</p>",
-				asideModules: getChildrenItem(modules.functionalModules),
-				ModuleName: moduleName,
-				showWidth: (() => {
-					let asideWidth = document.documentElement.clientWidth;
-					if(asideWidth > 100 && asideWidth < 768) {
-						return "222px"
-					}
-				})()
+				screenHeight: document.documentElement.clientHeight-60,
+				screenWidth: document.documentElement.clientWidth,
+				isCollapse: false,
+				showWidth: 200,
 			}
 		},
 		components: {
@@ -2716,25 +2672,36 @@
 			mainHeader,
 			mainFooter
 		},
-
+		created: function(){
+			this.asideModules = getChildrenItem(modules.functionalModules);
+			this.defaultSerialNumber = this.asideModules[0].serialNumber+"";//获取默认打开菜单的序号
+			this.defaultActive = this.asideModules[0].children[0].serialNumber;//给默认打开菜单的第一项加样式
+			this.get(this.asideModules[0].children[0]);//打开默认第一项
+		},
 		mounted: function() {
 			document.getElementById('layout').style.height = this.screenHeight + "px"; //页面初始化
-			document.getElementById('menu').style.height = this.screenHeight + 5 + "px";
+			document.getElementById('menu').style.height = this.screenHeight + 40 + "px";
+			if(this.screenWidth<1160){
+				this.isCollapse = true;				
+			}
 			window.onresize = () => {
 				return(() => {
 					this.screenHeight = document.documentElement.clientHeight;
+					this.screenWidth = document.documentElement.clientWidth;
 				})()
 			}
+			
 		},
 		methods: {
 			get: function(item) {
+				this.defaultSerialNumber = item.serialNumber.split("-")[0];
+				this.defaultActive = item.serialNumber;
 				switch(item.itemName) {
 					case "新闻频道":
-
 						this.$router.push('/table');
 						break;
 					case "文章管理":
-						this.$router.push('/mainHeader');
+						this.$router.push('/newsManagement');
 						break;
 				}
 			}
@@ -2742,9 +2709,79 @@
 		watch: {
 			screenHeight(val) {
 				this.screenHeight = val;
-				document.getElementById('layout').style.height = this.screenHeight + "px"; //检测窗口的大小，并赋值
-				document.getElementById('menu').style.height = this.screenHeight - 78 + "px";
+				document.getElementById('layout').style.height = this.screenHeight - 60 + "px"; //检测窗口的大小，并赋值
+				document.getElementById('menu').style.height = this.screenHeight - 60 + "px";
+			},
+			screenWidth(val) {
+				this.screenWidth = val;
+				if(this.screenWidth<1160){
+					this.isCollapse = true;
+				}else{
+					this.isCollapse = false;
+				}
 			}
 		}
 	}
 </script>
+
+<style type="text/css" scoped>
+	.logoImg {
+		text-align: center;
+	}
+	
+	#menu {		
+		overflow-y: auto;
+	}
+	
+	#menu::-webkit-scrollbar {
+		width: 0px
+	}
+	
+	.el-aside {
+	}
+	
+	.el-menu {
+		background-color: #fff;
+		border-right: 0px;
+	}
+	
+	.el-header,
+	.el-footer {
+		line-height: 60px;
+	}
+	
+	.el-header {
+		border-bottom: 1px solid #DCDCDC
+	}
+	/*.el-footer{border-top:1px solid #DCDCDC}*/
+	
+	.hideOrShow{
+		float:right;
+	}
+	.el-aside{background-color: #545c64;color:#fff}
+	.el-submenu__title i{color:#fff}
+	/*
+	@media only screen and (min-width: 100px) and (max-width: 768px) {
+		.el-aside {
+			width: 150px
+		}
+	}
+	
+	@media only screen and (min-width: 769px) and (max-width: 970px) {
+		.el-aside {
+			width: 200px
+		}
+	}
+	
+	@media only screen and (min-width: 970px) and (max-width: 1170px) {
+		.el-aside {
+			width: 250px
+		}
+	}
+	
+	@media only screen and (min-width: 1170px) {
+		.el-aside {
+			width: 280px
+		}
+	}*/
+</style>

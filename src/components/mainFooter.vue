@@ -31,7 +31,6 @@
 			this.$emit('cPage',val);
 		},
 		setEveryPage(){
-			console.log(this.defaultEPage);
 			let inputEveryPage = Number(document.getElementById("everpageNumber").value);
 			if(inputEveryPage===0){
 				return false;
@@ -41,8 +40,8 @@
 				this.$message({
 					//h:创建html元素，（）中第一个是html标签，第二个是样式模板，第二个是文本
 					message:h('p',null,[
-						h('span',null,'出现错误：'),
-						h('i',{style:'color:red;font-weight:bolder'},'您输入每页条数超过总条数')
+						//h('span',null,'出现错误：'),
+						h('i',{style:'color:red;font-weight:bolder'},'您输入每页条数超过总条数,请重新输入')
 					])
 				});
 				document.getElementById("everpageNumber").value="";
@@ -79,4 +78,5 @@
 	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:right}
 	.el-input{width:140px;float:right}
 	span{float:right;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:ddd}
+	
 </style>

@@ -14,7 +14,9 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.use(getD)
 
-
+let tableH = document.documentElement.clientHeight-200;
+let everyPage = parseInt(tableH/53);
+global.everyPage = everyPage;
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

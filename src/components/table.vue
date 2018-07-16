@@ -16,7 +16,7 @@
 				<template slot-scope="scope">{{ scope.row.serialNumber }}</template>
 			</el-table-column>
 			<el-table-column prop="icon" align="center" label="荣誉图标" min-width="14%">
-				<template scope="scope">
+				<template slot-scope="scope">
 					<img :src="scope.row.icon" min-width="80px" height="80px" />
 				</template>
 			</el-table-column>
@@ -167,14 +167,14 @@
 				multipleSelection: [],
 				tableHeight:document.documentElement.clientHeight-200+"px",
 				totalCount:pageInfo.totalCount,
-				everyPage:pageInfo.everyPage,
 				currentPage:pageInfo.currentPage,
 			}
 		},
 		created(){
-			let tableH = document.documentElement.clientHeight-200;
-			pageInfo.everyPage=parseInt(tableH/53);
-			console.log(pageInfo.everyPage);
+			if(pageInfo.totalCount<global.everyPage){
+				this.everyPage = pageInfo.totalCount;
+			}
+			//console.log(pageInfo.everyPage);
 			//this.everyPage = number;
 		},
 		components:{headerNav,pagination},
