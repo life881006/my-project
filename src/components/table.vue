@@ -8,9 +8,9 @@
 			tooltip-effect="dark" 
 			style="width: 100%" 
 			@selection-change="handleSelectionChange" 
-			:default-sort="{prop:'serialNumber',order:'ascending'}"
+			:default-sort="{prop:'id',order:'ascending'}"
 			>
-			<el-table-column fixed align="center" type="selection" width="55">
+			<el-table-column align="center" type="selection" width="55">
 			</el-table-column>
 			<el-table-column prop="serialNumber" sortable align="center" label="序号" width="100">
 				<template slot-scope="scope">{{ scope.row.serialNumber }}</template>
@@ -75,7 +75,7 @@
 		"totalPage": 1,
 		"beginIndex": 0,
 		"currentPage": 1,
-		"totalCount": 8,
+		"totalCount": 14,
 		"everyPage":1,
 	};
 	const tableInfo = {
@@ -87,7 +87,29 @@
 			"icon": "",
 			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
 			"ranking": 3,
-			"id": "8b46697d43814fe4b63dea5996eeaf76",
+			"id": "1",
+			"beginValue": 0,
+			"awardRule": 0
+		},{
+			"serialNumber": 1,
+			"endValue": 0,
+			"isDeleted": 0,
+			"name": "热爱班级星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "2",
+			"beginValue": 0,
+			"awardRule": 0
+		},{
+			"serialNumber": 1,
+			"endValue": 0,
+			"isDeleted": 0,
+			"name": "热爱班级星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "3",
 			"beginValue": 0,
 			"awardRule": 0
 		}, {
@@ -131,7 +153,7 @@
 			"icon": "",
 			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
 			"ranking": 3,
-			"id": "a20687f683004f7aaec7a0fc966c70b0",
+			"id": "a20687f683004f7aaec7a0fc966c70b01",
 			"beginValue": 1,
 			"awardRule": 0
 		}, {
@@ -142,7 +164,7 @@
 			"icon": "",
 			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
 			"ranking": 3,
-			"id": "94c328b66d0b465a84d1f7b7c2f87b80",
+			"id": "94c328b66d0b465a84d1f7b7c2f87b801",
 			"beginValue": 1,
 			"awardRule": 0
 		}, {
@@ -153,7 +175,84 @@
 			"icon": "",
 			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
 			"ranking": 0,
-			"id": "53b212ca9df84d6c9edded8e3676a0c7",
+			"id": "53b212ca9df84d6c9edded8e3676a0c71",
+			"beginValue": 5,
+			"awardRule": 1
+		},{
+			"serialNumber": 1,
+			"endValue": 0,
+			"isDeleted": 0,
+			"name": "热爱班级星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "8b46697d43814fe4b63dea5996eeaf761",
+			"beginValue": 0,
+			"awardRule": 0
+		}, {
+			"serialNumber": 2,
+			"endValue": 0,
+			"isDeleted": 0,
+			"name": "举止文明星",
+			"icon": "http://s1.jshuixue.com:8082/SAASClient/allWeb/huixue/pj_medalicon/2018/3/20180308120251_27.png",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "1",
+			"beginValue": 0,
+			"awardRule": 0
+		}, {
+			"serialNumber": 3,
+			"endValue": 3,
+			"isDeleted": 0,
+			"name": "学习勤奋星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "32",
+			"beginValue": 1,
+			"awardRule": 0
+		}, {
+			"serialNumber": 4,
+			"endValue": 3,
+			"isDeleted": 0,
+			"name": "做操认真星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "14",
+			"beginValue": 1,
+			"awardRule": 0
+		}, {
+			"serialNumber": 5,
+			"endValue": 3,
+			"isDeleted": 0,
+			"name": "劳动积极星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "4214",
+			"beginValue": 1,
+			"awardRule": 0
+		}, {
+			"serialNumber": 6,
+			"endValue": 3,
+			"isDeleted": 0,
+			"name": "遵守纪律星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 3,
+			"id": "23131",
+			"beginValue": 1,
+			"awardRule": 0
+		}, {
+			"serialNumber": 7,
+			"endValue": 10,
+			"isDeleted": 0,
+			"name": "保护环境星",
+			"icon": "",
+			"unitId": "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+			"ranking": 0,
+			"id": "252",
 			"beginValue": 5,
 			"awardRule": 1
 		}],
@@ -165,8 +264,8 @@
 			return {
 				tableData3: tableInfo.data,
 				multipleSelection: [],
-				tableHeight:document.documentElement.clientHeight-200+"px",
-				totalCount:pageInfo.totalCount,
+				tableHeight:document.documentElement.clientHeight-240+"px",
+				totalCount:tableInfo.data.length,
 				currentPage:pageInfo.currentPage,
 			}
 		},

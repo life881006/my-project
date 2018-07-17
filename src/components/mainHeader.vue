@@ -5567,7 +5567,7 @@
 		font-size:28px;
 		vertical-align: "middle";
 	}
-	
+	.headerNav{height:60px;line-height: 60px;}
 	.notice,.functionalIcon{margin-right:20px;}
 	.el-dropdown-li-a{text-align:center;text-decoration: none;}
 	.pull-right{text-align:right}

@@ -6,35 +6,45 @@
 				<img src="./assets/logo.png"/>
 				<a class="hideOrShow" v-model="isCollapse">eee</a>
 			</h1>-->
-				
 				<div id='menu'>
 					<el-menu 
-						:default-openeds="[defaultSerialNumber]" 
+						:default-openeds="defaultSerialNumber" 
 						:default-active="defaultActive" 
 						background-color="#545c64" 
 					    text-color="#fff" 
 					    active-text-color="#ffd04b" 
 					    :collapse="isCollapse" 
 						unique-opened-router>
-						<el-submenu v-for="module in asideModules" :key="module.id" :index="module.serialNumber+''">
+						<el-submenu v-for="module in asideModules" :key="module.id" ref="module.id" :index="module.serialNumber+''">
 							<template slot="title">
 								<i class="el-icon-message"></i>
 								<span slot="title">{{ module.name }}</span>
 							</template>
-							<el-menu-item-group v-for="modulePItem in module.children" :key="modulePItem.id" :index="modulePItem.serialNumber+''">
-								<span slot="title">{{modulePItem.itemName}}</span>
-								<el-menu-item style="padding-left:50px" v-for="moduleItem in modulePItem.children" :key="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
-									<!--<router-link :to="{path:'/table'}">-->
-									{{moduleItem.itemName}}
-									<!--</router-link>-->
-								</el-menu-item>
+							<el-menu-item-group>
+								<el-submenu v-for="modulePItem in module.children" :key="modulePItem.id" ref="modulePItem.id" :index="modulePItem.serialNumber+''">
+									<template slot="title">
+										<i class="el-icon-message"></i>
+										<span slot="title" style="padding-right:45px">{{ modulePItem.itemName }}</span>
+									</template>
+									<el-menu-item-group >
+										<!--
+                                        	<span slot="title">{{modulePItem.itemName}}</span>
+                                        -->
+										
+										<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
+											<!--<router-link :to="{path:'/table'}">-->
+											{{moduleItem.itemName}}
+											<!--</router-link>-->
+										</el-menu-item>
+									</el-menu-item-group>
+								</el-submenu>
 							</el-menu-item-group>
 						</el-submenu>
 					</el-menu>
 				</div>
 			</el-aside>
 			<el-container>
-				<el-header>
+				<el-header style="height:auto;">
 					<!--导航菜单折叠
 					<el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
 					  <el-radio-button :label="false">&gt;</el-radio-button>
@@ -42,6 +52,13 @@
 					</el-radio-group>
 					-->
 					<mainHeader></mainHeader>
+					<el-col :xs="24" :sm="24" :md="24" :lg="24">
+						<el-breadcrumb class="breadCrumb" separator-class="el-icon-arrow-right">
+						<!--
+						  <el-breadcrumb-item v-for="item in routerList" :key="item.id" :index="item.serialNumber">{{item.itemName}}</el-breadcrumb-item>
+						-->
+						</el-breadcrumb>
+					</el-col>
 				</el-header>
 
 				<el-main id='layout'>
@@ -2614,7 +2631,7 @@
 	};
 	const moduleId = "26cfdd0ae80e4e33ae86ad137c506375";
 	
-	function getChildrenItem() {
+	function formatModules() {
 		const moduleArr = modules.functionalModules;
 		
 		let moduleListArr = {};
@@ -2651,7 +2668,6 @@
 				muduleFirstLevelObj.children = muduleFirstLevelItem;
 				mainArr.push(muduleFirstLevelObj);
 		}
-		console.log(mainArr)
 		return mainArr;
 	}
 
@@ -2660,7 +2676,7 @@
 		data: function() {
 			return {
 
-				screenHeight: document.documentElement.clientHeight-60,
+				screenHeight: document.documentElement.clientHeight-80,
 				screenWidth: document.documentElement.clientWidth,
 				isCollapse: false,
 				showWidth: 200,
@@ -2672,13 +2688,13 @@
 			mainFooter
 		},
 		created: function(){
-			this.asideModules = getChildrenItem(modules.functionalModules);
-			this.defaultSerialNumber = "0";//获取默认打开菜单的序号
+			this.asideModules = formatModules(modules.functionalModules);
+			this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
 			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式
-			this.get(this.asideModules[0].children[0].children[0]);//打开默认第一项
+			//this.get(this.asideModules[0].children[0].children[0]);//打开默认第一项
 		},
 		mounted: function() {
-			document.getElementById('layout').style.height = this.screenHeight + "px"; //页面初始化
+			document.getElementById('layout').style.height = this.screenHeight-21 + "px"; //页面初始化
 			document.getElementById('menu').style.height = this.screenHeight + 40 + "px";
 			if(this.screenWidth<1160){
 				this.isCollapse = true;				
@@ -2693,8 +2709,11 @@
 		},
 		methods: {
 			get: function(item) {
-				this.defaultSerialNumber = item.serialNumber.split("-")[0];
+				this.defaultSerialNumber = [item.serialNumber.split("-")[0],item.serialNumber.substring(0,item.serialNumber.lastIndexOf("-"))];
 				this.defaultActive = item.serialNumber;
+				let pid = item.pid;
+				let id = item.id;
+				//this.routerList = [item,];
 				switch(item.itemName) {
 					case "新闻频道":
 						this.$router.push('/table');
@@ -2708,8 +2727,8 @@
 		watch: {
 			screenHeight(val) {
 				this.screenHeight = val;
-				document.getElementById('layout').style.height = this.screenHeight - 60 + "px"; //检测窗口的大小，并赋值
-				document.getElementById('menu').style.height = this.screenHeight - 60 + "px";
+				document.getElementById('layout').style.height = this.screenHeight - 100 + "px"; //检测窗口的大小，并赋值
+				document.getElementById('menu').style.height = this.screenHeight - 20 + "px";
 			},
 			screenWidth(val) {
 				this.screenWidth = val;
@@ -2736,15 +2755,11 @@
 		width: 0px
 	}
 	
-	.el-aside {
-	}
-	
 	.el-menu {
 		background-color: #fff;
 		border-right: 0px;
 	}
-	
-	.el-header,
+	.breadCrumb{margin:10px 0px 15px;}
 	.el-footer {
 		line-height: 60px;
 	}
@@ -2759,28 +2774,7 @@
 	}
 	.el-aside{background-color: #545c64;color:#fff}
 	.el-submenu__title i{color:#fff}
-	/*
-	@media only screen and (min-width: 100px) and (max-width: 768px) {
-		.el-aside {
-			width: 150px
-		}
-	}
+	.el-menu-item{font-size:13px}
+	.el-main{padding:20px;}
 	
-	@media only screen and (min-width: 769px) and (max-width: 970px) {
-		.el-aside {
-			width: 200px
-		}
-	}
-	
-	@media only screen and (min-width: 970px) and (max-width: 1170px) {
-		.el-aside {
-			width: 250px
-		}
-	}
-	
-	@media only screen and (min-width: 1170px) {
-		.el-aside {
-			width: 280px
-		}
-	}*/
 </style>
