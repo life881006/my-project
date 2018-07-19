@@ -29,7 +29,7 @@
 					</el-dropdown-item>
 				</el-dropdown-menu>
 			</el-dropdown>
-			<el-tooltip class="functionalIcon" @click="" content="下载文档"><i class="el-icon-erp-docDownload el-icon-big"></i></el-tooltip>
+			<el-tooltip class="functionalIcon" @click="" content="下载文档"><i class="el-icon-erp-nrgl el-icon-big"></i></el-tooltip>
 			<el-tooltip class="functionalIcon" @click="" content="退出"><i class="el-icon-erp-exit3 el-icon-big"></i></el-tooltip>
 		</el-col>
 		
@@ -5567,7 +5567,7 @@
 		font-size:28px;
 		vertical-align: "middle";
 	}
-	.headerNav{height:60px;line-height: 60px;}
+	.headerNav{height:60px;line-height: 60px;padding:0px 20px;border-bottom:1px solid #DCDCDC}
 	.notice,.functionalIcon{margin-right:20px;}
 	.el-dropdown-li-a{text-align:center;text-decoration: none;}
 	.pull-right{text-align:right}

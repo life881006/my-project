@@ -17,13 +17,13 @@
 						unique-opened-router>
 						<el-submenu v-for="module in asideModules" :key="module.id" ref="module.id" :index="module.serialNumber+''">
 							<template slot="title">
-								<i class="el-icon-message"></i>
+								<i :class="'el-icon-erp-'+module.pcIcon"></i>
 								<span slot="title">{{ module.name }}</span>
 							</template>
 							<el-menu-item-group>
 								<el-submenu v-for="modulePItem in module.children" :key="modulePItem.id" ref="modulePItem.id" :index="modulePItem.serialNumber+''">
 									<template slot="title">
-										<i class="el-icon-message"></i>
+										<i :class="'el-icon-erp-'+modulePItem.pcIcon"></i>
 										<span slot="title" style="padding-right:45px">{{ modulePItem.itemName }}</span>
 									</template>
 									<el-menu-item-group >
@@ -31,10 +31,12 @@
                                         	<span slot="title">{{modulePItem.itemName}}</span>
                                         -->
 										
-										<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
-											<!--<router-link :to="{path:'/table'}">-->
+										<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''">
+											<span @click="get(moduleItem)">
+											<router-link class="routerLink" :to="{path:moduleItem.pcOpenUrl}">
 											{{moduleItem.itemName}}
-											<!--</router-link>-->
+											</router-link>
+											</span>
 										</el-menu-item>
 									</el-menu-item-group>
 								</el-submenu>
@@ -52,12 +54,10 @@
 					</el-radio-group>
 					-->
 					<mainHeader></mainHeader>
-					<el-col :xs="24" :sm="24" :md="24" :lg="24">
-						<el-breadcrumb class="breadCrumb" separator-class="el-icon-arrow-right">
-						<!--
-						  <el-breadcrumb-item v-for="item in routerList" :key="item.id" :index="item.serialNumber">{{item.itemName}}</el-breadcrumb-item>
-						-->
-						</el-breadcrumb>
+					<el-col :xs="24" :sm="24" :md="24" :lg="24" id="moduleClickHistory">
+						<span class="visitorTag">
+						<a class="" :href="firstToRouter">{{firstChannelName}}</a><i class="el-icon-close" v-on:click="deleteVisitor(firstChannelName)"></i>
+						</span>
 					</el-col>
 				</el-header>
 
@@ -96,7 +96,7 @@
 				"appIcon": "",
 				"hasPopedom": 1,
 				"edit": 0,
-				"pcIcon": "../../layout/images/main_ver1/pdgl.png",
+				"pcIcon": "channel",
 				"moduleName": "信息发布",
 				"pid": "0",
 				"del": 0,
@@ -109,7 +109,7 @@
 				"appIcon": "",
 				"hasPopedom": 1,
 				"edit": 0,
-				"pcIcon": "../../layout/images/main_ver1/nrgl.png",
+				"pcIcon": "nrgl",
 				"moduleName": "信息发布",
 				"pid": "0",
 				"del": 0,
@@ -122,7 +122,7 @@
 				"appIcon": "",
 				"hasPopedom": 1,
 				"edit": 0,
-				"pcIcon": "../../layout/images/main_ver1/wxqf.png",
+				"pcIcon": "weixin",
 				"moduleName": "信息发布",
 				"pid": "0",
 				"del": 0,
@@ -181,7 +181,7 @@
 				"id": "cc3b922b40584a90acb999f4aa720c1d",
 				"addition": 1
 			}, {
-				"pcOpenUrl": "",
+				"pcOpenUrl": "table",
 				"appOpenUrl": "",
 				"itemName": "新闻频道",
 				"appIcon": "",
@@ -194,7 +194,7 @@
 				"id": "31e5469cd82a41f384b38cd0c8bad128",
 				"addition": 1
 			}, {
-				"pcOpenUrl": "",
+				"pcOpenUrl": "newsManagement",
 				"appOpenUrl": "",
 				"itemName": "文章管理",
 				"appIcon": "",
@@ -273,7 +273,7 @@
 				"addition": 1
 			}],
 			"name": "信息发布",
-			"pcIcon": "../../layout/images/home_green_1.png",
+			"pcIcon": "news",
 			"id": "26cfdd0ae80e4e33ae86ad137c506375"
 		}, {
 			"pcOpenUrl": "",
@@ -2630,6 +2630,7 @@
 		}]
 	};
 	const moduleId = "26cfdd0ae80e4e33ae86ad137c506375";
+	const moduleVisitor = {pathList:[]};
 	
 	function formatModules() {
 		const moduleArr = modules.functionalModules;
@@ -2691,6 +2692,9 @@
 			this.asideModules = formatModules(modules.functionalModules);
 			this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
 			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式
+			this.firstToRouter = "#/"+this.asideModules[0].children[0].children[0].pcOpenUrl;
+			this.firstChannelName = this.asideModules[0].children[0].children[0].itemName;
+			moduleVisitor.pathList.push(this.firstChannelName);
 			//this.get(this.asideModules[0].children[0].children[0]);//打开默认第一项
 		},
 		mounted: function() {
@@ -2711,17 +2715,53 @@
 			get: function(item) {
 				this.defaultSerialNumber = [item.serialNumber.split("-")[0],item.serialNumber.substring(0,item.serialNumber.lastIndexOf("-"))];
 				this.defaultActive = item.serialNumber;
-				let pid = item.pid;
-				let id = item.id;
-				//this.routerList = [item,];
+				let routerPath = item.pcOpenUrl;
+				/*
+				 * 路径
+				let routerPath = "";				
 				switch(item.itemName) {
 					case "新闻频道":
-						this.$router.push('/table');
+						routerPath = '/table';
 						break;
 					case "文章管理":
-						this.$router.push('/newsManagement');
+						routerPath = '/newsManagement';
 						break;
 				}
+				this.$router.push(routerPath);
+				*/
+				if(moduleVisitor.pathList.length==0){
+					moduleVisitor.pathList.push(item.itemName);
+					let str = "<div class='visitorTag'>";
+						str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
+						str += "</div>";
+						
+					document.getElementById("moduleClickHistory").innerHTML+=str;
+				}else{
+					let isVisit = false;
+					for(let i=0;i<moduleVisitor.pathList.length;i++){
+						var pathItem = moduleVisitor.pathList[i];
+						if(item.itemName==pathItem){
+							isVisit = true;
+							return false;
+						}
+					}
+					if(!isVisit){
+						moduleVisitor.pathList.push(item.itemName);
+						let str = "<div class='visitorTag'>";
+							str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
+							str += "</div>";
+						document.getElementById("moduleClickHistory").innerHTML+=str;
+					}
+				}
+			},
+			deleteVisitor(closeItem){
+				var pathList = moduleVisitor.pathList;
+				moduleVisitor.pathList = pathList.map(function(item){
+					if(closeItem == item){
+						item = "";
+					};
+					return item;
+				});
 			}
 		},
 		watch: {
@@ -2765,6 +2805,7 @@
 	}
 	
 	.el-header {
+		padding:0px;
 		border-bottom: 1px solid #DCDCDC
 	}
 	/*.el-footer{border-top:1px solid #DCDCDC}*/
@@ -2772,6 +2813,11 @@
 	.hideOrShow{
 		float:right;
 	}
+	.routerLink{color:#fff;text-decoration:none}
+	#moduleClickHistory{margin-top:-1px;}
+	#moduleClickHistory>>>.visitorTag{padding:6px 10px;background-color:#42B983;font-size: 12px;display:inline-block;margin:5px}
+	#moduleClickHistory>>>.visitorTag a{color:transparent;color:#fff;line-height:2;text-decoration: none;}
+	#moduleClickHistory>>>.visitorTag i{margin-left:10px;width:16px;height:16px;border-radius:50%;color:#fff;}
 	.el-aside{background-color: #545c64;color:#fff}
 	.el-submenu__title i{color:#fff}
 	.el-menu-item{font-size:13px}
