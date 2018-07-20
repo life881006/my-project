@@ -54,11 +54,7 @@
 					</el-radio-group>
 					-->
 					<mainHeader></mainHeader>
-					<el-col :xs="24" :sm="24" :md="24" :lg="24" id="moduleClickHistory">
-						<span class="visitorTag">
-						<a class="" :href="firstToRouter">{{firstChannelName}}</a><i class="el-icon-close" v-on:click="deleteVisitor(firstChannelName)"></i>
-						</span>
-					</el-col>
+					<clickHistory :routerPath="routerPath" :moduleItemName="moduleItemName"></clickHistory>
 				</el-header>
 
 				<el-main id='layout'>
@@ -82,6 +78,7 @@
 
 <script>
 	import tableM from './components/table'
+	import clickHistory from './components/moduleClickHistory'
 	import mainHeader from './components/mainHeader'
 	import mainFooter from './components/mainFooter'
 
@@ -2681,20 +2678,23 @@
 				screenWidth: document.documentElement.clientWidth,
 				isCollapse: false,
 				showWidth: 200,
+				moduleItemName:"",
+				routerPath:"",
 			}
 		},
 		components: {
 			tableM,
 			mainHeader,
-			mainFooter
+			mainFooter,
+			clickHistory
 		},
 		created: function(){
 			this.asideModules = formatModules(modules.functionalModules);
 			this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
 			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式
-			this.firstToRouter = "#/"+this.asideModules[0].children[0].children[0].pcOpenUrl;
-			this.firstChannelName = this.asideModules[0].children[0].children[0].itemName;
-			moduleVisitor.pathList.push(this.firstChannelName);
+			//this.moduleItemName = this.asideModules[0].children[0].children[0].itemName;
+			//this.routerPath = this.asideModules[0].children[0].children[0].pcOpenUrl;
+			//moduleVisitor.pathList.push(this.firstChannelName);
 			//this.get(this.asideModules[0].children[0].children[0]);//打开默认第一项
 		},
 		mounted: function() {
@@ -2716,6 +2716,7 @@
 				this.defaultSerialNumber = [item.serialNumber.split("-")[0],item.serialNumber.substring(0,item.serialNumber.lastIndexOf("-"))];
 				this.defaultActive = item.serialNumber;
 				let routerPath = item.pcOpenUrl;
+				let itemName = item.itemName;
 				/*
 				 * 路径
 				let routerPath = "";				
@@ -2729,39 +2730,40 @@
 				}
 				this.$router.push(routerPath);
 				*/
+				
 				if(moduleVisitor.pathList.length==0){
-					moduleVisitor.pathList.push(item.itemName);
+					moduleVisitor.pathList.push(itemName);
+					/*
 					let str = "<div class='visitorTag'>";
 						str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
 						str += "</div>";
-						
-					document.getElementById("moduleClickHistory").innerHTML+=str;
+					*/
+					this.addHistroy(routerPath,itemName);
+					//document.getElementById("moduleClickHistory").innerHTML+=str;
 				}else{
 					let isVisit = false;
 					for(let i=0;i<moduleVisitor.pathList.length;i++){
 						var pathItem = moduleVisitor.pathList[i];
-						if(item.itemName==pathItem){
+						if(itemName==pathItem){
 							isVisit = true;
 							return false;
 						}
 					}
 					if(!isVisit){
-						moduleVisitor.pathList.push(item.itemName);
+						moduleVisitor.pathList.push(itemName);
+						/*
 						let str = "<div class='visitorTag'>";
 							str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
 							str += "</div>";
-						document.getElementById("moduleClickHistory").innerHTML+=str;
+						*/
+						this.addHistroy(routerPath,itemName);
+						//document.getElementById("moduleClickHistory").innerHTML+=str;
 					}
 				}
 			},
-			deleteVisitor(closeItem){
-				var pathList = moduleVisitor.pathList;
-				moduleVisitor.pathList = pathList.map(function(item){
-					if(closeItem == item){
-						item = "";
-					};
-					return item;
-				});
+			addHistroy(routerP,itemN){
+				this.routerPath = routerP;
+				this.moduleItemName = itemN;
 			}
 		},
 		watch: {
@@ -2814,10 +2816,7 @@
 		float:right;
 	}
 	.routerLink{color:#fff;text-decoration:none}
-	#moduleClickHistory{margin-top:-1px;}
-	#moduleClickHistory>>>.visitorTag{padding:6px 10px;background-color:#42B983;font-size: 12px;display:inline-block;margin:5px}
-	#moduleClickHistory>>>.visitorTag a{color:transparent;color:#fff;line-height:2;text-decoration: none;}
-	#moduleClickHistory>>>.visitorTag i{margin-left:10px;width:16px;height:16px;border-radius:50%;color:#fff;}
+	
 	.el-aside{background-color: #545c64;color:#fff}
 	.el-submenu__title i{color:#fff}
 	.el-menu-item{font-size:13px}

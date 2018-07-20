@@ -38,7 +38,7 @@
 			if(inputEveryPage>this.tCount){
 				let h = this.$createElement;//elementUi创建html元素
 				this.$message({
-					//h:创建html元素，（）中第一个是html标签，第二个是样式模板，第二个是文本
+					//h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
 					message:h('p',null,[
 						//h('span',null,'出现错误：'),
 						h('i',{style:'color:red;font-weight:bolder'},'您输入每页条数超过总条数,请重新输入')
