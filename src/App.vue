@@ -31,12 +31,10 @@
                                         	<span slot="title">{{modulePItem.itemName}}</span>
                                         -->
 										
-										<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''">
-											<span @click="get(moduleItem)">
+										<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
 											<router-link class="routerLink" :to="{path:moduleItem.pcOpenUrl}">
 											{{moduleItem.itemName}}
 											</router-link>
-											</span>
 										</el-menu-item>
 									</el-menu-item-group>
 								</el-submenu>
@@ -54,7 +52,7 @@
 					</el-radio-group>
 					-->
 					<mainHeader></mainHeader>
-					<clickHistory :routerPath="routerPath" :moduleItemName="moduleItemName"></clickHistory>
+					<clickHistory :visitList="moduleVisitor"></clickHistory>
 				</el-header>
 
 				<el-main id='layout'>
@@ -2627,7 +2625,6 @@
 		}]
 	};
 	const moduleId = "26cfdd0ae80e4e33ae86ad137c506375";
-	const moduleVisitor = {pathList:[]};
 	
 	function formatModules() {
 		const moduleArr = modules.functionalModules;
@@ -2678,8 +2675,7 @@
 				screenWidth: document.documentElement.clientWidth,
 				isCollapse: false,
 				showWidth: 200,
-				moduleItemName:"",
-				routerPath:"",
+				moduleVisitor: [{routerPath:"",moduleItemName:"首页"}],
 			}
 		},
 		components: {
@@ -2731,39 +2727,44 @@
 				this.$router.push(routerPath);
 				*/
 				
-				if(moduleVisitor.pathList.length==0){
-					moduleVisitor.pathList.push(itemName);
+				if(this.moduleVisitor.length==0){
+					let pathObj = {};
+					pathObj.routerPath = routerPath;
+					pathObj.moduleItemName = itemName;
+					this.moduleVisitor.push(pathObj);
 					/*
 					let str = "<div class='visitorTag'>";
 						str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
 						str += "</div>";
 					*/
-					this.addHistroy(routerPath,itemName);
+					this.addHistroy();
 					//document.getElementById("moduleClickHistory").innerHTML+=str;
 				}else{
 					let isVisit = false;
-					for(let i=0;i<moduleVisitor.pathList.length;i++){
-						var pathItem = moduleVisitor.pathList[i];
+					for(let i=0;i<this.moduleVisitor.length;i++){
+						var pathItem = this.moduleVisitor[i].moduleItemName;
 						if(itemName==pathItem){
 							isVisit = true;
 							return false;
 						}
 					}
 					if(!isVisit){
-						moduleVisitor.pathList.push(itemName);
+						let pathObj = {};
+						pathObj.routerPath = routerPath;
+						pathObj.moduleItemName = itemName;
+						this.moduleVisitor.push(pathObj);
 						/*
 						let str = "<div class='visitorTag'>";
 							str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
 							str += "</div>";
 						*/
-						this.addHistroy(routerPath,itemName);
+						this.addHistroy();
 						//document.getElementById("moduleClickHistory").innerHTML+=str;
 					}
 				}
 			},
-			addHistroy(routerP,itemN){
-				this.routerPath = routerP;
-				this.moduleItemName = itemN;
+			addHistroy(){
+				this.visitList = this.moduleVisitor;
 			}
 		},
 		watch: {
@@ -2815,8 +2816,7 @@
 	.hideOrShow{
 		float:right;
 	}
-	.routerLink{color:#fff;text-decoration:none}
-	
+	.routerLink{color:#fff;text-decoration:none;display: block;}
 	.el-aside{background-color: #545c64;color:#fff}
 	.el-submenu__title i{color:#fff}
 	.el-menu-item{font-size:13px}
