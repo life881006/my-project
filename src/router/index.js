@@ -9,7 +9,7 @@ Vue.use(Router);
 
 const router = new Router({
     routes:[{
-        path: '/table', component: tableVue
+        path: '/table', component: tableVue 
     },{
         path: '/newsManagement', component: newsControll
     },{

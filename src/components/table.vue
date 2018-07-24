@@ -3,7 +3,7 @@
 		<headerNav></headerNav>
 		<el-table 
 			ref="multipleTable" 
-			:height="tableHeight" 
+			:height="tHeight" 
 			:data="tableData3.slice((currentPage-1)*everyPage,currentPage*everyPage)" 
 			tooltip-effect="dark" 
 			style="width: 100%" 
@@ -264,7 +264,7 @@
 			return {
 				tableData3: tableInfo.data,
 				multipleSelection: [],
-				tableHeight:document.documentElement.clientHeight-240+"px",
+				tHeight:this.tableHeight+"px",
 				totalCount:tableInfo.data.length,
 				currentPage:pageInfo.currentPage,
 			}
@@ -273,12 +273,13 @@
 			if(pageInfo.totalCount<global.everyPage){
 				this.everyPage = pageInfo.totalCount;
 			}else{
-				this.everyPage = global.everyPage;
-				
+				this.everyPage = global.everyPage;				
 			}
+			console.log(this.tableHeight);
 			//console.log(pageInfo.everyPage);
 			//this.everyPage = number;
 		},
+		props:['tableHeight'],
 		components:{headerNav,pagination},
 		methods: {
 			toggleSelection(rows) {
@@ -316,6 +317,12 @@
 			getCurrentPage(cPage){
 				this.currentPage = cPage;
 			}
+		},
+		watch:{
+			tableHeight(val){
+				this.tHeight = val;
+			}
+			
 		}
 	}
 </script>

@@ -32,9 +32,9 @@
                                         -->
 										
 										<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
-											<router-link class="routerLink" :to="{path:moduleItem.pcOpenUrl}">
+											<a class="routerLink">
 											{{moduleItem.itemName}}
-											</router-link>
+											</a>
 										</el-menu-item>
 									</el-menu-item-group>
 								</el-submenu>
@@ -60,7 +60,7 @@
 					<!--
 				<div v-html='vHtml'></div>
 				-->
-					<router-view></router-view>
+					<router-view :tableHeight="tableHeight"></router-view>
 				</el-main>
 
 				<!--<el-footer>
@@ -75,7 +75,6 @@
 </template>
 
 <script>
-	import tableM from './components/table'
 	import clickHistory from './components/moduleClickHistory'
 	import mainHeader from './components/mainHeader'
 	import mainFooter from './components/mainFooter'
@@ -2670,16 +2669,15 @@
 		name: 'App',
 		data: function() {
 			return {
-
 				screenHeight: document.documentElement.clientHeight-80,
 				screenWidth: document.documentElement.clientWidth,
 				isCollapse: false,
 				showWidth: 200,
 				moduleVisitor: [{routerPath:"",moduleItemName:"首页"}],
+				tableHeight:document.documentElement.clientHeight-240,
 			}
 		},
 		components: {
-			tableM,
 			mainHeader,
 			mainFooter,
 			clickHistory
@@ -2687,14 +2685,10 @@
 		created: function(){
 			this.asideModules = formatModules(modules.functionalModules);
 			this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
-			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式
-			//this.moduleItemName = this.asideModules[0].children[0].children[0].itemName;
-			//this.routerPath = this.asideModules[0].children[0].children[0].pcOpenUrl;
-			//moduleVisitor.pathList.push(this.firstChannelName);
-			//this.get(this.asideModules[0].children[0].children[0]);//打开默认第一项
+			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式			
 		},
 		mounted: function() {
-			document.getElementById('layout').style.height = this.screenHeight-21 + "px"; //页面初始化
+			document.getElementById('layout').style.height = this.screenHeight-27 + "px"; //页面初始化
 			document.getElementById('menu').style.height = this.screenHeight + 40 + "px";
 			if(this.screenWidth<1160){
 				this.isCollapse = true;				
@@ -2731,14 +2725,8 @@
 					let pathObj = {};
 					pathObj.routerPath = routerPath;
 					pathObj.moduleItemName = itemName;
-					this.moduleVisitor.push(pathObj);
-					/*
-					let str = "<div class='visitorTag'>";
-						str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
-						str += "</div>";
-					*/
+					this.moduleVisitor.push(pathObj);					
 					this.addHistroy();
-					//document.getElementById("moduleClickHistory").innerHTML+=str;
 				}else{
 					let isVisit = false;
 					for(let i=0;i<this.moduleVisitor.length;i++){
@@ -2753,25 +2741,35 @@
 						pathObj.routerPath = routerPath;
 						pathObj.moduleItemName = itemName;
 						this.moduleVisitor.push(pathObj);
-						/*
-						let str = "<div class='visitorTag'>";
-							str += "<a href='#"+routerPath+"'>"+item.itemName+"</a><i class='el-icon-close' onclick='deleteVisitor()'></i>";
-							str += "</div>";
-						*/
+						
 						this.addHistroy();
-						//document.getElementById("moduleClickHistory").innerHTML+=str;
 					}
 				}
+				this.goto(routerPath);
 			},
 			addHistroy(){
 				this.visitList = this.moduleVisitor;
+			},
+			goto(pcUrl){
+				for(let i=0;i<this.moduleVisitor.length;i++){
+					let item = this.moduleVisitor[i];
+					if(pcUrl == item.routerPath){
+						item.active = "active";
+					}else{
+						item.active = "";			
+					}
+				};
+				
+				this.visitList = this.moduleVisitor;
+				this.$router.push(pcUrl);
 			}
 		},
 		watch: {
 			screenHeight(val) {
 				this.screenHeight = val;
-				document.getElementById('layout').style.height = this.screenHeight - 100 + "px"; //检测窗口的大小，并赋值
+				document.getElementById('layout').style.height = this.screenHeight - 107 + "px"; //检测窗口的大小，并赋值
 				document.getElementById('menu').style.height = this.screenHeight - 20 + "px";
+				this.tableHeight = this.screenHeight-240;
 			},
 			screenWidth(val) {
 				this.screenWidth = val;
