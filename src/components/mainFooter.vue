@@ -1,5 +1,5 @@
 <template>
-	<div id="paginationComponent">
+	<div class="paginationComponent">
 		<span>总计 {{tCount}} 条</span>
 		<el-pagination
 	      @size-change="handleSizeChange"

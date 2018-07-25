@@ -1,9 +1,9 @@
 <template>
 	<el-col :xs="24" :sm="24" :md="24" :lg="24" id="moduleClickHistory">
 		<span class="visitorTag" v-for="item in routerHistory">
-			<a :class="'routerTags '+item.active" @click="goto(item.routerPath,$event)">{{item.moduleItemName}}
+			<a :class="'routerTags '+item.active" @click="goto(item.routerPath)">{{item.moduleItemName}}
 			<span v-if="item.routerPath!=''">
-				<i class="el-icon-close"  v-on:click="deleteVisitor(item.moduleItemName)"></i>
+				<i class="el-icon-close"  v-on:click.stop.prevent="deleteVisitor(item.moduleItemName)"></i>
 			</span>
 			</a>
 		</span>
@@ -21,15 +21,31 @@
 		props:['visitList'],
 		methods:{
 			deleteVisitor(closeItemName){
-				for(var i=0;i<this.routerHistory.length;i++){
-					var item = this.routerHistory[i];
+				let temporaryHistory = this.routerHistory;
+				for(let i=0;i<temporaryHistory.length;i++){
+					let item = this.routerHistory[i];
 					if(closeItemName == item.moduleItemName){
-						this.routerHistory.splice(i,1);
+						temporaryHistory.splice(i,1);
+						break;
 					};
 				};
+				this.routerHistory = [];
+				for(let i=0;i<temporaryHistory.length;i++){
+					this.routerHistory.push(temporaryHistory[i]);
+				}
 			},
-			goto(routerP,e){
-				this.$router.push("/"+routerP);				
+			goto(routerP){
+				let Items = this.routerHistory.map(function(item){
+					if(routerP == item.routerPath){
+						item.active = "active";
+					}else{
+						item.active = "";
+					}
+					return item;
+				});
+				this.routerHistory = Items;
+				this.$emit("visitList",this.routerHistory)
+				this.$router.push("/"+routerP);
 			}
 		},
 		watch:{			
@@ -42,10 +58,10 @@
 
 <style>
 	#moduleClickHistory{margin-top:-1px;}
-	#moduleClickHistory>.visitorTag:hover{background-color:#42B983;opacity: 1;cursor: pointer;}
-	#moduleClickHistory>.visitorTag>.routerTags{color:transparent;color:#fff;line-height:2;text-decoration: none;padding:6px 10px;background-color:#42B983;font-size: 12px;display:inline-block;margin:5px;opacity: 0.8;}
-	#moduleClickHistory>.visitorTag i{margin-left:10px;width:16px;height:16px;border-radius:50%;color:#fff;cursor:pointer;text-align: center;line-height:16px;font-size:12px}
-	#moduleClickHistory>.visitorTag i:hover{background-color:#fafafa;color:#333}
-	
-	#moduleClickHistory>.visitorTag>.active{background-color:#42B983;opacity: 1;}
+	#moduleClickHistory>.visitorTag{display:inline-block;margin:5px;}
+	#moduleClickHistory>.visitorTag:hover{cursor: pointer;}
+	#moduleClickHistory>.visitorTag>.routerTags{color:#000;line-height:2;text-decoration: none;padding:6px 10px;border:1px solid #ddd;font-size: 12px;opacity: 0.6;}
+	#moduleClickHistory>.visitorTag i{margin-left:10px;color:#666;cursor:pointer;text-align: center;line-height:16px;font-size:10px;}
+	#moduleClickHistory>.visitorTag>.active{background-color:#42B983;opacity: 1;color:#fff;border:0px}
+	#moduleClickHistory>.visitorTag>.active i{color:#fff}
 </style>

@@ -2688,7 +2688,7 @@
 			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式			
 		},
 		mounted: function() {
-			document.getElementById('layout').style.height = this.screenHeight-27 + "px"; //页面初始化
+			document.getElementById('layout').style.height = this.screenHeight-15 + "px"; //页面初始化
 			document.getElementById('menu').style.height = this.screenHeight + 40 + "px";
 			if(this.screenWidth<1160){
 				this.isCollapse = true;				
@@ -2725,15 +2725,14 @@
 					let pathObj = {};
 					pathObj.routerPath = routerPath;
 					pathObj.moduleItemName = itemName;
-					this.moduleVisitor.push(pathObj);					
-					this.addHistroy();
+					this.moduleVisitor.push(pathObj);	
 				}else{
 					let isVisit = false;
 					for(let i=0;i<this.moduleVisitor.length;i++){
 						var pathItem = this.moduleVisitor[i].moduleItemName;
 						if(itemName==pathItem){
 							isVisit = true;
-							return false;
+							break;
 						}
 					}
 					if(!isVisit){
@@ -2741,34 +2740,31 @@
 						pathObj.routerPath = routerPath;
 						pathObj.moduleItemName = itemName;
 						this.moduleVisitor.push(pathObj);
-						
-						this.addHistroy();
 					}
 				}
 				this.goto(routerPath);
 			},
 			addHistroy(){
-				this.visitList = this.moduleVisitor;
+				
 			},
 			goto(pcUrl){
-				for(let i=0;i<this.moduleVisitor.length;i++){
-					let item = this.moduleVisitor[i];
+				let Items = this.moduleVisitor.map(function(item){
 					if(pcUrl == item.routerPath){
 						item.active = "active";
 					}else{
-						item.active = "";			
+						item.active = "";
 					}
-				};
-				
-				this.visitList = this.moduleVisitor;
+					return item;
+				});
+				this.moduleVisitor = Items;
 				this.$router.push(pcUrl);
 			}
 		},
 		watch: {
 			screenHeight(val) {
 				this.screenHeight = val;
-				document.getElementById('layout').style.height = this.screenHeight - 107 + "px"; //检测窗口的大小，并赋值
-				document.getElementById('menu').style.height = this.screenHeight - 20 + "px";
+				document.getElementById('layout').style.height = this.screenHeight - 95 + "px"; //检测窗口的大小，并赋值
+				document.getElementById('menu').style.height = this.screenHeight - 10 + "px";
 				this.tableHeight = this.screenHeight-240;
 			},
 			screenWidth(val) {
@@ -2784,6 +2780,10 @@
 </script>
 
 <style type="text/css" scoped>
+
+	*{
+		font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+	}
 	.logoImg {
 		text-align: center;
 	}
@@ -2797,8 +2797,9 @@
 	}
 	
 	.el-menu {
-		background-color: #fff;
+		min-width: 200px;
 		border-right: 0px;
+		//transition: width 1s;
 	}
 	.breadCrumb{margin:10px 0px 15px;}
 	.el-footer {
@@ -2818,6 +2819,14 @@
 	.el-aside{background-color: #545c64;color:#fff}
 	.el-submenu__title i{color:#fff}
 	.el-menu-item{font-size:13px}
-	.el-main{padding:20px;}
-	
+	.el-container{}
+	.el-main{background-color:#E6E6E6;padding:10px}
+	.mainTableArea{padding:15px 10px;background-color:#fff;}
+	@media only screen and (min-width: 100px) and (max-width: 1160px) {
+		.el-menu {
+			min-width: auto;
+			border-right: 0px;
+			//transition: width 1s;
+		}
+	}
 </style>

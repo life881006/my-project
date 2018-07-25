@@ -7,14 +7,14 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import './util/config'
 import getD from './util/methods'
-import "./assets/iconfont/iconfont.css";  
+import "./assets/iconfont/iconfont.css";
 
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.use(getD)
 
-let tableH = document.documentElement.clientHeight-200;
+let tableH = document.documentElement.clientHeight-250;
 let everyPage = parseInt(tableH/53);
 global.everyPage = everyPage;
 /* eslint-disable no-new */

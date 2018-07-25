@@ -1,5 +1,5 @@
 <template>
-	<div id="mainTableArea">
+	<div class="mainTableArea">
 		<headerNav></headerNav>
 		<el-table 
 			ref="multipleTable" 
@@ -275,7 +275,6 @@
 			}else{
 				this.everyPage = global.everyPage;				
 			}
-			console.log(this.tableHeight);
 			//console.log(pageInfo.everyPage);
 			//this.everyPage = number;
 		},
@@ -293,8 +292,6 @@
 			},
 			handleSelectionChange(val) {
 				this.multipleSelection = val;
-				//获取所有点击过的id
-				console.log(val);
 			},
 			deleteThis(index,row){
 				this.tableData3.splice(index,1);
@@ -328,6 +325,6 @@
 </script>
 
 <style type="text/css" scoped="scoped">
-	.paginationArea{margin-top:10px;}
+	.paginationArea{margin-top:10px;display: inline-block;width: 100%;}
 	.el-pagination{text-align: right;}
 </style>

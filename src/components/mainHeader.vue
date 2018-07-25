@@ -1,14 +1,12 @@
 <template>
 	<div id="" class="headerNav">
-			
 		<el-col :xs="16" :sm="16" :md="16" :lg="16">
 			汇学云镇江市中山路小学平台
 		</el-col>
-		<el-col class="pull-right" :xs="8" :sm="8" :md="8" :lg="8">
-			<el-tooltip class="notice" @click="" content="系统通知"><i class="el-icon-erp-notice el-icon-big"></i></el-tooltip>
+		<el-col :xs="8" :sm="8" :md="8" :lg="8" class="pull-right">
 			<el-dropdown class="functionalIcon" trigger="click">
 				<el-tooltip class="el-dropdown-link" effect="dark" content="修改基本信息">
-					<i class="el-icon-setting el-icon-big"></i>
+					<i class="el-icon-erp-headPortrait el-icon-big"></i>
 				</el-tooltip>
 				<el-dropdown-menu slot="dropdown">
 					<el-dropdown-item><a @click="modifyUserInfo()"><i class="el-icon-edit"></i>修改信息</a></el-dropdown-item>
@@ -17,20 +15,19 @@
 					<el-dropdown-item><a @click="gotoModifyPwd()"><i class="el-icon-edit"></i>修改信息</a></el-dropdown-item>
 				</el-dropdown-menu>
 			</el-dropdown>
-			<el-dropdown class="functionalIcon" trigger="click">
-				<el-tooltip class="el-dropdown-link" effect="dark" content="切换模块">
-					<i class="el-icon-menu el-icon-big"></i>
-				</el-tooltip>
-				<el-dropdown-menu slot="dropdown">
-					<el-dropdown-item v-for="item in mainUser.functionalModules" :key="item.id">
-						<a @click="gotoOtherModule(item.id,item.name)">
-							<i class="el-icon-edit"></i>{{item.name}}
-						</a>
-					</el-dropdown-item>
-				</el-dropdown-menu>
-			</el-dropdown>
-			<el-tooltip class="functionalIcon" @click="" content="下载文档"><i class="el-icon-erp-nrgl el-icon-big"></i></el-tooltip>
-			<el-tooltip class="functionalIcon" @click="" content="退出"><i class="el-icon-erp-exit3 el-icon-big"></i></el-tooltip>
+			<div class="functionalIcon">
+				<a @click="">
+					<i class="el-icon-erp-message el-icon-big"></i>
+				</a>
+				<sub class="noticeNumber">{{noticeNumber}}</sub>
+			</div>
+			
+			<div class="functionalIcon">
+				<a @click="" content="下载文档"><i class="el-icon-erp-nrgl el-icon-big"></i></a>
+			</div>
+			<div class="functionalIcon">
+				<a @click="" content="退出"><i class="el-icon-erp-exit el-icon-big"></i></a>
+			</div>
 		</el-col>
 		
 	</div>
@@ -5549,6 +5546,7 @@
 		data (){
 			return {
 				mainUser:user,
+				noticeNumber:12,
 				login_access_token:login_access_token
 			}
 		},
@@ -5562,13 +5560,15 @@
 </script>
 
 <style scoped>
-	 @import "../assets/iconfont/iconfont.css";  
+	@import "../assets/iconfont/iconfont.css";  
 	.el-icon-big{
 		font-size:28px;
 		vertical-align: "middle";
 	}
 	.headerNav{height:60px;line-height: 60px;padding:0px 20px;border-bottom:1px solid #DCDCDC}
-	.notice,.functionalIcon{margin-right:20px;}
+	.notice,.functionalIcon{margin-right:20px;display: inline-block;position: relative;}
+	.functionalIcon:first-of-type{text-align: right;}
 	.el-dropdown-li-a{text-align:center;text-decoration: none;}
 	.pull-right{text-align:right}
+	.noticeNumber{width:30px;height:18px;font-size:12px;color:#fff;position: absolute;top:2px;right:-15px;line-height:18px;background-color: #f56c6c;border-radius: 15px;text-align: center;}
 </style>
