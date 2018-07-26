@@ -5566,7 +5566,7 @@
 		vertical-align: "middle";
 	}
 	.headerNav{height:60px;line-height: 60px;padding:0px 20px;border-bottom:1px solid #DCDCDC}
-	.notice,.functionalIcon{margin-right:20px;display: inline-block;position: relative;}
+	.functionalIcon{margin-right:20px;display: inline-block;position: relative;cursor:pointer}
 	.functionalIcon:first-of-type{text-align: right;}
 	.el-dropdown-li-a{text-align:center;text-decoration: none;}
 	.pull-right{text-align:right}

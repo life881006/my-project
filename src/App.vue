@@ -2674,7 +2674,7 @@
 				isCollapse: false,
 				showWidth: 200,
 				moduleVisitor: [{routerPath:"",moduleItemName:"首页"}],
-				tableHeight:document.documentElement.clientHeight-240,
+				tableHeight:document.documentElement.clientHeight-230,
 			}
 		},
 		components: {
@@ -2688,8 +2688,8 @@
 			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式			
 		},
 		mounted: function() {
-			document.getElementById('layout').style.height = this.screenHeight-15 + "px"; //页面初始化
-			document.getElementById('menu').style.height = this.screenHeight + 40 + "px";
+			document.getElementById('layout').style.height = this.screenHeight-35 + "px"; //页面初始化
+			document.getElementById('menu').style.height = this.screenHeight + 80 + "px";
 			if(this.screenWidth<1160){
 				this.isCollapse = true;				
 			}
@@ -2757,15 +2757,15 @@
 					return item;
 				});
 				this.moduleVisitor = Items;
-				this.$router.push(pcUrl);
+				this.$router.push("/"+pcUrl);
 			}
 		},
 		watch: {
 			screenHeight(val) {
 				this.screenHeight = val;
-				document.getElementById('layout').style.height = this.screenHeight - 95 + "px"; //检测窗口的大小，并赋值
+				document.getElementById('layout').style.height = this.screenHeight - 115 + "px"; //检测窗口的大小，并赋值
 				document.getElementById('menu').style.height = this.screenHeight - 10 + "px";
-				this.tableHeight = this.screenHeight-240;
+				this.tableHeight = this.screenHeight-230;
 			},
 			screenWidth(val) {
 				this.screenWidth = val;
@@ -2780,10 +2780,9 @@
 </script>
 
 <style type="text/css" scoped>
-
-	*{
-		font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-	}
+	
+	.el-container{background-color:#EEEEEE}
+	#layout{background-color:#fff;padding:0px;margin:10px}
 	.logoImg {
 		text-align: center;
 	}
@@ -2808,6 +2807,7 @@
 	
 	.el-header {
 		padding:0px;
+		background-color:#fff;
 		border-bottom: 1px solid #DCDCDC
 	}
 	/*.el-footer{border-top:1px solid #DCDCDC}*/
@@ -2819,9 +2819,8 @@
 	.el-aside{background-color: #545c64;color:#fff}
 	.el-submenu__title i{color:#fff}
 	.el-menu-item{font-size:13px}
-	.el-container{}
+	
 	.el-main{background-color:#E6E6E6;padding:10px}
-	.mainTableArea{padding:15px 10px;background-color:#fff;}
 	@media only screen and (min-width: 100px) and (max-width: 1160px) {
 		.el-menu {
 			min-width: auto;

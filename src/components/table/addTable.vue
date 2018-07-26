@@ -10,16 +10,19 @@
 			
 		</el-table-column>
 	</el-table>-->
-	<el-form :inline="true" ref="form" :model="form" label-width="80px">
+	<el-form  ref="form" :model="form" label-width="80px">
 		<el-form-item label="姓名">
-			<el-input v-model="form.inputText1" placeholder="请输入内容"></el-input>
-			
+			<el-input v-model="form.inputText1" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		<el-form-item label="姓名">
-			<el-input v-model="form.inputText2" placeholder="请输入内容"></el-input>
-			
+			<el-input v-model="form.inputText2" placeholder="请输入内容"></el-input>			
 		</el-form-item>
-	
+		
+		
+			<el-col class="controll" :span='24'>
+			<el-button icon="el-icon-success">提交</el-button>
+			<el-button icon="el-icon-error" @click="close('/table')">关闭</el-button>
+			</el-col>
 	</el-form>
 </template>
 
@@ -79,8 +82,17 @@
 				form:{
 					inputText1:"laoli1",
 					inputText2:"laoli2"
-				}
+				},
+				
 			}
+		},
+		methods:{
+			close(path){
+				this.$router.push(path);
+			}
+		},
+		mounted:function(){
+			console.log("aaaaaaaaa");
 		}
 	}
 </script>
@@ -88,4 +100,5 @@
 <style>
 	#addTable{height:auto;overflow-y:auto;}
 	.el-table-column{width:33%;}
+	.controll{text-align: center;}
 </style>
