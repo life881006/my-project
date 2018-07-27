@@ -5542,7 +5542,7 @@
     ]
 }
 	export default {
-		name:"mainHeader",
+		name:"navBar",
 		data (){
 			return {
 				mainUser:user,
@@ -5559,14 +5559,14 @@
 	}
 </script>
 
-<style scoped>
-	@import "../assets/iconfont/iconfont.css";  
+<style scoped="scoped">
+	@import "../../assets/iconfont/iconfont.css";  
 	.el-icon-big{
 		font-size:28px;
 		vertical-align: "middle";
 	}
-	.headerNav{height:60px;line-height: 60px;padding:0px 20px;border-bottom:1px solid #DCDCDC}
-	.functionalIcon{margin-right:20px;display: inline-block;position: relative;cursor:pointer}
+	.headerNav{height:48px;line-height: 48px;padding:0px 20px;}
+	.functionalIcon{height:55px;padding-top:5px;margin-right:20px;display: inline-block;position: relative;cursor:pointer}
 	.functionalIcon:first-of-type{text-align: right;}
 	.el-dropdown-li-a{text-align:center;text-decoration: none;}
 	.pull-right{text-align:right}

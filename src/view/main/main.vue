@@ -1,7 +1,5 @@
 <template>
-	<router-view :tHeight="tableHeight">
-		
-	</router-view>
+	<router-view></router-view>
 </template>
 
 <script>
@@ -12,13 +10,11 @@
 			}
 		},
 		created:function(){
-			
+			console.log("aaaa");
 		},
-		props:['tableHeight'],
+		props:[],
 		watch:{
-			tableHeight(val){
-				this.tHeight = val;
-			}
+			
 		}
 	}
 </script>

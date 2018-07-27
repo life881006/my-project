@@ -66,8 +66,8 @@
 
 <script>
 	
-	import headerNav from '../headerSearchNav'
-	import pagination from '../mainFooter'
+	import headerNav from '@/components/headerSearchNav'
+	import pagination from '@/components/pagination'
 	
 	const pageInfo =  {
 		"hasPrePage": false,

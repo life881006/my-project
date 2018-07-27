@@ -1,17 +1,35 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 //import textVue from '@/components/textVue'
-import tableVue from '@/components/table'
-import headerSearchNavVue from '@/components/headerSearchNav'
-import newsControll from '@/components/newsControll'
-import addTable from '@/components/table/addTable'
-import mainList from '@/components/table/mainList'
-
+import layout from '@/view/layout'
 Vue.use(Router);
 
 const router = new Router({
-    routes:[{
-        path: '/table',
+	mode:"history",
+    routes:[
+    /*{//默认打开，可以是欢迎页
+        path: "",
+        component: tableVue,
+        redirect:"/table/",
+        children:[
+        	{
+        		path:"add",
+        		component:addTable
+        	}
+        ]
+    },*/
+    {
+    	path:"/main/",
+    	component: layout ,
+    	children:[
+    		{
+    			path:"table_one",
+    			component:() => import("@/module/table_one/table_oneList"),    			
+    		}
+    	]
+    },
+    /*{
+        path: "/table",
         component: tableVue ,
         children:[
         	{
@@ -24,10 +42,8 @@ const router = new Router({
         	}
         ]
     },{
-        path: '/newsManagement', component: newsControll
-    },{
-        path: '/', component: tableVue
-    }]
+        path: "/newsManagement", component: newsControll
+    }*/]
 })
 
 export default router;

@@ -1,5 +1,6 @@
 <template>
-	<el-col :xs="24" :sm="24" :md="24" :lg="24" id="moduleClickHistory">
+	<div id="moduleClickHistory">
+		321321
 		<span class="visitorTag" v-for="item in routerHistory">
 			<a :class="'routerTags '+item.active" @click="goto(item.routerPath)">{{item.moduleItemName}}
 			<span v-if="item.routerPath!=''">
@@ -7,12 +8,12 @@
 			</span>
 			</a>
 		</span>
-	</el-col>
+	</div>
 </template>
 
 <script>
 	export default{
-		name:"clickHistory",
+		name:"viewTags",
 		data:function(){
 			return {
 				routerHistory:this.visitList,
@@ -57,7 +58,7 @@
 </script>
 
 <style>
-	#moduleClickHistory{margin-top:-1px;}
+	#moduleClickHistory{margin-top:-1px;clear:both}
 	#moduleClickHistory>.visitorTag{display:inline-block;margin:5px;}
 	#moduleClickHistory>.visitorTag:hover{cursor: pointer;}
 	#moduleClickHistory>.visitorTag>.routerTags{color:#000;line-height:2;text-decoration: none;padding:6px 10px;border:1px solid #ddd;font-size: 12px;opacity: 0.6;}
