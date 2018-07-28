@@ -26,7 +26,7 @@
                                 	<span slot="title">{{modulePItem.itemName}}</span>
                                 -->
 								
-								<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="get(moduleItem)">
+								<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="goto(moduleItem.pcOpenUrl)">
 									<a class="routerLink">
 									{{moduleItem.itemName}}
 									</a>
@@ -137,7 +137,7 @@
 				"id": "cc3b922b40584a90acb999f4aa720c1d",
 				"addition": 1
 			}, {
-				"pcOpenUrl": "table",
+				"pcOpenUrl": "main/table_one",
 				"appOpenUrl": "",
 				"itemName": "新闻频道",
 				"appIcon": "",
@@ -2587,21 +2587,23 @@
 	};
 	
 	function formatModules() {
-		const moduleArr = modules.functionalModules;
-		
+		let moduleArr = modules.functionalModules;
 		let moduleListArr = {};
 		let serialNumber = 0;
 		let pArr = [];
 		let mainArr = [];
+		
+		
 		for(let m = 0; m < moduleArr.length; m++) {
 			let muduleFirstLevelItem = [];
 			let muduleFirstLevelObj = moduleArr[m];
 			let childrenList = [];
 				childrenList = moduleArr[m].functionalItems;
-				
 				muduleFirstLevelObj.serialNumber = m;
-				muduleFirstLevelObj.functionalItems = undefined;
+				//muduleFirstLevelObj.functionalItems = undefined;
+				
 				for(let i = 0; i < childrenList.length; i++) {
+					
 					let pItem ;
 					if(childrenList[i].pid === "0") {
 						
@@ -2630,54 +2632,34 @@
 		name:'sideBar',
 		data: function(){
 			return {
-				screenHeight : document.documentElement.clientHeight,
-				screenWidth : document.documentElement.clientWidth,
 				isCollapse: false
 			}
 		},
+		props:['sideBarHeight','sideBarWidth'],
 		created: function(){
 			this.asideModules = formatModules(modules.functionalModules);
 			this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
 			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式			
 		},
 		mounted: function(){
-			document.getElementById('menu').style.height = this.screenHeight + "px";
-			if(this.screenWidth<1160){
+			document.getElementById('menu').style.height = this.sideBarHeight + "px";
+			if(this.sideBarWidth<1160){
 				this.isCollapse = true;				
-			}
-			
-			window.onresize = () => {
-				return(() => {
-					this.screenHeight = document.documentElement.clientHeight;
-					this.screenWidth = document.documentElement.clientWidth;
-				})()
-			}
+			}			
 		},
 		methods:{
-			get: function(item) {
-				
-			},
-			goto(pcUrl){/*
-				let Items = this.moduleVisitor.map(function(item){
-					if(pcUrl == item.routerPath){
-						item.active = "active";
-					}else{
-						item.active = "";
-					}
-					return item;
-				});
-				this.moduleVisitor = Items;
-				this.$router.push("/"+pcUrl);*/
+			goto: function(pcUrl) {
+				this.$router.push("/"+pcUrl);
+				console.log(this.$router.params);
 			}
 		},
 		watch: {
-			screenHeight(val) {
-				this.screenHeight = val;
-				document.getElementById('menu').style.height = this.screenHeight + "px";
+			sideBarHeight(val) {
+				document.getElementById('menu').style.height = val + "px";
 			},
-			screenWidth(val) {
-				this.screenWidth = val;
-				if(this.screenWidth<1160){
+			sideBarWidth(val) {
+				
+				if(val<1160){
 					this.isCollapse = true;
 				}else{
 					this.isCollapse = false;

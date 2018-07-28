@@ -1,14 +1,13 @@
 <template>
 	<el-container>
-		<sideBar></sideBar>
-		
+			<sideBar :sideBarHeight="sideBarHeight" :sideBarWidth="sideBarWidth"></sideBar>
 		<el-container>
 			<el-header height="48">
 				<navBar></navBar>
+				<visitTags></visitTags>
 			</el-header>
 			<el-main>
-				<viewTags></viewTags>
-				<mainContent></mainContent>
+				<router-view :mainContentHeight="mainContentHeight"></router-view>
 			</el-main>
 		</el-container>
 	</el-container>
@@ -17,21 +16,49 @@
 <script>
 	import sideBar from './sideBar/sideBar'
 	import navBar from './navBar/navBar'
-	import viewTags from './viewTags/viewTags'
-	import mainContent from './main/main.vue'
+	import visitTags from './visitTags/visitTags'
+	
+	const defaultClientWidth = document.documentElement.clientWidth;
+	const defaultClientHeight = document.documentElement.clientHeight;
 	
 	export default{
 		name:'layout',
 		data: function(){
-			return {}
+			return {
+				screenWidth:defaultClientWidth,
+				screenHeight:defaultClientHeight,
+				sideBarWidth:defaultClientWidth,
+				sideBarHeight:defaultClientHeight,
+				mainContentHeight:defaultClientHeight-230
+			}
 		},
-		components:{sideBar,navBar,viewTags,mainContent},
+		components:{sideBar,navBar,visitTags},
+		mounted:function(){
+			window.onresize = () => {
+				
+				return(() => {
+					this.screenWidth = document.documentElement.clientWidth;
+					this.screenHeight = document.documentElement.clientHeight;
+				})()
+			}
+		},
 		created:function(){
 		
+		},
+		watch:{
+			screenHeight(val){
+				this.screenHeight=val;
+				this.sideBarHeight=this.screenHeight;
+				this.mainContentHeight=this.screenHeight-230;
+			},
+			screenWidth(val){
+				this.sideBarWidth=val;
+			}
 		}
 	}
 </script>
 
 <style scoped="scoped">
-	.el-header{border-bottom:1px solid #DCDCDC;}
+	.el-header{border-bottom:1px solid #DCDCDC;padding:0px}
+	.el-main{padding:15px;background-color: fafafa;}
 </style>

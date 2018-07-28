@@ -67,7 +67,7 @@
 				});
 			},
 			gotoAdd:function(){
-				this.$router.push("/table/add");
+				this.$router.push("/main/table_one/add");
 			}
 		},
 		watch:{
@@ -82,8 +82,8 @@
 	}
 </script>
 
-<style scoped="">
-	.el-row{line-height: 2;padding-bottom:10px;border-bottom: 1px solid #eee;}
+<style scoped="scoped">
+	.el-row{line-height: 2;padding-bottom:15px;border-bottom: 1px solid #eee;}
 	
 	.el-input{
 		width: 180px;

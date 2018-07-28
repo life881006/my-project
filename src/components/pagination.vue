@@ -67,7 +67,7 @@
 		everyPage(val){
 			this.ePage=val;
 		},
-		totalCount(val){
+		totalCount(val){			
 			this.tCount=val;
 		},
 	}
@@ -77,6 +77,7 @@
 <style scoped="scoped">
 	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:right}
 	.el-input{width:140px;float:right}
+	.el-pager li{min-width:30.5px;}
 	span{float:right;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:ddd}
 	
 </style>

@@ -24,8 +24,15 @@ const router = new Router({
     	children:[
     		{
     			path:"table_one",
-    			component:() => import("@/module/table_one/table_oneList"),    			
-    		}
+    			component:() => import("@/module/table_one/table_oneList"),
+    			children:[
+	    			{
+		    			path:"add",
+		    			component:() => import("@/module/table_one/addTable"),
+		    		}
+    			]
+    		},
+    		
     	]
     },
     /*{

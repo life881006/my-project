@@ -75,7 +75,7 @@
 		"totalPage": 1,
 		"beginIndex": 0,
 		"currentPage": 1,
-		"totalCount": 14,
+		"totalCount": 16,
 		"everyPage":1,
 	};
 	const tableInfo = {
@@ -264,21 +264,23 @@
 			return {
 				tableData3: tableInfo.data,
 				multipleSelection: [],
-				mainTableHeight:this.tHeight+"px",
 				totalCount:tableInfo.data.length,
 				currentPage:pageInfo.currentPage,
+				mainTableHeight:this.mainContentHeight+"px"	
 			}
 		},
+		props:['mainContentHeight'],
 		created(){
 			if(pageInfo.totalCount<global.everyPage){
 				this.everyPage = pageInfo.totalCount;
 			}else{
 				this.everyPage = global.everyPage;				
-			}
-			//console.log(pageInfo.everyPage);
+			}			
 			//this.everyPage = number;
 		},
-		props:['tHeight'],
+		mounted:function(){
+						
+		},
 		components:{headerNav,pagination},
 		methods: {
 			toggleSelection(rows) {
@@ -316,8 +318,8 @@
 			}
 		},
 		watch:{
-			tHeight(val){
-				this.mainTableHeight = val;
+			mainContentHeight(val){
+				this.mainTableHeight = val+"px";
 			},
 			currentPage(val){
 				
@@ -328,7 +330,7 @@
 </script>
 
 <style type="text/css" scoped="scoped">
-	.mainTableArea{padding:10px;background-color:#fff;}
+	.mainTableArea{background-color:#fff;}
 	.paginationArea{margin-top:10px;display: inline-block;width: 100%;}
-	.el-pagination{text-align: right;}
+	
 </style>
