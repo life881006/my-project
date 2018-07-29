@@ -26,7 +26,7 @@
                                 	<span slot="title">{{modulePItem.itemName}}</span>
                                 -->
 								
-								<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="goto(moduleItem.pcOpenUrl)">
+								<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="goto(moduleItem.itemName,moduleItem.pcOpenUrl)">
 									<a class="routerLink">
 									{{moduleItem.itemName}}
 									</a>
@@ -137,7 +137,7 @@
 				"id": "cc3b922b40584a90acb999f4aa720c1d",
 				"addition": 1
 			}, {
-				"pcOpenUrl": "main/table_one",
+				"pcOpenUrl": "/main/table_one",
 				"appOpenUrl": "",
 				"itemName": "新闻频道",
 				"appIcon": "",
@@ -150,7 +150,7 @@
 				"id": "31e5469cd82a41f384b38cd0c8bad128",
 				"addition": 1
 			}, {
-				"pcOpenUrl": "newsManagement",
+				"pcOpenUrl": "/main/table_two",
 				"appOpenUrl": "",
 				"itemName": "文章管理",
 				"appIcon": "",
@@ -2648,9 +2648,27 @@
 			}			
 		},
 		methods:{
-			goto: function(pcUrl) {
-				this.$router.push("/"+pcUrl);
-				console.log(this.$router.params);
+			goto: function(name,routerPath) {//
+				let itemObj = {};
+				let visited = false;
+				itemObj.itemName = name;
+				itemObj.routerPath = routerPath;
+				
+				for(let i = 0;i<global.visitTagsList.length;i++){
+					let item = global.visitTagsList[i];
+					if(item.routerPath==routerPath){
+						item.active="active";
+						visited = true;
+					}else{
+						item.active="";
+					}
+				}
+				if(!visited){
+					itemObj.active = "active";
+					global.visitTagsList.push(itemObj);
+				}
+				this.$router.push(routerPath);
+				
 			}
 		},
 		watch: {
@@ -2666,7 +2684,6 @@
 				}
 			}
 		}
-		
 	}
 
 </script>

@@ -5,7 +5,6 @@ import layout from '@/view/layout'
 Vue.use(Router);
 
 const router = new Router({
-	mode:"history",
     routes:[
     /*{//默认打开，可以是欢迎页
         path: "",
@@ -19,7 +18,7 @@ const router = new Router({
         ]
     },*/
     {
-    	path:"/main/",
+    	path:"/main",
     	component: layout ,
     	children:[
     		{
@@ -32,7 +31,16 @@ const router = new Router({
 		    		}
     			]
     		},
-    		
+    		{
+    			path:"table_two",
+    			component:() => import("@/module/table_one/table_oneList"),
+    			children:[
+	    			{
+		    			path:"add",
+		    			component:() => import("@/module/table_one/addTable"),
+		    		}
+    			]
+    		},
     	]
     },
     /*{

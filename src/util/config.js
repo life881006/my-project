@@ -8,3 +8,5 @@ global.url_baseDownload = window.location.protocol+"//"+window.location.host+web
 global.url_baseDelete = window.location.protocol+"//"+window.location.host+webName+"/net/deleteFile.do";
 global.url_import = window.location.protocol+"//"+window.location.host+webName+"/net/readXls.do";
 global.url_export = window.location.protocol+"//"+window.location.host+webName+"/net/writeXls.do";
+
+global.visitTagsList = [];
