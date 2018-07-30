@@ -26,10 +26,10 @@
                                 	<span slot="title">{{modulePItem.itemName}}</span>
                                 -->
 								
-								<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''" @click="goto(moduleItem.itemName,moduleItem.pcOpenUrl)">
-									<a class="routerLink">
+								<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''">
+									<router-link class="routerLink" :to="{path:moduleItem.pcOpenUrl,params:{title:moduleItem.itemName}}">
 									{{moduleItem.itemName}}
-									</a>
+									</router-link>
 								</el-menu-item>
 							</el-menu-item-group>
 						</el-submenu>
@@ -150,7 +150,7 @@
 				"id": "31e5469cd82a41f384b38cd0c8bad128",
 				"addition": 1
 			}, {
-				"pcOpenUrl": "/main/table_two",
+				"pcOpenUrl": "/main/add",
 				"appOpenUrl": "",
 				"itemName": "文章管理",
 				"appIcon": "",
@@ -2650,6 +2650,12 @@
 		methods:{
 			goto: function(name,routerPath) {//
 				let itemObj = {};
+				itemObj.itemName = name;
+				itemObj.routerPath = routerPath;
+				this.$store.dispatch("addVistedTags",itemObj);
+				this.$router.push(routerPath);
+				/*
+				let itemObj = {};
 				let visited = false;
 				itemObj.itemName = name;
 				itemObj.routerPath = routerPath;
@@ -2667,8 +2673,8 @@
 					itemObj.active = "active";
 					global.visitTagsList.push(itemObj);
 				}
-				this.$router.push(routerPath);
 				
+				*/
 			}
 		},
 		watch: {
@@ -2700,6 +2706,7 @@
 	#menu .el-submenu__title i{color:#fafafa}
 	#menu .el-scrollbar__thumb{background-color:rgba(240,240,240,0.5)}
 	#menu .el-scrollbar__wrap{overflow-x:hidden}
+	.routerLink{color:#fff;text-decoration: none;}
 	@media only screen and (min-width: 100px) and (max-width: 1159px) {
 		#menu {
 			width: auto;

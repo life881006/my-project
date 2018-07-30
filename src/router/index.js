@@ -19,11 +19,14 @@ const router = new Router({
     },*/
     {
     	path:"/main",
+    	name:"main",
     	component: layout ,
     	children:[
     		{
     			path:"table_one",
+    			name:"table",
     			component:() => import("@/module/table_one/table_oneList"),
+    			meta:{title:'新闻频道'},
     			children:[
 	    			{
 		    			path:"add",
@@ -32,14 +35,11 @@ const router = new Router({
     			]
     		},
     		{
-    			path:"table_two",
-    			component:() => import("@/module/table_one/table_oneList"),
-    			children:[
-	    			{
-		    			path:"add",
-		    			component:() => import("@/module/table_one/addTable"),
-		    		}
-    			]
+    			path:"add",
+    			name:"table_add",
+    			meta:{title:'添加'},
+    			component:() => import("@/module/table_one/addTable"),
+    			
     		},
     	]
     },

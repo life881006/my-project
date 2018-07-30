@@ -1,6 +1,6 @@
 <template>
 	<el-container>
-			<sideBar :sideBarHeight="sideBarHeight" :sideBarWidth="sideBarWidth"></sideBar>
+		<sideBar :sideBarHeight="sideBarHeight" :sideBarWidth="sideBarWidth"></sideBar>
 		<el-container>
 			<el-header height="48">
 				<navBar></navBar>

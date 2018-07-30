@@ -92,7 +92,7 @@
 			}
 		},
 		mounted:function(){
-			console.log("aaaaaaaaa");
+			
 		}
 	}
 </script>

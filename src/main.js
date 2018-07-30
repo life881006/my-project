@@ -18,7 +18,6 @@ Vue.use(getD)
 let tableH = document.documentElement.clientHeight-250;
 let everyPage = parseInt(tableH/53);
 global.everyPage = everyPage;
-global.visitTagsList = [{itemName:"首页",routerPath:"/#",active:"active"}]
 
 /* eslint-disable no-new */
 new Vue({
