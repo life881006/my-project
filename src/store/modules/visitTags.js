@@ -1,3 +1,4 @@
+//保存点击记录状态
 const visitTagsList = {
 	state: {//store保存的状态，可以在不同组件之间调用
 		visitedTags:[],
@@ -10,6 +11,7 @@ const visitTagsList = {
 		    }));
 		},
 		DELETE_SINGLE_TAG:(state,visited)=>{
+			
 			for (const [i, v] of state.visitedTags.entries()) {
 		        if (v.path === visited.path) {
 		          state.visitedTags.splice(i, 1)

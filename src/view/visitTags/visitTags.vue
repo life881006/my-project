@@ -2,7 +2,7 @@
 	<div class="visitTagContainer" ref="visitTagContainer" @wheel.prevent="handleScroll">
 			
 		<div class="visitTags" ref="visitTags" :style="{left:left+'px'}">
-			<router-link :class="[isActive(item)?'active':'','routerTags']" :key="item.path" ref="item" :to="item.path" v-for="item in routerHistory">{{item.title}}
+			<router-link :class="[isActive(item)?'active':'','routerTags']" :key="item.path" ref="item" :to="item.path" v-for="item in Array.from(routerHistory)">{{item.title}}
 			<i class="el-icon-close"  v-on:click.stop.prevent="deleteVisitor(item)"></i>
 			</router-link>
 		</div>
@@ -47,7 +47,7 @@
 		      this.$store.dispatch('addVistedTags', route)
 		    },
 			deleteVisitor(item){
-				this.$store.dispatch('deleteSingleTag',item);
+				this.$store.dispatch('deleteSingleTag',item);//再继续操作
 			},
 			/*
 			goto(routerP){
@@ -109,12 +109,11 @@
 		      } else if ($targetLeft + padding > -this.left && $targetLeft + $targetWidth < -this.left + $containerWidth - padding) {
 		        // tag in the current view
 		        // eslint-disable-line
+		        this.left = Math.random(0,1);
 		      } else {
 		        // tag in the right
 		        this.left = -($targetLeft - ($containerWidth - $targetWidth) + padding)
 		      }
-		      this.left ++;
-		      console.log($container);
 		    },
 			isActive(Obj){
 				return this.$router.history.current.path === Obj.path;
@@ -124,10 +123,6 @@
 			$route(){
 				this.addViewTags();
 				this.moveToCurrentTag();
-			},
-			routerHistory(val){
-				console.log(val);
-				this.routerHistory = val
 			}
 		}		
 	}
