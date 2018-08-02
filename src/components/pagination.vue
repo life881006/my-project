@@ -9,26 +9,53 @@
 	      layout=" prev, pager, next, jumper"
 	      :total="tCount">
 	    </el-pagination>
-	    <el-input id="everpageNumber" size="mini" :value="defaultEPage" maxlength="5" @blur="setEveryPage">
+	    <el-input id="everpageNumber" size="mini" :value="ePage" maxlength="5" @blur="setEveryPage">
 			<template slot="prepend">每页/条</template>
 		</el-input>
-		
     </div>
 </template>
 
 <script>
+	let pageList;
+	let currentPath;
 	
 	export default {
+	data() {
+		return {
+			tCount:0,
+			ePage:0,
+			cPage:0,
+		};
+	},
+	created(){
+		pageList = this.$store.state.pagination.paginationList;
+		currentPath = this.$router.history.current.path;
+		for(let item of pageList){
+			if(item.path === currentPath){
+				this.tCount=item.totalCount;
+				this.ePage=item.everyPage;
+				this.cPage=item.currentPage;
+				return false;
+			}
+		}
+	},
+	/*
+	props:['totalCount','everyPage','currentPage'],
+	*/
 	methods: {
 		handleSizeChange(val) {
 			this.ePage = val;
-			//子组件给父组件传值
-			this.$emit('pSize',val);
+			this.$emit('pSize',val);//子组件给父组件传值
 		},
 		handleCurrentChange(val) {
 			this.cPage = val;
-			//子组件给父组件传值
-			this.$emit('cPage',val);
+			for(let item of pageList){
+				if(item.path === currentPath){
+					item.currentPage=val;
+					this.$emit('cPage',val);//子组件给父组件传值
+					return false;
+				}
+			}
 		},
 		setEveryPage(){
 			let inputEveryPage = Number(document.getElementById("everpageNumber").value);
@@ -47,29 +74,30 @@
 				document.getElementById("everpageNumber").value="";
 				return false;
 			}
-			this.ePage = inputEveryPage;
-			this.handleSizeChange(this.ePage);
+			
+			for(let item of pageList){
+				if(item.path === currentPath){
+					this.ePage=inputEveryPage;
+					item.everyPage=inputEveryPage;
+					this.handleSizeChange(inputEveryPage);
+					return false;
+				}
+			}
 		}
 	},
-	data() {
-		return {
-			tCount:this.totalCount,
-			ePage:this.everyPage,
-			cPage:this.currentPage,
-			defaultEPage:this.everyPage,
-		};
-	},
-	props:['totalCount','everyPage','currentPage'],
 	watch:{
+		/*
 		currentPage(val){
 			this.cPage=val;
 		},
 		everyPage(val){
+			this.defaultEPage = val;
 			this.ePage=val;
 		},
-		totalCount(val){			
+		totalCount(val){
 			this.tCount=val;
 		},
+		*/
 	}
 }
 </script>

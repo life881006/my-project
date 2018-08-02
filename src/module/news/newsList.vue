@@ -43,6 +43,7 @@
 					</template>
 				</el-table-column>
 			</el-table>
+			
 			<div class="paginationArea">
 				<el-col :xs="8" :sm="8" :md="8" :lg="8">
 					<el-button-group>
@@ -58,9 +59,10 @@
 					</el-dropdown>
 				</el-col>
 				<el-col :xs="16" :sm="16" :md="16" :lg="16">
-					<pagination @pSize="getPageSize" @cPage="getCurrentPage" :currentPage="currentPage" :everyPage="everyPage" :totalCount="totalCount"></pagination>
+					<pagination @pSize="getPageSize" @cPage="getCurrentPage"></pagination>
 				</el-col>
-			</div>		
+			</div>
+			
 		</div>
 </template>
 
@@ -264,23 +266,39 @@
 			return {
 				tableData3: tableInfo.data,
 				multipleSelection: [],
-				totalCount:tableInfo.data.length,
+				mainTableHeight:this.mainContentHeight+"px",
+				everyPage:pageInfo.everyPage,
 				currentPage:pageInfo.currentPage,
-				mainTableHeight:this.mainContentHeight+"px"	
 			}
 		},
 		props:['mainContentHeight'],
 		created(){
-			if(pageInfo.totalCount<global.everyPage){
-				this.everyPage = pageInfo.totalCount;
-			}else{
-				this.everyPage = global.everyPage;				
-			}			
-			//this.everyPage = number;
+			let pageList = this.$store.state.pagination.paginationList;
+			let currentPath = this.$router.history.current.path;
+			for(let item of pageList){
+				if(item.path === currentPath){
+					this.everyPage=item.everyPage;
+					this.currentPage=item.currentPage;
+					return false;
+				}
+			}
+			pageInfo.path=this.$router.history.current.path;
+			this.$store.dispatch("paginationAdd",pageInfo);//将页码信息插入
 		},
-		mounted:function(){
-						
+		mounted(){
+			
 		},
+		/*
+		computed:{
+			everyPage:()=>{
+				if(pageInfo.totalCount<global.everyPage){
+					return pageInfo.totalCount;
+				}else{
+					return global.everyPage;				
+				}
+			}
+		},
+		*/
 		components:{headerNav,pagination},
 		methods: {
 			toggleSelection(rows) {
@@ -298,12 +316,6 @@
 			deleteThis(index,row){
 				this.tableData3.splice(index,1);
 			},
-			handleSizeChange(val) {
-				this.everyPage = val;
-			},
-			handleCurrentChange(val) {
-				this.currentPage = val;
-			},
 			aaa(){
 				alert("审核通过");
 			},
@@ -320,10 +332,8 @@
 		watch:{
 			mainContentHeight(val){
 				this.mainTableHeight = val+"px";
-			},
-			currentPage(val){
-				
-			},
+			}
+			
 			//:currentPage="currentPage" :everyPage="everyPage" :totalCount="totalCount"
 		}
 	}

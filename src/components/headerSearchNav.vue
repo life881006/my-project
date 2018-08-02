@@ -77,7 +77,6 @@
 			eee:function(val){
 				this.$store.state.select=val;
 			}
-			
 		}
 	}
 </script>

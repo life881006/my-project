@@ -22,9 +22,7 @@
 			
 		},
 		computed:{
-			/*routerHistory(){				
-				return this.$store.state.visitTags.visitedTags;
-			},		*/	
+			
 		},
 		mounted() {
 		    this.addViewTags()
@@ -61,21 +59,6 @@
 			isActive(Obj){
 				return this.$router.history.current.path === Obj.path;
 			},
-			/*
-			goto(routerP){
-				let Items = this.routerHistory.map(function(item){
-					if(routerP == item.routerPath){
-						item.active = "active";
-					}else{
-						item.active = "";
-					}
-					return item;
-				});
-				this.routerHistory = Items;
-				this.$emit("visitList",this.routerHistory)
-				this.$router.push(routerP);
-			},
-			*/
 			moveToCurrentTag() {
 			    const items = this.$refs.item
 			    this.$nextTick(() => {
@@ -121,7 +104,7 @@
 		      } else if ($targetLeft + padding > -this.left && $targetLeft + $targetWidth < -this.left + $containerWidth - padding) {
 		        // tag in the current view
 		        // eslint-disable-line
-		        this.left = Math.random(0,1);
+		        this.left = Math.random(0,0.1);//刷新组件
 		      } else {
 		        // tag in the right
 		        this.left = -($targetLeft - ($containerWidth - $targetWidth) + padding)
@@ -139,8 +122,4 @@
 
 <style >
 	
-	/*
-	#visitTags>.visitorTag>.router-link-active{background-color:#42B983;opacity: 1;color:#fff;border:0px}
-	#visitTags>.visitorTag>.router-link-active i{color:#fff}
-	*/
 </style>
