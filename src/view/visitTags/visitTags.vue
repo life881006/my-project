@@ -1,12 +1,10 @@
 <template>
 	<div class="visitTagContainer" ref="visitTagContainer" @wheel.prevent="handleScroll">
-			
 		<div class="visitTags" ref="visitTags" :style="{left:left+'px'}">
 			<router-link :class="[isActive(item)?'active':'','routerTags']" :key="item.path" ref="item" :to="item.path" v-for="item in Array.from(routerHistory)">{{item.title}}
 			<i class="el-icon-close"  v-on:click.stop.prevent="deleteVisitor(item)"></i>
 			</router-link>
 		</div>
-		
 	</div>
 </template>
 
@@ -47,7 +45,21 @@
 		      this.$store.dispatch('addVistedTags', route)
 		    },
 			deleteVisitor(item){
-				this.$store.dispatch('deleteSingleTag',item);//再继续操作
+				this.$store.dispatch('deleteSingleTag',item).then((items)=>{
+					if(this.isActive(item)){
+						const lastVisited = items.slice(-1)[0];
+						if(lastVisited){
+							this.$router.push(lastVisited);
+						}else{
+							this.$router.push("/");
+						}
+					}else{
+						
+					}
+				});//再继续操作
+			},			
+			isActive(Obj){
+				return this.$router.history.current.path === Obj.path;
 			},
 			/*
 			goto(routerP){
@@ -114,10 +126,7 @@
 		        // tag in the right
 		        this.left = -($targetLeft - ($containerWidth - $targetWidth) + padding)
 		      }
-		    },
-			isActive(Obj){
-				return this.$router.history.current.path === Obj.path;
-			}
+		    }
 		},
 		watch:{
 			$route(){
@@ -128,14 +137,10 @@
 	}
 </script>
 
-<style>
-	.visitTagContainer{clear:both;border-top:1px solid #dcdcdc;height:40px;line-height:40px;overflow:hidden;position:relative;white-space: nowrap;}
-	.visitTags{position:absolute}
-	.visitTags .routerTags{display:inline-block;margin:0px 5px;color:#000;line-height:2;text-decoration: none;padding:3px 10px;border:1px solid #ddd;font-size: 12px;opacity: 0.6;}
-	.visitTags .routerTags:hover{cursor: pointer;}
-	.visitTags .routerTags i{margin-left:10px;color:#666;cursor:pointer;text-align: center;line-height:16px;font-size:10px;}
-	.visitTags .active{background-color:#42B983;opacity: 1;color:#fff;border:0px}
-	.visitTags .active i{color:#fff}
-	/*#visitTags>.visitorTag>.router-link-active{background-color:#42B983;opacity: 1;color:#fff;border:0px}
-	#visitTags>.visitorTag>.router-link-active i{color:#fff}*/
+<style >
+	
+	/*
+	#visitTags>.visitorTag>.router-link-active{background-color:#42B983;opacity: 1;color:#fff;border:0px}
+	#visitTags>.visitorTag>.router-link-active i{color:#fff}
+	*/
 </style>

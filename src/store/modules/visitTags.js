@@ -12,7 +12,7 @@ const visitTagsList = {
 		},
 		DELETE_SINGLE_TAG:(state,visited)=>{
 			
-			for (const [i, v] of state.visitedTags.entries()) {
+			for (const [i, v] of state.visitedTags.entries()) {//entries() 方法返回一个新的Array Iterator对象，该对象包含数组中每个索引的键/值对。
 		        if (v.path === visited.path) {
 		          state.visitedTags.splice(i, 1)
 		          break
@@ -27,7 +27,7 @@ const visitTagsList = {
 		deleteSingleTag({commit,state},visited){
 			return new Promise((resolve) => {//异步处理actions
 		       commit('DELETE_SINGLE_TAG', visited)
-		       //resolve([...state.visitedViews]);
+		       resolve([...state.visitedTags]);
 		    })
 		}
 	}
