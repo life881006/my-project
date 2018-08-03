@@ -1,17 +1,23 @@
 <template>
-	<div id="">
-	ewqeq
+	<div id="homePage" >
+		<div :style="{height:mainTableHeight+'px',overflow:'auto'}">
+			3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>
+			3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>
+		</div>
 	</div>
 </template>
 
 <script>
 	export default {
 		name: "homePage",
-		data: () => {
+		data: function() {
 			return {
-				
-				
+				mainTableHeight:this.mainContentHeight
 			}			
+		},
+		props:["mainContentHeight"],
+		mounted(){
+			console.log(this.mainTableHeight);
 		}
 	}
 </script>

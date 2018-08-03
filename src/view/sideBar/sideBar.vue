@@ -5,7 +5,7 @@
 			<el-menu 
 				:default-openeds="defaultSerialNumber" 
 				:default-active="defaultActive" 
-				background-color="#545c64" 
+				background-color="inherit" 
 			    text-color="#fff" 
 			    active-text-color="#ffd04b" 
 			    :collapse="isCollapse" 
@@ -21,13 +21,13 @@
 								<i :class="'el-icon-erp-'+modulePItem.pcIcon"></i>
 								<span slot="title">{{ modulePItem.itemName }}</span>
 							</template>
-							<el-menu-item-group>
+							<el-menu-item-group class="submenuBg">
 								<!--
                                 	<span slot="title">{{modulePItem.itemName}}</span>
                                 -->
 								
-								<el-menu-item  v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''">
-									<router-link class="routerLink" :to="{path:moduleItem.pcOpenUrl}">
+								<el-menu-item v-for="moduleItem in modulePItem.children" :key="moduleItem.id" ref="moduleItem.id" :index="moduleItem.serialNumber+''">
+									<router-link class="routerLink" @click.native="goto(moduleItem)" :to="{path:moduleItem.pcOpenUrl}">
 									{{moduleItem.itemName}}
 									</router-link>
 								</el-menu-item>
@@ -2638,8 +2638,14 @@
 		props:['sideBarHeight','sideBarWidth'],
 		created: function(){
 			this.asideModules = formatModules(modules.functionalModules);
-			this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
-			this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式			
+			if(this.$store.state.currentMenu){
+				const currentMenus = this.$store.state.currentMenu.split("-");console.log(currentMenus);
+				this.defaultSerialNumber = [""+currentMenus[0],currentMenus[0]+"-"+currentMenus[1]];
+				this.defaultActive = this.$store.state.currentMenu;
+			}else{
+				this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
+				this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式	
+			}	
 		},
 		mounted: function(){
 			document.getElementById('menu').style.height = this.sideBarHeight + "px";
@@ -2648,14 +2654,16 @@
 			}			
 		},
 		methods:{
-			
+			goto(obj){
+				this.defaultActive = obj.serialNumber;
+				this.$store.state.currentMenu = obj.serialNumber;
+			}
 		},
 		watch: {
 			sideBarHeight(val) {
 				document.getElementById('menu').style.height = val + "px";
 			},
 			sideBarWidth(val) {
-				
 				if(val<1160){
 					this.isCollapse = true;
 				}else{
@@ -2679,7 +2687,8 @@
 	#menu .el-submenu__title i{color:#fafafa}
 	#menu .el-scrollbar__thumb{background-color:rgba(240,240,240,0.5)}
 	#menu .el-scrollbar__wrap{overflow-x:hidden}
-	.routerLink{color:#fff;text-decoration: none;display: block;}
+	.routerLink{color:inherit;text-decoration: none;display: block;}
+	.submenuBg{background-color:#5d6771}
 	@media only screen and (min-width: 100px) and (max-width: 1159px) {
 		#menu {
 			width: auto;

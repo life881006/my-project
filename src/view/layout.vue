@@ -35,7 +35,6 @@
 		components:{sideBar,navBar,visitTags},
 		mounted:function(){
 			window.onresize = () => {
-				
 				return(() => {
 					this.screenWidth = document.documentElement.clientWidth;
 					this.screenHeight = document.documentElement.clientHeight;
