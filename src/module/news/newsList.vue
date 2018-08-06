@@ -1,6 +1,20 @@
 <template>	
 		<div class="mainTableArea">
-			<headerNav></headerNav>
+			<el-row>
+				<el-col :xs="23" :sm="23" :md="23" :lg="23">
+				<el-select size="small" ref="ssss" v-model="eee" placeholder="请选择" @change="changeValue">
+					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
+				</el-select>
+				<el-input size="small" placeholder="请输入内容" v-model="input10" clearable >
+					
+				</el-input>
+				<el-button size="small" type="primary" icon="el-icon-search">检索</el-button>
+				</el-col>
+				
+				<el-col :xs="1" :sm="1" :md="1" :lg="1">
+					<el-button size="small" type="primary" icon="el-icon-plus" @click="addPanel()"></el-button>
+				</el-col>
+			</el-row>
 			<el-table 
 				ref="multipleTable" 
 				:height="mainTableHeight" 
@@ -63,12 +77,27 @@
 				</el-col>
 			</div>
 			
+			<el-dialog
+			  title="提示"
+			  :visible.sync="dialogVisible"
+			  width="50%" 
+			  top="5vh"
+			  >
+			  <!--:before-close="handleClose"-->
+			  
+			  <div class="dialogMain">
+			 	<router-view></router-view>
+			  </div>
+			  <span slot="footer" class="dialog-footer">
+			    <el-button @click="dialogVisible = false">取 消</el-button>
+			    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+			  </span>
+			</el-dialog>
 		</div>
 </template>
 
 <script>
 	
-	import headerNav from '@/components/headerSearchNav'
 	import pagination from '@/components/pagination'
 	
 	const pageInfo =  {
@@ -269,6 +298,18 @@
 				mainTableHeight:this.mainContentHeight+"px",
 				everyPage:pageInfo.everyPage,
 				currentPage:pageInfo.currentPage,
+				
+				input10:"",
+				options:[{
+					value:"aaaaddsadsad",
+					label:"bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+					disabled:true
+				},{
+					value:"cccdsadsadsa",
+					label:"bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+				}],
+				eee:"",
+				dialogVisible: false 
 			}
 		},
 		props:['mainContentHeight'],
@@ -286,7 +327,8 @@
 			this.$store.dispatch("paginationAdd",pageInfo);//将页码信息插入
 		},
 		mounted(){
-			
+			this.input10 = this.$store.state.inputValue;
+			this.eee = this.$store.state.select;
 		},
 		/*
 		computed:{
@@ -299,7 +341,7 @@
 			}
 		},
 		*/
-		components:{headerNav,pagination},
+		components:{pagination},
 		methods: {
 			toggleSelection(rows) {
 				if(rows) {
@@ -327,11 +369,26 @@
 			},
 			getCurrentPage(cPage){
 				this.currentPage = cPage;
+			},
+			changeValue:function(value) {
+				let obj = this.options.find(function(item){
+					return item.value == value;
+				});
+			},
+			addPanel:function(){
+				this.dialogVisible = true;
+				this.$router.push("/news/newsList/add");
 			}
 		},
 		watch:{
 			mainContentHeight(val){
 				this.mainTableHeight = val+"px";
+			},
+			input10:function(val){
+				this.$store.state.inputValue=val;
+			},
+			eee:function(val){
+				this.$store.state.select=val;
 			}
 			
 			//:currentPage="currentPage" :everyPage="everyPage" :totalCount="totalCount"
@@ -340,6 +397,7 @@
 </script>
 
 <style type="text/css" scoped="scoped">
+	@import url("../../assets/headerNav.css");
 	.mainTableArea{background-color:#fff;}
 	.paginationArea{margin-top:10px;display: inline-block;width: 100%;}
 	

@@ -112,7 +112,10 @@
 		    }
 		},
 		watch:{
-			$route(){
+			$route(to,from){
+				if(to.path.split("/").length>3){
+					return false;
+				}
 				this.addViewTags();
 				this.moveToCurrentTag();
 			}

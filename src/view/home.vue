@@ -20,7 +20,7 @@
 	const defaultClientHeight = document.documentElement.clientHeight;
 	
 	export default{
-		name:'layout',
+		name:'home',
 		data: function(){
 			return {
 				screenWidth:defaultClientWidth,

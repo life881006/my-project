@@ -17,7 +17,7 @@
 		},
 		props:["mainContentHeight"],
 		mounted(){
-			console.log(this.mainTableHeight);
+			
 		}
 	}
 </script>

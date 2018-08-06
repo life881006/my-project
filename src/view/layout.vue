@@ -59,9 +59,9 @@
 
 <style scoped="scoped">
 	.el-header{border-bottom:1px solid #DCDCDC;padding:0px}
-	.el-header >>> .visitTagContainer{clear:both;border-top:1px solid #dcdcdc;height:40px;line-height:40px;overflow:hidden;position:relative;white-space: nowrap;}
+	.el-header >>> .visitTagContainer{clear:both;border-top:1px solid #dcdcdc;height:30px;line-height:28px;overflow:hidden;position:relative;white-space: nowrap;}
 	.el-header >>> .visitTags{position:absolute}
-	.el-header >>> .visitTags .routerTags{display:inline-block;margin:0px 5px;color:#000;line-height:2;text-decoration: none;padding:3px 10px;border:1px solid #ddd;font-size: 12px;opacity: 0.6;}
+	.el-header >>> .visitTags .routerTags{display:inline-block;margin:0px 5px;color:#000;line-height:2;text-decoration: none;padding:2px 10px;border:1px solid #ddd;font-size: 12px;opacity: 0.6;}
 	.el-header >>> .visitTags .routerTags:hover{cursor: pointer;}
 	.el-header >>> .visitTags .routerTags i{margin-left:10px;color:#666;cursor:pointer;text-align: center;line-height:16px;font-size:10px;}
 	.el-header >>> .visitTags .active{background-color:#42B983;opacity: 1;color:#fff;border:0px}

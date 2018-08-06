@@ -17,13 +17,15 @@ const router = new Router({
     			name:'newsList',
     			meta:{title:'新闻频道'},
     			component:() => import('@/module/news/newsList'),
-    		},
-    		{
-    			path:'add',
-    			name:'table_add',
-    			meta:{title:'添加'},
-    			component:() => import('@/module/news/newsAdd'),
-    		},
+    			children:[
+    			{
+    				path:'add',
+	    			name:'table_add',
+	    			meta:{title:'新闻频道添加'},
+	    			component:() => import('@/module/news/newsAdd'),
+    			}
+    			]
+    		}
     	]
     },
     {
@@ -38,6 +40,12 @@ const router = new Router({
     			component:() => import('@/module/home')
     		}
     	]
+    },{
+    	path:'/login',
+    	name:'login',
+    	title:'登录',
+    	component: () => import('@/module/login/login'),
+    	
     }
     ]
 })

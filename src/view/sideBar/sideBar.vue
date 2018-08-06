@@ -5,7 +5,7 @@
 			<el-menu 
 				:default-openeds="defaultSerialNumber" 
 				:default-active="defaultActive" 
-				background-color="inherit" 
+				background-color="#545c64" 
 			    text-color="#fff" 
 			    active-text-color="#ffd04b" 
 			    :collapse="isCollapse" 
@@ -21,7 +21,7 @@
 								<i :class="'el-icon-erp-'+modulePItem.pcIcon"></i>
 								<span slot="title">{{ modulePItem.itemName }}</span>
 							</template>
-							<el-menu-item-group class="submenuBg">
+							<el-menu-item-group>
 								<!--
                                 	<span slot="title">{{modulePItem.itemName}}</span>
                                 -->
@@ -2637,14 +2637,15 @@
 		},
 		props:['sideBarHeight','sideBarWidth'],
 		created: function(){
-			this.asideModules = formatModules(modules.functionalModules);
+			const functionalModules = sessionStorage.getItem("user").functionalModules;
+			this.asideModules = formatModules(functionalModules);
 			if(this.$store.state.currentMenu){
-				const currentMenus = this.$store.state.currentMenu.split("-");console.log(currentMenus);
+				const currentMenus = this.$store.state.currentMenu.split("-");
 				this.defaultSerialNumber = [""+currentMenus[0],currentMenus[0]+"-"+currentMenus[1]];
 				this.defaultActive = this.$store.state.currentMenu;
 			}else{
-				this.defaultSerialNumber = ["0","0-0"];//获取默认打开菜单的序号
-				this.defaultActive = this.asideModules[0].children[0].children[0].serialNumber;//给默认打开菜单的第一项加样式	
+				this.defaultSerialNumber = ["-1"];//获取默认打开菜单的序号
+				this.defaultActive = "-1";//给默认打开菜单的第一项加样式	
 			}	
 		},
 		mounted: function(){
