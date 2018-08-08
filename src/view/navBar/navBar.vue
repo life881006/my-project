@@ -45,6 +45,7 @@
 		methods:{
 			exit:function(){
 				sessionStorage.clear();
+				this.$store.state.user = {};
 				this.$router.push("/login");
 			}
 			

@@ -1,7 +1,7 @@
 //保存点击记录状态
 const visitTagsList = {
 	state: {//store保存的状态，可以在不同组件之间调用
-		visitedTags:[],
+		visitedTags:[]
 	},
 	mutations: {//最终变更state
 		ADD_VISITED_TAGS:(state,visited)=>{

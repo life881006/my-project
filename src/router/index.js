@@ -44,10 +44,28 @@ const router = new Router({
     	path:'/login',
     	name:'login',
     	title:'登录',
-    	component: () => import('@/module/login/login'),
-    	
+    	component: () => import('@/module/login/login'),	
+    },{
+    	path:'/loginServer',
+    	name:'loginServer',
+    	title:'登录',
+    	component: () => import('@/module/login/login_server'),	
     }
+    
     ]
 })
+
+router.beforeEach(function(to,from,next){//全局导航守卫
+	if(to.path==="/loginServer" || to.path==="/login" || to.path==="/regist"){
+		next();
+	}else{
+		let user = JSON.parse(sessionStorage.getItem("user"));
+		if(user===null){
+			router.push("/login");
+		}else{
+			next();
+		}
+	}
+});
 
 export default router;

@@ -33,6 +33,7 @@
 		      if (this.$route.name) {
 		        return this.$route
 		      }
+		      
 		      return false
 		    },
 		    addViewTags() {

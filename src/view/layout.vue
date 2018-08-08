@@ -23,6 +23,12 @@
 	
 	export default{
 		name:'layout',
+		beforeCreate:function(){
+			const userObj = JSON.parse(sessionStorage.getItem("user"));
+			if(userObj===null){
+				this.$router.push("/login");
+			}
+		},
 		data: function(){
 			return {
 				screenWidth:defaultClientWidth,

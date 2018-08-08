@@ -5,19 +5,17 @@ import router from './router/'
 import store from './store/store'
 import ElementUI from 'element-ui'
 import axios from 'axios'
-import qs from 'qs'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import './util/config'
 import getD from './util/methods'
 import "./assets/iconfont/iconfont.css";
 
-
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.use(getD)
-Vue.prototype.qs = qs
 Vue.prototype.axios = axios
+Vue.prototype.user = {}
 
 let tableH = document.documentElement.clientHeight-250;
 let everyPage = parseInt(tableH/53);
