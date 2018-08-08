@@ -13,6 +13,48 @@
 <script>
 	import userData from "../../assets/user"
 	
+	function formatModules(modulesObj) {
+		let moduleArr = modulesObj;
+		let moduleListArr = {};
+		let serialNumber = 0;
+		let pArr = [];
+		let mainArr = [];
+		
+		
+		for(let m = 0; m < moduleArr.length; m++) {
+			let muduleFirstLevelItem = [];
+			let muduleFirstLevelObj = moduleArr[m];
+			let childrenList = [];
+				childrenList = moduleArr[m].functionalItems;
+				muduleFirstLevelObj.serialNumber = m;
+				//muduleFirstLevelObj.functionalItems = undefined;
+				
+				for(let i = 0; i < childrenList.length; i++) {
+					
+					let pItem ;
+					if(childrenList[i].pid === "0") {
+						
+						pItem = childrenList[i];
+						let cItem = [];
+						pItem.serialNumber = m+"-"+i;
+						for(let j = 0; j < childrenList.length; j++) {
+							if(childrenList[i].id == childrenList[j].pid) {
+								cItem.push(childrenList[j]);
+								childrenList[j].serialNumber = m+"-"+i+"-"+j;
+							}
+						}
+						pItem.children = cItem;
+					}
+					if(pItem!=undefined){
+					muduleFirstLevelItem.push(pItem);
+					}
+				}
+				muduleFirstLevelObj.children = muduleFirstLevelItem;
+				mainArr.push(muduleFirstLevelObj);
+		}
+		return mainArr;
+	}
+	
 	export default{
 		name:"login",
 		data(){
@@ -36,9 +78,12 @@
 					console.log(error);
 				});
 				*/
-		  		let userJson = JSON.stringify(userData.data);
+				let userObj = userData.data;
+				let userModules = formatModules(userObj.functionalModules);
+				userObj.functionalModules = userModules;
+		  		let userJson = JSON.stringify(userObj);
 		  		sessionStorage.setItem("user",userJson);
-				this.$router.push("/");
+				this.$router.push("/home/home");
 			},
 			getUser:function(token){
 				let p = {}; 

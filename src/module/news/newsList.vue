@@ -390,15 +390,13 @@
 			eee:function(val){
 				this.$store.state.select=val;
 			}
-			
-			//:currentPage="currentPage" :everyPage="everyPage" :totalCount="totalCount"
 		}
 	}
 </script>
 
 <style type="text/css" scoped="scoped">
 	@import url("../../assets/headerNav.css");
-	.mainTableArea{background-color:#fff;}
+	.mainTableArea{padding:10px;background-color:#fff;}
 	.paginationArea{margin-top:10px;display: inline-block;width: 100%;}
 	
 </style>

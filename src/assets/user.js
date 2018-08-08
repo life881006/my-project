@@ -2735,7 +2735,7 @@ const data = {
                     "addition": 1
                 },
                 {
-                    "pcOpenUrl": "",
+                    "pcOpenUrl": "/home/home",
                     "appOpenUrl": "",
                     "itemName": "文章管理",
                     "appIcon": "",

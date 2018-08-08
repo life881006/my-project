@@ -10,6 +10,7 @@ const router = new Router({
     {
     	path:'/news',
     	name:'news',
+    	redirect:'/news/newsList',
     	component: layout ,
     	children:[
     		{
@@ -21,17 +22,23 @@ const router = new Router({
     			{
     				path:'add',
 	    			name:'table_add',
-	    			meta:{title:'新闻频道添加'},
+	    			meta:{title:'添加'},
 	    			component:() => import('@/module/news/newsAdd'),
-    			}
+    			},
+    			{
+    				path:'edit',
+	    			name:'table_edit',
+	    			meta:{title:'修改'},	    			
+	    			component:() => import('@/module/news/newsAdd'),
+    			},
     			]
     		}
     	]
     },
     {
-    	path:'/',
+    	path:'/home',
     	redirect: 'home',
-    	component: home ,
+    	component: layout ,
     	children:[
     		{
     			path:'home',
@@ -55,7 +62,7 @@ const router = new Router({
     ]
 })
 
-router.beforeEach(function(to,from,next){//全局导航守卫
+router.beforeEach((to,from,next)=>{//全局导航守卫
 	if(to.path==="/loginServer" || to.path==="/login" || to.path==="/regist"){
 		next();
 	}else{

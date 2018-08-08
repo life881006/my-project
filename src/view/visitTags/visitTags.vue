@@ -12,6 +12,14 @@
 	const padding=15
 	export default{
 		name:"visitTags",
+		beforeCreate(){//直接访问三级路由跳转到二级路由
+			const path = this.$router.history.current.path;
+			if(path.split("/").length>3){
+				const pathArr = path.split("/");
+				this.$router.push("/"+pathArr[1]+"/"+pathArr[2]);
+				return false;
+			}
+		},
 		data:function(){
 			return {
 				left: 0,
@@ -24,7 +32,7 @@
 		computed:{
 			
 		},
-		mounted() {
+		mounted() {			
 		    this.addViewTags()
 		},
 		props:['visitList'],
@@ -33,7 +41,6 @@
 		      if (this.$route.name) {
 		        return this.$route
 		      }
-		      
 		      return false
 		    },
 		    addViewTags() {
@@ -61,8 +68,8 @@
 				return this.$router.history.current.path === Obj.path;
 			},
 			moveToCurrentTag() {
-			    const items = this.$refs.item
-			    this.$nextTick(() => {
+			    const items = this.$refs.item;			    
+			    this.$nextTick(() => {			    	
 				    for (const item of items) {
 				        if (item.to === this.$route.path) {
 				          this.moveToTarget(item.$el);
@@ -124,6 +131,13 @@
 	}
 </script>
 
-<style >
-	
+<style scoped="scoped">
+	.visitTagContainer{clear:both;border-top:1px solid #dcdcdc;height:34px;line-height:32px;overflow:hidden;position:relative;white-space: nowrap;}
+	.visitTags{position:absolute}
+	.visitTags .routerTags{display:inline-block;margin:0px 5px;color:#000;line-height:2;text-decoration: none;padding:2px 10px;border:1px solid #ddd;font-size: 12px;}
+	.visitTags .routerTags:hover{cursor: pointer;}
+	.visitTags .routerTags i{margin-left:5px;color:#666;cursor:pointer;text-align: center;line-height:16px;font-size:10px;}
+	.visitTags .active{background-color:#42B983;opacity: 1;color:#fff;border:0px}
+	.visitTags .active:before{content: "";width: 8px;height:8px;border-radius: 50%;background-color: #fff;display: inline-block;top:12px;margin-right:5px}
+	.visitTags .active i{color:#fff}
 </style>

@@ -126,6 +126,7 @@
 					dataType:"json",
 				}).then((result)=>{
 					var data = result.data.data;
+					//格式化模块、项目
 					data = JSON.stringify(data);
 					sessionStorage.setItem("user",data);
 					this.$router.push("/");
