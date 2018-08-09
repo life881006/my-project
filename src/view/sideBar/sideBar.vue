@@ -60,7 +60,7 @@
 		},
 		mounted: function(){
 			document.getElementById('menu').style.height = this.sideBarHeight + "px";
-			if(this.sideBarWidth<1160){
+			if(this.sideBarWidth<1260){
 				this.isCollapse = true;				
 			}			
 		},
@@ -72,7 +72,7 @@
 				document.getElementById('menu').style.height = val + "px";
 			},
 			sideBarWidth(val) {				
-				if(val<1160){
+				if(val<1260){
 					this.isCollapse = true;
 				}else{
 					this.isCollapse = false;
@@ -98,7 +98,7 @@
 	.routerLink{color:inherit;text-decoration: none;display: block;}
 	.submenuBg{background-color:#5d6771}
 	.submenuTitle{font-size: 13px;}
-	@media only screen and (min-width: 100px) and (max-width: 1159px) {
+	@media only screen and (min-width: 100px) and (max-width: 1259px) {
 		#menu {
 			width: auto;
 			border-right: 0px;

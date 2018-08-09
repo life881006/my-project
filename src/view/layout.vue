@@ -7,7 +7,9 @@
 				<visitTags></visitTags>
 			</el-header>
 			<el-main>
-				<router-view :mainContentHeight="mainContentHeight"></router-view>
+				<transition name="fade-transform" mode="out-in">
+					<router-view :mainContentHeight="mainContentHeight"></router-view>
+				</transition>
 			</el-main>
 		</el-container>
 	</el-container>
@@ -29,7 +31,7 @@
 				screenHeight:defaultClientHeight,
 				sideBarWidth:defaultClientWidth,
 				sideBarHeight:defaultClientHeight,
-				mainContentHeight:defaultClientHeight-230
+				mainContentHeight:defaultClientHeight-200,
 			}
 		},
 		components:{sideBar,navBar,visitTags},
@@ -48,7 +50,7 @@
 			screenHeight(val){
 				this.screenHeight=val;
 				this.sideBarHeight=this.screenHeight;
-				this.mainContentHeight=this.screenHeight-230;
+				this.mainContentHeight=this.screenHeight-210;
 			},
 			screenWidth(val){
 				this.sideBarWidth=val;
@@ -58,8 +60,19 @@
 </script>
 
 <style scoped="scoped">
-	
 	.el-header{border-bottom:1px solid #DCDCDC;padding:0px}
+	.el-main{margin:5px;padding:0px;background-color: #fff;overflow: hidden;position: relative;}
 	
-	.el-main{margin:15px;padding:0px;background-color: #fff;box-shadow:0px 0px 10px #dcdcdc}
+	.fade-transform-leave-active,
+	.fade-transform-enter-active {
+	  transition: all .3s;
+	}
+	.fade-transform-enter {
+	  opacity: 0;
+	  transform: translateX(-30px);
+	}
+	.fade-transform-leave-to {
+	  opacity: 0;
+	  transform: translateX(30px);
+	}
 </style>

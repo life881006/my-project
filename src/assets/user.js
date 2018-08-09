@@ -2749,7 +2749,7 @@ const data = {
                     "addition": 1
                 },
                 {
-                    "pcOpenUrl": "",
+                    "pcOpenUrl": "/student/studentList",
                     "appOpenUrl": "",
                     "itemName": "图片新闻",
                     "appIcon": "",

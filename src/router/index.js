@@ -2,8 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import layout from '@/view/layout'
 import home from '@/view/home'
+import {Notification} from 'element-ui'
 
 Vue.use(Router);
+
+Vue.prototype.$notify = Notification;//elemtn-ui通知
 
 const router = new Router({
     routes:[
@@ -34,8 +37,7 @@ const router = new Router({
     			]
     		}
     	]
-    },
-    {
+    },{
     	path:'/home',
     	redirect: 'home',
     	component: layout ,
@@ -45,6 +47,26 @@ const router = new Router({
     			name:'homePage',
     			meta:{title:'首页'},
     			component:() => import('@/module/home')
+    		}
+    	]
+    },{
+    	path:'/student',
+    	redirect: 'studentList',
+    	component: layout ,
+    	children:[
+    		{
+    			path:'studentList',
+    			name:'studentList',
+    			meta:{title:'学生管理'},
+    			component:() => import('@/module/student/studentList'),
+    			children:[
+    				{
+    					path:'add',
+    					name:'add',
+    					meta:{title:'添加'},
+    					component:()=> import('@/module/student/studentAdd')
+    				}
+    			]
     		}
     	]
     },{
@@ -68,7 +90,14 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 	}else{
 		let user = JSON.parse(sessionStorage.getItem("user"));
 		if(user===null){
-			router.push("/login");
+			new Vue().$notify({
+	          title: '提示',
+	          message: '页面需登录后才能访问，您尚未登录！',
+	          type: 'warning',
+	          onClose:()=>{
+	          	router.push("/login");
+	          }
+	        });			
 		}else{
 			next();
 		}

@@ -84,33 +84,6 @@
 		  		let userJson = JSON.stringify(userObj);
 		  		sessionStorage.setItem("user",userJson);
 				this.$router.push("/home/home");
-			},
-			getUser:function(token){
-				let p = {}; 
-				/*let _this = this;*/
-				console.log(this);
-				return false;
-				p.access_token=token;
-				_this.axios({					
-					method: 'post',
-					url: global.url_base,
-					data: _this.qs.stringify(_this.getData("HX_EXT_API","/https/userToken/getLoginInfoByToken.do",p)),
-					dataType: 'JSON'					
-				}).then(function(result){
-					let data = result.data.data;
-					if(data.isValid==0){
-					    alert("已在其他地方登录，请重新登录");
-					    _this.$router.push('/login');
-					}else{
-						data = JSON.stringify(data);
-						sessionStorage.setItem("user",data);
-						_this.$router.push("/");
-					}
-					
-				}).catch(function(error){
-					alert("登录错误");
-					
-				});
 			}
 		}
 	}

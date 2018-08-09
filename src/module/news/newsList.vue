@@ -1,11 +1,11 @@
 <template>	
 		<div class="mainTableArea">
-			<el-row>
+			<el-row class="search">
 				<el-col :xs="23" :sm="23" :md="23" :lg="23">
-				<el-select size="small" ref="ssss" v-model="eee" placeholder="请选择" @change="changeValue">
+				<el-select size="small" ref="selectOption1" v-model="selectOptions" placeholder="请选择" @change="changeValue">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
 				</el-select>
-				<el-input size="small" placeholder="请输入内容" v-model="input10" clearable >
+				<el-input size="small" placeholder="请输入内容" v-model="searchText" clearable >
 					
 				</el-input>
 				<el-button size="small" type="primary" icon="el-icon-search">检索</el-button>
@@ -77,6 +77,8 @@
 				</el-col>
 			</div>
 			
+			
+			<!--弹框-->
 			<el-dialog
 			  title="提示"
 			  :visible.sync="dialogVisible"
@@ -86,12 +88,14 @@
 			  <!--:before-close="handleClose"-->
 			  
 			  <div class="dialogMain">
-			 	<router-view></router-view>
+			 	<router-view :visibleAttr="dialogVisible"></router-view>
 			  </div>
+			  <!--
 			  <span slot="footer" class="dialog-footer">
 			    <el-button @click="dialogVisible = false">取 消</el-button>
 			    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
 			  </span>
+			  -->
 			</el-dialog>
 		</div>
 </template>
@@ -99,6 +103,7 @@
 <script>
 	
 	import pagination from '@/components/pagination'
+	import mainMethod from '@/components/mainMethod'
 	
 	const pageInfo =  {
 		"hasPrePage": false,
@@ -291,28 +296,32 @@
 		"msg": "0"
 	};
 	export default {
+		
 		data() {
 			return {
-				tableData3: tableInfo.data,
-				multipleSelection: [],
-				mainTableHeight:this.mainContentHeight+"px",
-				everyPage:pageInfo.everyPage,
-				currentPage:pageInfo.currentPage,
+				mainTableHeight:this.mainContentHeight+"px",//主表高度
 				
-				input10:"",
-				options:[{
+				tableData3: tableInfo.data,//主表数据
+				multipleSelection: [],//主表选中记录合集
+				
+				everyPage:pageInfo.everyPage,//每页记录数
+				currentPage:pageInfo.currentPage,//当前记录数
+				
+				options:[{//select内容
 					value:"aaaaddsadsad",
 					label:"bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
-					disabled:true
 				},{
 					value:"cccdsadsadsa",
 					label:"bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
 				}],
-				eee:"",
-				dialogVisible: false 
+				selectOptions:"",//select选择的值
+				searchText:"",//搜索框内容
+				
+				dialogVisible: false//对话框是否显示 
 			}
 		},
 		props:['mainContentHeight'],
+		mixins:[mainMethod],
 		created(){
 			let pageList = this.$store.state.pagination.paginationList;
 			let currentPath = this.$router.history.current.path;
@@ -327,76 +336,59 @@
 			this.$store.dispatch("paginationAdd",pageInfo);//将页码信息插入
 		},
 		mounted(){
-			this.input10 = this.$store.state.inputValue;
-			this.eee = this.$store.state.select;
-		},
-		/*
-		computed:{
-			everyPage:()=>{
-				if(pageInfo.totalCount<global.everyPage){
-					return pageInfo.totalCount;
-				}else{
-					return global.everyPage;				
+			const searchList = this.$store.state.search.searchList;
+			const path = this.$router.history.current.path;
+			for(let item of searchList){
+				if(path === item.path){
+					console.log(item.searchText);
+					this.searchText = item.searchText;
+					this.selectOptions = item.selectOption1;
 				}
 			}
 		},
-		*/
 		components:{pagination},
 		methods: {
-			toggleSelection(rows) {
-				if(rows) {
-					rows.forEach(row => {
-						this.$refs.multipleTable.toggleRowSelection(row);
-					});
-				} else {
-					this.$refs.multipleTable.clearSelection();
-				}
-			},
-			handleSelectionChange(val) {
-				this.multipleSelection = val;
-			},
-			deleteThis(index,row){
-				this.tableData3.splice(index,1);
-			},
 			aaa(){
 				alert("审核通过");
 			},
 			bbb(){
 				alert("审核不通过");
 			},
-			getPageSize(pageSize){
-				this.everyPage=pageSize;
-			},
-			getCurrentPage(cPage){
-				this.currentPage = cPage;
-			},
-			changeValue:function(value) {
-				let obj = this.options.find(function(item){
-					return item.value == value;
-				});
-			},
 			addPanel:function(){
 				this.dialogVisible = true;
 				this.$router.push("/news/newsList/add");
+			},
+			changeValue:function(value) {				
+				let searchObj = {
+					path:this.$router.history.current.path,
+					selectOption1:value,
+					searchText:this.searchText,
+				}
+				this.selectOptions = value;
+				this.$store.dispatch('searchAdd',searchObj);
+				let obj = this.options.find(function(item){
+					return item.value == value;
+				});
 			}
 		},
 		watch:{
-			mainContentHeight(val){
-				this.mainTableHeight = val+"px";
-			},
-			input10:function(val){
-				this.$store.state.inputValue=val;
-			},
-			eee:function(val){
-				this.$store.state.select=val;
+			searchText:function(val){
+				if(val==undefined){
+					return false;
+				}
+				this.searchText = val;
+				let searchObj = {
+					path:this.$router.history.current.path,
+					selectOption1:this.selectOptions,
+					searchText:val,
+				}
+				this.$store.dispatch("searchAdd",searchObj);
 			}
 		}
 	}
 </script>
 
 <style type="text/css" scoped="scoped">
-	@import url("../../assets/headerNav.css");
-	.mainTableArea{padding:10px;background-color:#fff;}
-	.paginationArea{margin-top:10px;display: inline-block;width: 100%;}
-	
+	@import url("../../style/headerNav.css");
+	@import url("../../style/mainList.css");
 </style>
