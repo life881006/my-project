@@ -1,5 +1,8 @@
 import qs from 'qs'
+import CryptoJS from 'crypto-js/crypto-js'
 
+const KEY = CryptoJS.enc.Utf8.parse("1234567890123456");
+const IV = CryptoJS.enc.Utf8.parse('1234567890123456');
 
 export default{
   install(Vue,options)
@@ -11,7 +14,27 @@ export default{
 	    d.path = path;
 	    d.json = JSON.stringify(json);
 	    d.abc = new Date().getTime();
-	    return qs.stringify(d);
+	    let dataJsonStr = qs.stringify(d);
+	    /**加密**/
+		  var encrypted = CryptoJS.AES.encrypt(dataJsonStr, KEY, {
+		    iv: IV,
+		    mode: CryptoJS.mode.CBC,
+		    padding: CryptoJS.pad.ZeroPadding
+		  });
+	    let encodeObj = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
+	    console.log(encodeObj);
+	    /**加密结束**/
+	    
+	    /**解密
+	   	let decodeStr = CryptoJS.AES.decrypt(encodeObj,KEY,
+        {
+            iv:IV,
+            mode:CryptoJS.mode.CBC,
+            padding:CryptoJS.pad.ZeroPadding
+        });
+      console.log(decodeStr.toString(CryptoJS.enc.Utf8));
+	   	**/
+	   	return dataJsonStr;
     },
     Vue.prototype.getUser = function (){
     	let user = JSON.parse(sessionStorage.getItem("user"));

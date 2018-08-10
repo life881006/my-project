@@ -78,10 +78,17 @@
 					console.log(error);
 				});
 				*/
+				let p = {};
+				p.sql = "select a.* from user as a left join admin as b on a.id = b.userId";
+				
 				let userObj = userData.data;
 				let userModules = formatModules(userObj.functionalModules);
 				userObj.functionalModules = userModules;
 		  		let userJson = JSON.stringify(userObj);
+		  		/*
+		  		 * 加密
+		  		let formatJSON = this.getData("HX_EXT_API","/https/user/loginByPwd.do",p)
+		  		*/
 		  		sessionStorage.setItem("user",userJson);
 				this.$router.push("/home/home");
 			}
