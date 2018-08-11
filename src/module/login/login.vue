@@ -1,10 +1,11 @@
 <template>
-	<el-form id="">
-			<el-form-item label="用户名">
-				<el-input class="input" size="small" v-model="username"></el-input>
+	<el-form :model="ruleForm" ref="ruleForm" :rules="rules">
+			<!--prop为验证条件？-->
+			<el-form-item label="用户名" prop="username">
+				<el-input class="input" size="small" v-model="ruleForm.username"></el-input>
 			</el-form-item>
-			<el-form-item label="密码">
-				<el-input class="input" size="small" v-model="password"></el-input>
+			<el-form-item label="密码" >
+				<el-input class="input" size="small" v-model="ruleForm.password"></el-input>
 			</el-form-item>
 			<el-button type="primary" size="small" @click="submit">确定</el-button>
 	</el-form>
@@ -59,8 +60,15 @@
 		name:"login",
 		data(){
 			return {
-				username:"",
-				password:""
+				ruleForm:{
+					username:"",
+					password:"",
+				},
+				rules:{
+					username:[
+						{required:true,trigger:"blur",message:"输入用户名"}
+					]
+				}
 			}
 		},
 		methods:{
