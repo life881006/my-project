@@ -9,11 +9,13 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import './util/config'
 import getD from './util/methods'
+import filter_inputs from './util/inputValidator'
 import "./assets/iconfont/iconfont.css";
 
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 Vue.use(getD)
+Vue.use(filter_inputs)
 Vue.prototype.axios = axios
 Vue.prototype.user = {}
 

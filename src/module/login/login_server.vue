@@ -1,28 +1,116 @@
 <template>
-	<div id="">
-			用户名：<el-input class="input" v-model="username"></el-input>
-			密码：<el-input class="input" v-model="password"></el-input>
-			<el-button type="primary" @click="submit">确定</el-button>
-	</div>
+	<el-form :model="ruleForm" ref="ruleForm" :rules="rules">
+		<!--prop为验证条件？-->
+		<el-form-item label="用户名" prop="username">
+			<el-input class="input" size="small" v-model="ruleForm.username"></el-input>
+		</el-form-item>
+		<el-form-item label="密码">
+			<el-input class="input" size="small" v-model="ruleForm.password"></el-input>
+		</el-form-item>
+		<div class="auditLine" id="auditLine">
+			<span class="textBlock" id="textBlock">请拖动方块到最右侧</span>
+			<span class="moveBlock" id="moveBlock" @mousedown="mouseDown">
+			</span>
+		</div>
+		<el-button type="primary" size="small" @click="submit">确定</el-button>
+	</el-form>
 </template>
 
 <script>
 	
+	let flag = false;
 	
 	export default{
 		name:"login",
 		data(){
 			return {
-				username:"",
-				password:""
+				ruleForm: {
+					username: "",
+					password: "",
+				},
+				rules: {
+					username: [{
+						required: true,
+						trigger: "blur",
+						message: "输入用户名"
+					}]
+				},
 			}
 		},
 		methods:{
+			mouseDown: (event) => { //简单的移动
+				let moveBlock = document.getElementById("moveBlock");
+				let disX = event.clientX - moveBlock.offsetLeft;
+				let disY = event.clientY - moveBlock.offsetTop;
+
+				if(flag) {
+					return false;
+				}
+				
+				if(event.button>0){
+					return false;
+				}
+
+				window.onmousemove = function(event) {
+					let l = event.clientX - disX;
+					let objOffsetLeft = moveBlock.offsetLeft;
+					if(l <= 0) {
+						moveBlock.style.left = 0 + 'px';
+					} else if(l > 249) {
+						moveBlock.style.left = 250 + 'px';
+					} else {
+						moveBlock.style.left = l + 'px';
+					}
+
+				}
+				window.onmouseup = function(event) {
+					let l = event.clientX - disX;
+					let auditLine = document.getElementById("auditLine");
+					let textBlock = document.getElementById("textBlock");
+					if(l > 249) {
+						moveBlock.style.left = 250 + 'px';
+						flag = true;
+						moveBlock.onmousedown = null;
+						window.onmousemove = null;
+						window.onmouseup = null;
+						textBlock.innerHTML = "验证通过";
+						auditLine.style.backgroundColor = "#13CE66";
+					} else {
+						moveBlock.style.left = 0 + 'px';
+						flag = false;
+						textBlock.innerHTML = "验证不通过";
+						auditLine.style.backgroundColor = "#FF0000";
+					}
+					window.onmousemove = null;
+					window.onmouseup = null;
+				}
+			},
 			submit:function(){
+				let loginName = this.ruleForm.username;
+		  		let loginPwd = this.ruleForm.password;
+		  		
+		  		if(loginName=="" || loginPwd==""){
+		  			this.$notify({
+			          title: '提示',
+			          message: '请填写完整用户名及密码信息',
+			          type: 'warning'
+			        });
+		  			return false;	
+		  		}
+		  		
+		  		if(!flag || flag===null){
+		  			this.$notify({
+			          title: '提示',
+			          message: '未完成验证操作',
+			          type: 'warning'
+			        });
+		  			return false;		  			
+		  		}
+		  		
 		  		let p = {};
 		  		//let _this = this;
-		  		p.name = this.username;
-		  		p.pwd = this.password;
+		  		p.name = this.ruleForm.username;
+				p.pwd = this.ruleForm.password;
 		  		
 		  		
 		  		this.axios({
@@ -113,7 +201,23 @@
 					
 				});
 			}
-			
+		},
+		watch:{			
+			ruleForm:{//深度监听，handler不可改变
+				handler:function(val,oldVal){
+					console.log(flag);
+					if(flag!=null){
+						let auditLine = document.getElementById("auditLine");
+						let textBlock = document.getElementById("textBlock");
+						let moveBlock = document.getElementById("moveBlock");
+						textBlock.innerHTML = "请拖动方块到最右侧";
+						moveBlock.style.left = 0 + "px";
+						auditLine.style.backgroundColor = "#C0CCDA";
+					}
+					flag = null;
+				},
+				deep:true,
+			}
 		}
 	}
 	
@@ -164,4 +268,40 @@
 
 <style scoped="scoped">
 	.input{width:100px}
+	.auditLine {
+		width: 300px;
+		border: 1px solid #dcdfe6;
+		background-color: #C0CCDA;
+		font-size: 12px;
+		text-align: center;
+		height: 50px;
+		position: relative;
+		user-select: none;
+		transition: background-color 0.5s;
+	}
+	
+	.textBlock {
+		position: relative;
+		float:left;
+		z-index: 200;
+		top: 15px;
+		min-width: 100px;
+		margin-left:60px;
+		text-align: left;
+		color: #fff;
+		font-size: 14px;
+	}
+	
+	.moveBlock {
+		width: 50px;
+		height: 50px;
+		display: inline-block;
+		background-color: #409EFF;
+		position: absolute;
+		cursor: pointer;
+		top: 0px;
+		left: 0px;
+		transition: left 0.5s;
+	}	
+	
 </style>

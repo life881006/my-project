@@ -1,9 +1,11 @@
 import qs from 'qs'
+/* 加密设置
 import CryptoJS from 'crypto-js/crypto-js'
 
 const KEY = CryptoJS.enc.Utf8.parse("1234567890123456");
 const IV = CryptoJS.enc.Utf8.parse('1234567890123456');
 
+*/
 export default{
   install(Vue,options)
   {
@@ -14,8 +16,8 @@ export default{
 	    d.path = path;
 	    d.json = JSON.stringify(json);
 	    d.abc = new Date().getTime();
-	    let dataJsonStr = qs.stringify(d);
-	    /**加密**/
+	    /**加密
+	    let dataJsonStr = qs.stringify(d);	     * 
 		  var encrypted = CryptoJS.AES.encrypt(dataJsonStr, KEY, {
 		    iv: IV,
 		    mode: CryptoJS.mode.CBC,
@@ -23,22 +25,18 @@ export default{
 		  });
 	    let encodeObj = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 	    console.log(encodeObj);
-	    /**加密结束**/
+	           加密结束**/
 	    
 	    /**解密
 	   	let decodeStr = CryptoJS.AES.decrypt(encodeObj,KEY,
-        {
+      //{
             iv:IV,
             mode:CryptoJS.mode.CBC,
             padding:CryptoJS.pad.ZeroPadding
         });
       console.log(decodeStr.toString(CryptoJS.enc.Utf8));
 	   	**/
-	   	return dataJsonStr;
-    },
-    Vue.prototype.getUser = function (){
-    	let user = JSON.parse(sessionStorage.getItem("user"));
-    	return user;
+	   	return qs.stringify(d);
     }
   }
 }
