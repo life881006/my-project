@@ -15,6 +15,7 @@
 					<el-dropdown-item><a @click="gotoModifyPwd()"><i class="el-icon-edit"></i>修改信息</a></el-dropdown-item>
 				</el-dropdown-menu>
 			</el-dropdown>
+			
 			<div class="functionalIcon">
 				<a @click="">
 					<i class="el-icon-erp-message el-icon-big"></i>
@@ -25,6 +26,13 @@
 			<div class="functionalIcon">
 				<a @click="" content="下载文档"><i class="el-icon-erp-nrgl el-icon-big"></i></a>
 			</div>
+			
+			<div class="functionalIcon" v-if="isVisible">
+				<a @click="fullScreen">
+					<i class="el-icon-erp-fullscreen el-icon-big"></i>
+				</a>
+			</div>
+			
 			<div class="functionalIcon">
 				<a @click="exit" content="退出"><i class="el-icon-erp-exit el-icon-big"></i></a>
 			</div>
@@ -35,18 +43,26 @@
 
 <script>
 	
+	import screenfull from 'screenfull'
+	
 	export default {
 		name:"navBar",
 		data (){
 			return {
 				noticeNumber:12,
+				isVisible:screenfull.enabled
 			}
 		},
 		methods:{
 			exit:function(){
 				sessionStorage.clear();
-				this.$store.state.user = {};
+				localStorage.clear();
 				this.$router.push("/login");
+				window.location.reload();
+			},
+			fullScreen:function(){
+				screenfull.toggle();
+				
 			}
 			
 		}

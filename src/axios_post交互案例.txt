@@ -10,6 +10,8 @@
              data: qs.stringify(this.getData("HX_API","/https/subject/query.do",p)),
              dataType: 'JSON'
              /*
+              */
+             
             transformRequest: [//这里可以在发送请求之前对请求数据做处理
 		      function (data) { // 解决传递数组变成对象的问题
 		        return data

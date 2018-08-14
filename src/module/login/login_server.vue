@@ -1,10 +1,10 @@
 <template>
 	<el-form :model="ruleForm" ref="ruleForm" :rules="rules">
-		<!--prop为验证条件？-->
-		<el-form-item label="用户名" prop="username">
+		<!--prop必须与input的username一致，才能验证Input》username 中输入的值-->
+		<el-form-item label="用户名" :rules="filter_inputs({required:true,type:'username'})" prop="username">
 			<el-input class="input" size="small" v-model="ruleForm.username"></el-input>
 		</el-form-item>
-		<el-form-item label="密码">
+		<el-form-item label="密码" :rules="filter_inputs({required:true,type:'password'})" prop="password">
 			<el-input class="input" size="small" v-model="ruleForm.password"></el-input>
 		</el-form-item>
 		<div class="auditLine" id="auditLine">
@@ -38,7 +38,7 @@
 			}
 		},
 		methods:{
-			mouseDown: (event) => { //简单的移动
+			mouseDown: (event) => { //简单的移动验证
 				let moveBlock = document.getElementById("moveBlock");
 				let disX = event.clientX - moveBlock.offsetLeft;
 				let disY = event.clientY - moveBlock.offsetTop;
@@ -86,99 +86,75 @@
 				}
 			},
 			submit:function(){
-				let loginName = this.ruleForm.username;
-		  		let loginPwd = this.ruleForm.password;
-		  		
-		  		if(loginName=="" || loginPwd==""){
-		  			this.$notify({
-			          title: '提示',
-			          message: '请填写完整用户名及密码信息',
-			          type: 'warning'
-			        });
-		  			return false;	
-		  		}
-		  		
-		  		if(!flag || flag===null){
-		  			this.$notify({
-			          title: '提示',
-			          message: '未完成验证操作',
-			          type: 'warning'
-			        });
-		  			return false;		  			
-		  		}
-		  		
-		  		let p = {};
-		  		//let _this = this;
-		  		p.name = this.ruleForm.username;
-				p.pwd = this.ruleForm.password;
-		  		
-		  		
-		  		this.axios({
-		             method: 'post',
-		             url: global.url_base,//url_base为全局变量，调用时前面加global,参数在util->config.js中
-		             data: this.getData("HX_EXT_API","/https/user/loginByPwd.do",p),//getData为全局方法，方法加入到vue中，调用前需加this，方法在util->methods.js中
-		             dataType: 'JSON'
-		             /*
-		            transformRequest: [//这里可以在发送请求之前对请求数据做处理
-				      function (data) { // 解决传递数组变成对象的问题
-				        return data
-				      }
-				    ],
-				    transformResponse: [function (data) {// 这里提前处理返回的数据
-						return data;
-					}],
-				    */
-				 
-		        }).then((result)=> {
-		        	let status = result.data.data.status; 
-    			    let userObj = result.data.data.obj;
-    			    let userToken = result.data.data.userToken;  			 
-					let userId = userObj.id;
-	    			let unitId = userObj.unitId;
-					sessionStorage.setItem("userId",userId);
-					sessionStorage.setItem("unitId",unitId);	
-					if(status == '0'){
-    				    if (userObj.status == 0){
-    				       alert("您的帐号还未审核通过，不能登录系统。");
-    				    } else if (userObj.status == 1){ 
-    				       	
-						   switch(userObj.roleId){
-						       case 1:
-							   case 4:
-							   case 5:
-							   case 6:
-							   		this.$options.methods.getUser.bind(this)(userId);//bind(this)很重要，不然获取不到原本数据
-									break;
-							   case 2:
-						       case 3:
-							        //window.location.href="../parents/notice.html";
-							  		break;
-							   default:
-							   		alert("该角色功能开发中");
-						   }					  				       
-
-    				    } else {
-    				       alert("您的帐号已被停用，不能登录系统。");
-    				    }    					
-    				}else if(status == '1'){
-    					alert("登录密码不正确！");
-    				}else if(status == '2'){
-    					alert("帐号不存在！");
-    				}else{
-    					alert("操作失败");
-    				}
-    				return false;
-		       }).catch(function(error) {
-		        	console.log(error);
-		        });
-		        
-		        /*均完成后返回
-		        axios.all([get1(), get2()]).then(
-		        axios.spread(function (res1, res2) {
-				// 只有两个请求都完成才会成功，否则会被catch捕获
-				})
-				);
-				*/
+				
+				this.$refs.ruleForm.validate((valid)=>{//全表验证
+					if(!valid){//基本验证不通过
+						
+					}else{//基本验证通过
+								
+						let loginName = this.ruleForm.username;
+				  		let loginPwd = this.ruleForm.password;
+				  		
+				  		if(!flag || flag===null){
+				  			document.getElementById("auditLine").style.backgroundColor="#FF0000";
+				  			return false;
+				  		}
+				  		
+				  		let p = {};
+				  		//let _this = this;
+				  		p.name = this.ruleForm.username;
+						p.pwd = this.ruleForm.password;
+				  		
+				  		
+				  		this.axios({
+				            method: 'post',
+				            url: global.url_base,//url_base为全局变量，调用时前面加global,参数在util->config.js中
+				            data: this.getData("HX_EXT_API","/https/user/loginByPwd.do",p),//getData为全局方法，方法加入到vue中，调用前需加this，方法在util->methods.js中
+				            dataType: 'JSON'						 
+				        }).then((result)=> {
+				        	let status = result.data.data.status; 
+		    			    let userObj = result.data.data.obj;
+		    			    let userToken = result.data.data.userToken;  			 
+							let userId = userObj.id;
+			    			let unitId = userObj.unitId;
+							sessionStorage.setItem("userId",userId);
+							sessionStorage.setItem("unitId",unitId);	
+							if(status == '0'){
+		    				    if (userObj.status == 0){
+		    				       alert("您的帐号还未审核通过，不能登录系统。");
+		    				    } else if (userObj.status == 1){ 
+		    				       	
+								   switch(userObj.roleId){
+								       case 1:
+									   case 4:
+									   case 5:
+									   case 6:
+									   		this.$options.methods.getUser.bind(this)(userId);//bind(this)很重要，不然获取不到原本数据
+											break;
+									   case 2:
+								       case 3:
+									        //window.location.href="../parents/notice.html";
+									  		break;
+									   default:
+									   		alert("该角色功能开发中");
+								   }					  				       
+		
+		    				    } else {
+		    				       alert("您的帐号已被停用，不能登录系统。");
+		    				    }    					
+		    				}else if(status == '1'){
+		    					alert("登录密码不正确！");
+		    				}else if(status == '2'){
+		    					alert("帐号不存在！");
+		    				}else{
+		    					alert("操作失败");
+		    				}
+		    				return false;
+				        }).catch((error)=>{
+				        	console.log(error);
+				        });
+					}				
+				});
 			},
 			getUser:function(userId){
 				let p = {};
@@ -203,17 +179,14 @@
 			}
 		},
 		watch:{			
-			ruleForm:{//深度监听，handler不可改变
+			ruleForm:{//深度监听表单变化，ruleForm为表单:model，handler不可改变
 				handler:function(val,oldVal){
-					console.log(flag);
-					if(flag!=null){
-						let auditLine = document.getElementById("auditLine");
-						let textBlock = document.getElementById("textBlock");
-						let moveBlock = document.getElementById("moveBlock");
-						textBlock.innerHTML = "请拖动方块到最右侧";
-						moveBlock.style.left = 0 + "px";
-						auditLine.style.backgroundColor = "#C0CCDA";
-					}
+					let auditLine = document.getElementById("auditLine");
+					let textBlock = document.getElementById("textBlock");
+					let moveBlock = document.getElementById("moveBlock");
+					textBlock.innerHTML = "请拖动方块到最右侧";
+					moveBlock.style.left = 0 + "px";
+					auditLine.style.backgroundColor = "#C0CCDA";
 					flag = null;
 				},
 				deep:true,

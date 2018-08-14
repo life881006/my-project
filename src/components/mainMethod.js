@@ -1,4 +1,4 @@
-export default {
+export default {//主表公共函数，mixins到module各组件中
 	methods: {
 		toggleSelection(rows) {
 			if(rows) {

@@ -99,6 +99,7 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 	          }
 	        });			
 		}else{
+			global.loginUser = user;
 			next();
 		}
 	}

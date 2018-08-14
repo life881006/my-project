@@ -1,6 +1,9 @@
 <template>
 	<div class="paginationComponent">
 		<span>总计 {{tCount}} 条</span>
+		<el-input id="everpageNumber" size="mini" :value="ePage" maxlength="5" @blur="setEveryPage">
+			<template slot="prepend">每页/条</template>
+		</el-input>
 		<el-pagination
 	      @size-change="handleSizeChange"
 	      @current-change="handleCurrentChange"
@@ -9,9 +12,7 @@
 	      layout=" prev, pager, next, jumper"
 	      :total="tCount">
 	    </el-pagination>
-	    <el-input id="everpageNumber" size="mini" :value="ePage" maxlength="5" @blur="setEveryPage">
-			<template slot="prepend">每页/条</template>
-		</el-input>
+	    
     </div>
 </template>
 
@@ -97,9 +98,14 @@
 	>>>#everpageNumber{text-align: center;padding:0px 5px;}
 	>>>.el-pager li{min-width: 30.5px;}
 	.paginationComponent{padding-top:2px;display: inline-block;float:right}
-	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:right}
-	.el-input{width:90px;float:right;}
-	.el-pager li{min-width:30.5px;}
-	span{float:right;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:ddd}
-	
+	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:left}
+	.el-input{width:90px;float:left;}
+	span{float:left;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:#888}
+	@media only screen and (min-width: 100px) and (max-width: 1200px) {
+		>>>.el-pager li {
+			min-width: auto;
+			padding:0px 5px;
+		}
+		>>>.el-pagination__jump{margin-left:5px}
+	}
 </style>

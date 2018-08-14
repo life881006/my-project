@@ -1,10 +1,10 @@
 <template>
 	<el-form :model="ruleForm" ref="ruleForm">
-		<!--prop为验证条件？-->
+		<!--prop必须与input的username一致，才能验证Input》username 中输入的值-->
 		<el-form-item label="用户名" :rules="filter_inputs({required:true,type:'username'})" prop="username">
 			<el-input class="input" size="small" v-model="ruleForm.username"></el-input>
 		</el-form-item>
-		<el-form-item label="密码">
+		<el-form-item label="密码" :rules="filter_inputs({required:true,type:'password'})" prop="password">
 			<el-input class="input" size="small" v-model="ruleForm.password"></el-input>
 		</el-form-item>
 		<div class="auditLine" id="auditLine">
@@ -74,23 +74,37 @@
 		},
 		methods: {
 			submit: function() {
-				let p = {};
-				p.name = this.ruleForm.username;
-				p.pwd = this.ruleForm.password;
-				p.sql = "select a.* from user as a left join admin as b on a.id = b.userId";
-
-				let userObj = userData.data;
-				let userModules = formatModules(userObj.functionalModules);
-				userObj.functionalModules = userModules;
-				let userJson = JSON.stringify(userObj);
-				/*
-				 * 加密
-				 let formatJSON = this.getData("HX_EXT_API","/https/user/loginByPwd.do",p)
-				*/
-				sessionStorage.setItem("user", userJson);
-				this.$router.push("/home/home");
+				
+				
+				this.$refs.ruleForm.validate((valid)=>{//全表验证
+					if(!valid){//基本验证不通过
+						
+					}else{//基本验证通过
+						if(!flag || flag===null){
+				  			document.getElementById("auditLine").style.backgroundColor="#FF0000";
+				  			return false;
+				  		}
+												
+						let p = {};
+						p.name = this.ruleForm.username;
+						p.pwd = this.ruleForm.password;
+						
+						let userObj = userData.data;
+						let userModules = formatModules(userObj.functionalModules);
+						userObj.functionalModules = userModules;
+						let userJson = JSON.stringify(userObj);
+						
+						/*
+						 * 加密
+						 let formatJSON = this.getData("HX_EXT_API","/https/user/loginByPwd.do",p)
+						*/
+						sessionStorage.setItem("user", userJson);
+						this.$router.push("/home/home");
+					}
+				})
+				
 			},
-			mouseDown: (event) => { //简单的移动
+			mouseDown: (event) => { //简单的移动验证
 				let moveBlock = document.getElementById("moveBlock");
 				let disX = event.clientX - moveBlock.offsetLeft;
 				let disY = event.clientY - moveBlock.offsetTop;
@@ -98,7 +112,7 @@
 				if(flag) {
 					return false;
 				}
-				console.log(event.button);
+				
 				if(event.button>0){
 					return false;
 				}
@@ -139,18 +153,15 @@
 			}
 		},
 		watch:{			
-			ruleForm:{//深度监听，handler不可改变
+			ruleForm:{//深度监听表单变化，ruleForm为表单:model，handler不可改变
 				handler:function(val,oldVal){
-					if(flag!=null){
-						let auditLine = document.getElementById("auditLine");
-						let textBlock = document.getElementById("textBlock");
-						let moveBlock = document.getElementById("moveBlock");
-						textBlock.innerHTML = "请拖动方块到最右侧";
-						moveBlock.style.left = 0 + "px";
-						auditLine.style.backgroundColor = "#C0CCDA";
-					}
+					let auditLine = document.getElementById("auditLine");
+					let textBlock = document.getElementById("textBlock");
+					let moveBlock = document.getElementById("moveBlock");
+					textBlock.innerHTML = "请拖动方块到最右侧";
+					moveBlock.style.left = 0 + "px";
+					auditLine.style.backgroundColor = "#C0CCDA";
 					flag = null;
-					
 				},
 				deep:true,
 			}
