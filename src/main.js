@@ -14,11 +14,11 @@ import "./assets/iconfont/iconfont.css";
 import moment from 'moment'
 
 Vue.use(ElementUI)
-Vue.config.productionTip = false
 Vue.use(getD)
 Vue.use(filter_inputs)
 Vue.prototype.axios = axios
 Vue.prototype.user = {}
+Vue.prototype.everyPage = parseInt((window.innerHeight-135)/53);
 
 /* eslint-disable no-new */
 new Vue({

@@ -28,7 +28,7 @@
 				<el-table 
 					ref="multipleTable" 
 					:height="mainTableHeight" 
-					:data="tableData3.slice((currentPage-1)*everyPage,currentPage*everyPage)" 
+					:data="tableData" 
 					tooltip-effect="dark" 
 					style="width: 100%" 
 					@selection-change="handleSelectionChange" 
@@ -82,7 +82,19 @@
 						</el-dropdown>
 					</el-col>
 					<el-col :xs="16" :sm="16" :md="16" :lg="16">
-						<pagination @pSize="getPageSize" @cPage="getCurrentPage"></pagination>
+						<div class="paginationComponent">
+							<span>总计 {{tCount}} 条</span>
+							<el-input id="everpageNumber" size="mini" :value="ePage" maxlength="5" @blur="setEveryPage">
+								<template slot="prepend">每页/条</template>
+							</el-input>
+							<el-pagination 
+						      @current-change="handleCurrentChange"
+						      :current-page="cPage"
+						      :page-size="ePage"
+						      layout=" prev, pager, next, jumper"
+						      :total="tCount">
+						   </el-pagination>
+					    </div>
 					</el-col>
 				</div>
 			</el-col>
@@ -112,7 +124,6 @@
 
 <script>
 	
-	import pagination from '@/components/pagination'
 	import mainMethod from '@/components/mainMethod'//主表相关公有方法写在这里
 	
 	const pageInfo =  {
@@ -311,318 +322,10 @@
 			return {
 				mainTableHeight:this.mainContentHeight+"px",//主表高度
 				treeHeight:this.mainContentHeight+50+"px",
-				tableData3: tableInfo.data,//主表数据
+				tableData: tableInfo.data,//主表数据
 				multipleSelection: [],//主表选中记录合集
 				
 				treeData: [{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
-					label:"第一级",
-					index:"aaa",
-					children:[{
-							label:"第二级",
-							index:"bbb",
-							children:[{
-									index:"ccc",
-									label:"第三级",
-						}]
-					}]
-				},{//树形结构数据,label标签名、children子元素
 					label:"第一级",
 					index:"aaa",
 					children:[{
@@ -649,8 +352,9 @@
 		          children: 'children',
 		          label: 'label'
 		        },
-				everyPage:pageInfo.everyPage,//每页记录数
-				currentPage:pageInfo.currentPage,//当前记录数
+				ePage:pageInfo.everyPage,//每页记录数
+				cPage:pageInfo.currentPage,//当前记录数
+				tCount:pageInfo.totalCount,
 				
 				options:[{//select内容
 					value:"aaaaddsadsad",
@@ -661,19 +365,18 @@
 				}],
 				selectOptions:"",//select选择的值
 				searchText:"",//搜索框内容
-				
+				pageList: this.$store.state.pagination.paginationList,
+				currentPath: this.$router.history.current.path,
 				dialogVisible: false,//对话框是否显示 
 			}
 		},
 		props:['mainContentHeight'],
 		mixins:[mainMethod],//引用主表公有方法
 		created(){
-			let pageList = this.$store.state.pagination.paginationList;
-			let currentPath = this.$router.history.current.path;
-			for(let item of pageList){
-				if(item.path === currentPath){
-					this.everyPage=item.everyPage;
-					this.currentPage=item.currentPage;
+			for(let item of this.pageList){
+				if(item.path === this.currentPath){
+					this.ePage=item.everyPage;
+					this.cPage=item.currentPage;
 					return false;
 				}
 			}
@@ -690,8 +393,43 @@
 				}
 			}
 		},
-		components:{pagination},
 		methods: {
+			handleCurrentChange(val) {
+				this.cPage = val;
+				for(let item of this.pageList){
+					if(item.path === this.currentPath){
+						item.currentPage=val;
+						return false;
+					}
+				}
+			},
+			setEveryPage(){
+				let inputEveryPage = Number(document.getElementById("everpageNumber").value);
+				if(inputEveryPage===0){
+					return false;
+				}
+				if(inputEveryPage>this.tCount){
+					let h = this.$createElement;//elementUi创建html元素
+					this.$message({
+						//h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
+						message:h('p',null,[
+							//h('span',null,'出现错误：'),
+							h('i',{style:'color:red;font-weight:bolder'},'您输入每页条数超过总条数,请重新输入')
+						])
+					});
+					document.getElementById("everpageNumber").value="";
+					return false;
+				}
+				
+				for(let item of this.pageList){
+					if(item.path === this.currentPath){
+						this.ePage=inputEveryPage;
+						item.everyPage=inputEveryPage;
+						this.handleSizeChange(inputEveryPage);
+						return false;
+					}
+				}
+			},
 			aaa(){
 				alert("审核通过");
 			},
@@ -738,4 +476,20 @@
 <style type="text/css" scoped="scoped">
 	@import url("../../style/headerNav.css");
 	@import url("../../style/mainList.css");
+	
+	>>>.el-pagination__jump{margin-left:10px;}
+	>>>.el-input-group__prepend{padding:0px 5px;}
+	>>>#everpageNumber{text-align: center;padding:0px 5px;}
+	>>>.el-pager li{min-width: 30.5px;}
+	.paginationComponent{padding-top:2px;display: inline-block;float:right}
+	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:left}
+	.el-input{width:90px;float:left;}
+	span{float:left;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:#888}
+	@media only screen and (min-width: 100px) and (max-width: 1200px) {
+		>>>.el-pager li {
+			min-width: auto;
+			padding:0px 5px;
+		}
+		>>>.el-pagination__jump{margin-left:5px}
+	}
 </style>

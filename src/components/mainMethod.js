@@ -16,13 +16,26 @@ export default {//主表公共函数，mixins到module各组件中
 			this.tableData3.splice(index,1);
 		},
 		getPageSize(pageSize){
-			
-			this.everyPage=pageSize;
+			this.ePage=pageSize;
 		},
 		getCurrentPage(cPage){
-			this.currentPage = cPage;
+			this.cPage = cPage;
 		},
-		
+		getPageData(pageObj,transmitObj){
+			return new Promise((resolve,reject)=>{//加载分页信息
+				this.axios({
+		            method: 'post',
+		            url: transmitObj.url,
+		            data: this.getData(transmitObj.api,transmitObj.handler,pageObj),
+		            dataType: 'JSON'						 
+		        }).then((result)=> {
+		        	let paginationInfo = result.data.data;
+		        	resolve(paginationInfo);
+		        }).catch((error)=> {
+		        	console.log(error);
+		        });
+			});
+		}
 	},
 	watch:{
 		mainContentHeight(val){

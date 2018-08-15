@@ -24,14 +24,14 @@
 	const defaultClientHeight = document.documentElement.clientHeight;
 	
 	export default{
-		name:'layout',		
+		name:'layout',
 		data: function(){
 			return {
 				screenWidth:defaultClientWidth,
 				screenHeight:defaultClientHeight,
 				sideBarWidth:defaultClientWidth,
 				sideBarHeight:defaultClientHeight,
-				mainContentHeight:defaultClientHeight-200,
+				mainContentHeight:defaultClientHeight-210,
 			}
 		},
 		components:{sideBar,navBar,visitTags},

@@ -86,6 +86,8 @@ const router = new Router({
 
 router.beforeEach((to,from,next)=>{//全局导航守卫
 	if(to.path==="/loginServer" || to.path==="/login" || to.path==="/regist"){
+//		sessionStorage.clear();
+//		localStorage.clear();
 		next();
 	}else{
 		let user = JSON.parse(sessionStorage.getItem("user"));
@@ -99,7 +101,6 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 	          }
 	        });			
 		}else{
-			global.loginUser = user;
 			next();
 		}
 	}
