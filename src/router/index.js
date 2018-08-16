@@ -6,7 +6,7 @@ import {Notification} from 'element-ui'
 
 Vue.use(Router);
 
-Vue.prototype.$notify = Notification;//elemtn-ui通知
+Vue.prototype.$notify = Notification;//挂载elemtn-ui通知组件
 
 const router = new Router({
     routes:[
@@ -101,6 +101,11 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 	          }
 	        });			
 		}else{
+			
+			if(!Vue.prototype.user){//Vue没有挂载时挂载user对象
+				Vue.prototype.user = user;
+			}
+			//
 			next();
 		}
 	}

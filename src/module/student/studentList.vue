@@ -2,7 +2,7 @@
 	<div class="mainTableArea">
 		<el-row class="search">
 			<el-col :xs="23" :sm="23" :md="23" :lg="23">
-			<el-select size="small" ref="selectOption1" v-model="selectOptions" placeholder="请选择" @change="changeValue">
+			<el-select size="small" id="selectOption1" ref="selectOption1" v-model="selectOptions" placeholder="请选择" @change="changeValue">
 				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
 			</el-select>
 			<el-input size="small" placeholder="请输入内容" v-model="searchText" clearable >
@@ -394,6 +394,7 @@
 			}
 		},
 		methods: {
+			
 			handleCurrentChange(val) {
 				this.cPage = val;
 				for(let item of this.pageList){
@@ -419,13 +420,12 @@
 					});
 					document.getElementById("everpageNumber").value="";
 					return false;
-				}
-				
+				}	
+				this.cPage = Math.ceil(this.tCount/inputEveryPage);
 				for(let item of this.pageList){
 					if(item.path === this.currentPath){
 						this.ePage=inputEveryPage;
 						item.everyPage=inputEveryPage;
-						this.handleSizeChange(inputEveryPage);
 						return false;
 					}
 				}
@@ -437,8 +437,8 @@
 				alert("审核不通过");
 			},
 			handleNodeClick(data) {
-		        this.treeHeight = this.mainContentHeight+50+Math.random(0,0.1)+"px";
-		    },
+	        this.treeHeight = this.mainContentHeight+50+Math.random(0,0.1)+"px";
+	    },
 			addPanel:function(){
 				this.dialogVisible = true;
 				this.$router.push("/news/newsList/add");
@@ -483,8 +483,10 @@
 	>>>.el-pager li{min-width: 30.5px;}
 	.paginationComponent{padding-top:2px;display: inline-block;float:right}
 	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:left}
-	.el-input{width:90px;float:left;}
+	.paginationComponent .el-input{width:90px;float:left;}
 	span{float:left;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:#888}
+	
+	>>>#selectOption1{width:120px}
 	@media only screen and (min-width: 100px) and (max-width: 1200px) {
 		>>>.el-pager li {
 			min-width: auto;

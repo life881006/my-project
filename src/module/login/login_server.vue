@@ -129,7 +129,7 @@
 									   case 4:
 									   case 5:
 									   case 6:
-									   		this.$options.methods.getUser.bind(this)(userId);//bind(this)很重要，不然获取不到原本数据
+									   		this.getUser(userId);
 											break;
 									   case 2:
 								       case 3:

@@ -55,7 +55,7 @@
 		},
 		props:['sideBarHeight','sideBarWidth'],
 		created: function(){
-			const user = JSON.parse(sessionStorage.getItem("user"));
+			const user = this.user;//挂载到Vue prototype中的User，用this直接调用			
 			this.asideModules = user.functionalModules;
 		},
 		mounted: function(){

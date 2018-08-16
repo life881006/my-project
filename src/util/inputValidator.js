@@ -3,7 +3,7 @@ export default{//表单提交信息验证模块
 	install(Vue ,options)
 	{
 		const checkInput = (rule,value,callback)=>{//validator对应的参数
-			if(!checkInputValue(value)){
+			if(!checkInputValue(value)){//调用校验方法
 				callback(new Error('输入内容中存在非法字符'));
 			}else{
 				callback();
