@@ -182,7 +182,6 @@
 		          children: 'children',
 		          label: 'label'
 		        },
-		        treeId:"0",
 				
 				ePage:this.everyPage,//每页记录数
 				cPage:1,//当前第几页
@@ -343,11 +342,11 @@
 					return item.value == value;
 				});
 			},
-			handleNodeClick(data) {
-				this.treeId = data.index;
+			handleNodeClick(data) {//data ：节点数据
+				
 		    },
-			loadNode(node, resolve) {//树结构节点点击方法
-				this.loadChannelTree().then((data)=>{
+			loadNode(node, resolve) {//树结构节点加载
+				this.loadChannelTree("121").then((data)=>{
 					if(data.length===0){
 						resolve([])
 					}else{
@@ -365,12 +364,11 @@
 		        this.treeHeight = this.mainContentHeight+50+Math.random(0,0.1)+"px";
 		        */
 		    },
-		    loadChannelTree(){
+		    loadChannelTree(pid){
 		    	return new Promise((resolve,reject)=>{
 		    		
 			    	let p = {};
 			    	let unitId = this.user.unitId;
-			    	let pid = this.treeId;
 			    	p.sql = "select id,name,pid from channel where unitId = '"+unitId+"' and pid = '"+pid+"' order by serialNumber asc";
 			    	
 			    	this.axios({
