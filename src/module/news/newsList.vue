@@ -5,13 +5,13 @@
 
 		<el-row class="search">
 			<el-col :xs="23" :sm="23" :md="23" :lg="23">				
-				<el-select size="small" id="selectOption1" v-model="selectOptions" placeholder="请选择" @change="selectorValue">
+				<el-select size="small" id="normalSelect" ref="normalSelect" v-model="normalSelectValue" placeholder="请选择" @change="selectorValue">
 					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
 				</el-select>
 				<el-input size="small" placeholder="请输入内容" v-model="searchText" clearable>
 
 				</el-input>
-				<el-button size="small" type="primary" icon="el-icon-search">检索</el-button>
+				<el-button size="small" type="primary" icon="el-icon-search" @click="normalSearch">检索</el-button>
 			</el-col>
 
 			<el-col :xs="1" :sm="1" :md="1" :lg="1">
@@ -20,16 +20,19 @@
 		</el-row>
 		
 		<el-row>
-			<el-col :xs="4" :sm="4" :md="4" :lg="4">
-				<!--展示树-->
-				<el-scrollbar>
-				<el-tree lazy :data="treeData" :props="defaultProps" :style="{height:treeHeight}" @node-click="handleNodeClick" :load="loadNode" >
-					
-				</el-tree>
-				</el-scrollbar>
+			<el-col class="treeObj" :xs="5" :sm="5" :md="5" :lg="5">
+				<div class="treeInner">	
+					<h4 class="title">频道管理</h4>
+					<!--展示树-->
+					<el-scrollbar>
+					<el-tree ref="elTree1" lazy :data="treeData" :props="defaultProps" :style="{height:treeHeight}" @node-click="handleNodeClick" :load="loadNode" >
+						
+					</el-tree>
+					</el-scrollbar>
+				</div>
 			</el-col>
 			
-			<el-col :push="1" :xs="19" :sm="19" :md="19" :lg="19">		
+			<el-col :xs="19" :sm="19" :md="19" :lg="19">		
 				<el-table ref="multipleTable" :height="mainTableHeight" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :default-sort="{prop:'id',order:'ascending'}">
 					<el-table-column align="center" type="selection" width="55">
 					</el-table-column>
@@ -72,7 +75,9 @@
 					</el-table-column>
 		
 					<el-table-column align="center" label="编辑时间" prop="appearDate" min-width="12%">
-		
+						<template slot-scope="scope">
+						{{ moment(scope.row.appearDate).format("YYYY-MM-DD") }}
+						</template>
 					</el-table-column>
 		
 					<el-table-column align="center" label="阅读次数" prop="editor" min-width="8%">
@@ -172,16 +177,17 @@
 					label: "来源",
 				}],
 				treeData: [],
-				selectOptions: "", //select选择的值
+				normalSelectValue: "", //select选择的值
 				searchText: "", //搜索框内容
 
 				dialogVisible: false, //对话框是否显示 
 				
-				treeHeight:this.mainContentHeight+50+"px",//树高
+				treeHeight:this.mainContentHeight - 25 +"px",//树高
 				defaultProps: {//树形结构默认设置
 		          children: 'children',
 		          label: 'label'
 		        },
+		        currentNodeIndex:"0",
 				
 				ePage:this.everyPage,//每页记录数
 				cPage:1,//当前第几页
@@ -193,7 +199,7 @@
 			}
 		},
 		props: ['mainContentHeight'],
-		mixins: [mainMethod],
+		mixins: [mainMethod,news],
 		created() {
 			/**
 			 * 获取、保存页码设置
@@ -219,58 +225,26 @@
 			for(let item of searchList) {
 				if(this.currentPath === item.path) {
 					this.searchText = item.searchText;
-					this.selectOptions = item.selectOption1;
+					this.normalSelectValue = item.normalSelect;
 				}
 			}
 			
-			let sql = "SELECT DISTINCT a.id,a.title,a.status,a.author,a.transfer,a.editor,a.editTime,a.appearDate,a.readTimes,a.releaseSite,a.releaseApp,a.releaseWx,a.releaseMicroblog,a.isTop FROM news AS a";
-			sql += " left join channelNewsAssociate as b on a.id = b.newsId left join channel as c on b.channelId = c.id";
-									
-			this.pageObj.sql = sql;			
-			this.pageObj.whereStr = news.getWhereStr();
-			this.pageObj.orderStr = "order by a.editTime desc";			
-			
-					
-			this.transmitObj.url = global.url_base;
-			this.transmitObj.api = "HX_API";
-			this.transmitObj.handler = "/https/news/getPageInfo.do";
-			
 			/*
 			 * 获取主表数据
-			 * pageObj: 为数据对象
-			 * transmitObj: 为请求路径
-			 */
-
-			this.getPageData(this.pageObj,this.transmitObj).then((data)=> {	
-				this.pageObj.totalCount = data.totalCount;
-				this.ePage = data.everyPage;
-				this.cPage = data.currentPage;
-				this.tCount = data.totalCount;
-				this.$store.dispatch("paginationAdd",this.pageObj);//将页码信息插入
-				this.transmitObj.handler = "/https/news/getNewssByPage.do";
-				return this.getPageData(this.pageObj,this.transmitObj)
-			}).then((data)=>{
-				this.tableData = data;
-			});
-			
+			 * 
+			 */			
+			this.getNewsMainData();
 			
 			/*
 			 * 获取树结构channels
 			 * 
 			 */
-			this.loadChannelTree("0").then((data)=>{
-				let temporaryTree = [];
-				for(let item of data){
-					let temporaryTreeItem = {};
-					temporaryTreeItem.index = item.id;
-					temporaryTreeItem.label = item.name;
-					temporaryTree.push(temporaryTreeItem);
-				}
-				this.treeData = temporaryTree;
+			this.loadChannelTree().then((data)=>{
+				this.treeData = data;
 			});
 		},
 		methods: {
-			handleCurrentChange(val) {
+			handleCurrentChange(val) {//点击分页页码时间
 				this.cPage = val;
 				for(let item of this.pageList){
 					if(item.path === this.currentPath){
@@ -279,9 +253,7 @@
 					}
 				}
 				this.pageObj.currentPage = val;
-				this.getPageData(this.pageObj,this.transmitObj).then((data)=> {
-					this.tableData = data;
-				})
+				this.getNewsMainData();
 			},
 			setEveryPage(){
 				let inputEveryPage = Number(document.getElementById("everpageNumber").value);
@@ -315,16 +287,8 @@
 					this.cPage = maxPage;
 				}
 				this.pageObj.everyPage = inputEveryPage;
-				this.getPageData(this.pageObj,this.transmitObj).then((data)=> {//加载主表数据
-					this.tableData = data;
-				})
 				
-			},
-			aaa() {
-				alert("审核通过");
-			},
-			bbb() {
-				alert("审核不通过");
+				this.getNewsMainData();
 			},
 			addPanel: function() { //打开弹窗
 				this.dialogVisible = true;
@@ -333,58 +297,79 @@
 			selectorValue: function(value) {
 				let searchObj = {
 					path: this.$router.history.current.path,
-					selectOption1: value,
+					normalSelect: value,
 					searchText: this.searchText,
 				}
-				this.selectOptions = value; //选择框绑定值
-				this.$store.dispatch('searchAdd', searchObj); //store保存选择的select对象
+				this.normalSelectValue = value; //选择框绑定值
+				this.$store.dispatch('searchAdd', searchObj); //store保存选择的select对象				
+				/*
 				let obj = this.options.find(function(item) {
 					return item.value == value;
 				});
+				*/
 			},
 			handleNodeClick(data) {//data ：节点数据
-				
+				this.currentNodeIndex = data.index;
+				this.getNewsMainData();
 		    },
-			loadNode(node, resolve) {//树结构节点加载
-				this.loadChannelTree("121").then((data)=>{
+			loadNode(node, resolve) {//动态加载树结构子节点
+				if(!this.$refs.elTree1){
+					return false;
+				}
+				
+				this.currentNodeIndex = this.$refs.elTree1.getCurrentNode().index;
+				this.loadChannelTree().then((data)=>{
 					if(data.length===0){
-						resolve([])
-					}else{
-						let temporaryTree = [];
-						for(let item of data){
-							let temporaryTreeItem = {};
-							temporaryTreeItem.index = item.id;
-							temporaryTreeItem.label = item.name;
-							temporaryTree.push(temporaryTreeItem);
-						}
-					    resolve(temporaryTree);
+						resolve([]);
+					}else{					
+					    resolve(data);
 					}
 				});
 				/*
 		        this.treeHeight = this.mainContentHeight+50+Math.random(0,0.1)+"px";
 		        */
 		    },
-		    loadChannelTree(pid){
+			normalSearch(){
+				if(this.normalSelectValue===""){
+					this.$notify.error({
+						title: '提示',
+				        message: '请选择查询类型',
+					});
+					this.$refs.normalSelect.focus();
+					return false;
+				}
+				document.getElementById("whereStr").value=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
+				this.getNewsMainData();
+			},
+		    loadChannelTree(){
+		    	/*
+		    	 * 根据当前节点id获取树结构子节点
+		    	 */
 		    	return new Promise((resolve,reject)=>{
-		    		
 			    	let p = {};
 			    	let unitId = this.user.unitId;
-			    	p.sql = "select id,name,pid from channel where unitId = '"+unitId+"' and pid = '"+pid+"' order by serialNumber asc";
+			    	p.sql = "SELECT a.id,a.name,a.pid,b.id AS childId FROM channel AS a LEFT JOIN channel AS b ON a.id = b.pid WHERE a.unitId = '"+unitId+"' AND a.pid = '"+this.currentNodeIndex+"' group by a.id ORDER BY a.serialNumber asc";
 			    	
 			    	this.axios({
 			            method: 'post',
 			            url: global.url_base,
-			            data: this.getData("HX_API","/https/channel/query.do",p),
+			            data: this.getData("HX_API","/https/channel/queryForMap.do",p),
 			            dataType: 'JSON'						 
 			        }).then((result)=> {
-			        	resolve([...result.data.data]);
+			        	let resultData = result.data.data;
+			        	let temporaryTree = [];
+						for(let item of resultData){
+							
+							let temporaryTreeItem = {};
+							temporaryTreeItem.index = item.id;
+							temporaryTreeItem.label = item.name;
+							temporaryTree.push(temporaryTreeItem);
+						}
+			        	resolve(temporaryTree);
 			        }).catch((error)=> {
 			        	console.log(error);
 			        });
-			    	
-		    		
 		    	});
-		    	
 		    }
 		},
 		watch: {
@@ -395,10 +380,13 @@
 				this.searchText = val;
 				let searchObj = {
 					path: this.$router.history.current.path,
-					selectOption1: this.selectOptions,
+					normalSelect: this.normalSelectValue,
 					searchText: val,
 				}
 				this.$store.dispatch("searchAdd", searchObj);
+			},
+			mainContentHeight:function(val){
+				this.treeHeight = val - 25 + "px";
 			}
 		}
 	}
@@ -418,7 +406,13 @@
 	.paginationComponent .el-input{width:90px;float:left;}
 	span{float:left;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:#888}
 	
-	>>>#selectOption1{width:120px}
+	
+	.el-tree{background-color:inherit;padding:5px;}
+	.treeObj{background-color: #fefefe;}
+	.treeInner{margin:0px 20px 0px 10px;background-color: #FAFAFA;}
+	.treeInner>.title{font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#333;font-weight:bolder;border-bottom:1px solid #ebeef5}
+	
+	>>>#normalSelect{width:120px}
 	
 	@media only screen and (min-width: 100px) and (max-width: 1200px) {
 		>>>.el-pager li {

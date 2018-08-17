@@ -22,15 +22,19 @@ export default {//主表公共函数，mixins到module各组件中
 			this.cPage = cPage;
 		},
 		getPageData(pageObj,transmitObj){
+			let page = pageObj;
+			page.totalPage = undefined
+			let api = transmitObj.api;
+			let handler = transmitObj.handler;
 			return new Promise((resolve,reject)=>{//加载分页信息
 				this.axios({
 		            method: 'post',
 		            url: transmitObj.url,
-		            data: this.getData(transmitObj.api,transmitObj.handler,pageObj),
-		            dataType: 'JSON'						 
-		        }).then((result)=> {
-		        	let paginationInfo = result.data.data;
-		        	resolve(paginationInfo);
+		            data: this.getData(api,handler,page),
+		            dataType: 'JSON',
+		            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+		       }).then((result)=> {
+		        	resolve(result.data.data);
 		        }).catch((error)=> {
 		        	console.log(error);
 		        });

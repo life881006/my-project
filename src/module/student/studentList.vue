@@ -16,15 +16,18 @@
 			</el-col>
 		</el-row>
 		<el-row>
-			<el-col :xs="4" :sm="4" :md="4" :lg="4">
-				<!--展示树-->
-				<el-scrollbar>
-				<el-tree :data="treeData" :props="defaultProps" :style="{height:treeHeight}" @node-click="handleNodeClick">
-					
-				</el-tree>
-				</el-scrollbar>
+			<el-col class="treeObj" :xs="5" :sm="5" :md="5" :lg="5">
+				<div class="treeInner">
+					<h4 class="title">频道管理</h4>
+					<!--展示树-->
+					<el-scrollbar>
+					<el-tree :data="treeData" :props="defaultProps" :style="{height:treeHeight}" @node-click="handleNodeClick">
+						
+					</el-tree>
+					</el-scrollbar>
+				</div>
 			</el-col>
-			<el-col :push="1" :xs="19" :sm="19" :md="19" :lg="19">
+			<el-col  :xs="19" :sm="19" :md="19" :lg="19">
 				<el-table 
 					ref="multipleTable" 
 					:height="mainTableHeight" 
@@ -59,7 +62,9 @@
 			
 					</el-table-column>
 					<el-table-column align="center" label="结束值" prop="endValue" min-width="12%">
-			
+						<template slot-scope="scope">
+							
+						</template>
 					</el-table-column>
 					<el-table-column align="center" label="操作" min-width="12%">
 						<template slot-scope="scope">
@@ -321,11 +326,441 @@
 		data() {
 			return {
 				mainTableHeight:this.mainContentHeight+"px",//主表高度
-				treeHeight:this.mainContentHeight+50+"px",
+				treeHeight:this.mainContentHeight+25+"px",
 				tableData: tableInfo.data,//主表数据
 				multipleSelection: [],//主表选中记录合集
 				
 				treeData: [{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					isLeaf:"leaf",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
+					label:"第一级",
+					index:"aaa",
+					children:[{
+							label:"第二级",
+							index:"bbb",
+							children:[{
+									index:"ccc",
+									label:"第三级",
+						}]
+					}]
+				},{//树形结构数据,label标签名、children子元素
 					label:"第一级",
 					index:"aaa",
 					children:[{
@@ -373,6 +808,7 @@
 		props:['mainContentHeight'],
 		mixins:[mainMethod],//引用主表公有方法
 		created(){
+			console.log(this.moment(new Date().getTime()).format("YYYY年MM月DD日 HH时mm分ss"));
 			for(let item of this.pageList){
 				if(item.path === this.currentPath){
 					this.ePage=item.everyPage;
@@ -468,6 +904,9 @@
 					searchText:val,
 				}
 				this.$store.dispatch("searchAdd",searchObj);
+			},
+			mainContentHeight:function(val){
+				this.treeHeight = val + 25 +"px";
 			}
 		}
 	}
@@ -485,6 +924,9 @@
 	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:left}
 	.paginationComponent .el-input{width:90px;float:left;}
 	span{float:left;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:#888}
+	.el-tree{background-color:inherit;padding:5px;}
+	.treeObj{background-color: #fefefe;padding:0px 20px 0px 10px;}
+	.treeInner>.title{font-size:14px;padding:6px 0px 6px 20px;margin:0px;color:#333;font-weight:normal;border-bottom:1px solid #eee}
 	
 	>>>#selectOption1{width:120px}
 	@media only screen and (min-width: 100px) and (max-width: 1200px) {
