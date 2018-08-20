@@ -13,13 +13,13 @@
 				>
 				<el-submenu v-for="module in asideModules" :key="module.id" ref="module.id" :index="module.serialNumber+''">
 					<template slot="title">
-						<i :class="'el-icon-erp-'+module.pcIcon"></i>
+						<i :class="['el-icons','el-icon-erp-'+module.pcIcon]"></i>
 						<span slot="title">{{ module.name }}</span>
 					</template>
 					<el-menu-item-group>
 						<el-submenu v-for="modulePItem in module.children" :key="modulePItem.id" ref="modulePItem.id" :index="modulePItem.serialNumber+''">
 							<template slot="title">
-								<i :class="'el-icon-erp-'+modulePItem.pcIcon"></i>
+								<i :class="['el-icons','el-icon-erp-'+modulePItem.pcIcon]"></i>
 								<span slot="title" class="submenuTitle">{{ modulePItem.itemName }}</span>
 							</template>
 							<el-menu-item-group>
@@ -50,7 +50,7 @@
 		name:'sideBar',
 		data: function(){
 			return {
-				isCollapse: false,
+				isCollapse: this.sideBarHeight<1440?true:false,
 			}
 		},
 		props:['sideBarHeight','sideBarWidth'],
@@ -60,9 +60,6 @@
 		},
 		mounted: function(){
 			document.getElementById('menu').style.height = this.sideBarHeight + "px";
-			if(this.sideBarWidth<1440){
-				this.isCollapse = true;				
-			}			
 		},
 		methods:{
 			
@@ -92,7 +89,7 @@
 	#menu .el-menu{border-right:0px}
 	#menu .scrollbar-wrapper{height:100%;}
 	#menu .el-menu-item{font-size:12px;}
-	#menu >>> .el-submenu__title i{color:#fafafa}
+	.el-icons{color:#fff;font-size:18px;}
 	#menu >>> .el-scrollbar__thumb{background-color:rgba(240,240,240,0.5)}
 	#menu >>> .el-scrollbar__wrap{overflow-x:hidden}
 	.routerLink{color:inherit;text-decoration: none;display: block;}
