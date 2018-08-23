@@ -255,8 +255,8 @@
 				document.getElementById("whereStr").value=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
 				this.getNewsMainData();
 			},
-		    refreshTableByTreeNode:(val)=>{
-				this.currentNode = val;
+		    refreshTableByTreeNode:function(nodeIndex){
+				this.currentNode = nodeIndex;
 				this.pageObj.currentPage = 1;
 		    	this.getNewsMainData();
 		    }
@@ -284,11 +284,6 @@
 <style type="text/css" scoped="scoped">
 	@import url("../../style/headerNav.css");
 	@import url("../../style/mainList.css");
-	
-	.el-tree{background-color:inherit;padding:5px;}
-	.treeObj{background-color: #fefefe;}
-	.treeInner{margin:0px 20px 0px 10px;background-color: #FAFAFA;}
-	.treeInner>.title{font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#333;font-weight:bolder;border-bottom:1px solid #ebeef5}
 	
 	>>>#normalSelect{width:120px}
 	

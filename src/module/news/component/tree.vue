@@ -97,4 +97,10 @@
 </script>
 
 <style>
+	
+	.el-tree{background-color:inherit;padding:5px;}
+	/*.treeObj{background-color: #fefefe;}*/
+	.treeInner{margin:0px 20px 0px 10px;background-color: #FAFAFA;}
+	.treeInner>.title{font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#333;font-weight:bolder;border-bottom:1px solid #ebeef5}
+	
 </style>
