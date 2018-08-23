@@ -1,62 +1,38 @@
 <template>
-	<div class="paginationComponent">
-		<span>总计 {{tCount}} 条</span>
-		<el-input id="everpageNumber" size="mini" :value="ePage" maxlength="5" @blur="setEveryPage">
-			<template slot="prepend">每页/条</template>
-		</el-input>
-		<el-pagination
-	      @size-change="handleSizeChange"
-	      @current-change="handleCurrentChange"
-	      :current-page="cPage"
-	      :page-size="ePage"
-	      layout=" prev, pager, next, jumper"
-	      :total="tCount">
-	    </el-pagination>
-	    
-    </div>
+	<el-col :xs="16" :sm="16" :md="16" :lg="16">
+		<div class="paginationComponent">
+			<span>总计 {{childTotalCount}} 条</span>
+			<el-input id="everpageNumber" size="mini" :value="childEveryPage" maxlength="5" @blur="setEveryPage">
+				<template slot="prepend">每页/条</template>
+			</el-input>
+			<el-pagination 
+		      @current-change="handleCurrentChange"
+		      :current-page="childCurrentPage"
+		      :page-size="childEveryPage"
+		      layout=" prev, pager, next, jumper"
+		      :total="childTotalCount">
+		   </el-pagination>
+	    </div>
+	</el-col>
 </template>
 
 <script>
-	let pageList;
-	let currentPath;
 	
 	export default {
 	data() {
 		return {
-			tCount:0,
-			ePage:0,
-			cPage:0,
+			childCurrentPage:this.currentPage,
+			childEveryPage:this.everyPage,
+			childTotalCount:this.totalCount
 		};
 	},
 	created(){
-		pageList = this.$store.state.pagination.paginationList;
-		currentPath = this.$router.history.current.path;
-		for(let item of pageList){
-			if(item.path === currentPath){
-				this.tCount=item.totalCount;
-				this.ePage=item.everyPage;
-				this.cPage=item.currentPage;
-				return false;
-			}
-		}
+		
 	},
-	/*
 	props:['totalCount','everyPage','currentPage'],
-	*/
 	methods: {
-		handleSizeChange(val) {
-			this.ePage = val;
-			this.$emit('pSize',val);//子组件给父组件传值
-		},
 		handleCurrentChange(val) {
-			this.cPage = val;
-			for(let item of pageList){
-				if(item.path === currentPath){
-					item.currentPage=val;
-					this.$emit('cPage',val);//子组件给父组件传值
-					return false;
-				}
-			}
+			this.$emit('setCurrentPage',val);//子组件给父组件传值
 		},
 		setEveryPage(){
 			let inputEveryPage = Number(document.getElementById("everpageNumber").value);
@@ -76,18 +52,19 @@
 				return false;
 			}
 			
-			for(let item of pageList){
-				if(item.path === currentPath){
-					this.ePage=inputEveryPage;
-					item.everyPage=inputEveryPage;
-					this.handleSizeChange(inputEveryPage);
-					return false;
-				}
-			}
+			this.$emit('setPageSize',inputEveryPage);//子组件给父组件传值
 		}
 	},
 	watch:{
-		
+		currentPage(val){
+			this.childCurrentPage = val;
+		},
+		everyPage(val){
+			this.childEveryPage = val;
+		},
+		totalCount(val){
+			this.childTotalCount = val;
+		}
 	}
 }
 </script>

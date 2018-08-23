@@ -50,7 +50,7 @@
 		name:'sideBar',
 		data: function(){
 			return {
-				isCollapse: this.sideBarHeight<1440?true:false,
+				isCollapse: this.sideBarWidth<1440?true:false,
 			}
 		},
 		props:['sideBarHeight','sideBarWidth'],

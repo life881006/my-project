@@ -87,19 +87,7 @@
 						</el-dropdown>
 					</el-col>
 					<el-col :xs="16" :sm="16" :md="16" :lg="16">
-						<div class="paginationComponent">
-							<span>总计 {{tCount}} 条</span>
-							<el-input id="everpageNumber" size="mini" :value="ePage" maxlength="5" @blur="setEveryPage">
-								<template slot="prepend">每页/条</template>
-							</el-input>
-							<el-pagination 
-						      @current-change="handleCurrentChange"
-						      :current-page="cPage"
-						      :page-size="ePage"
-						      layout=" prev, pager, next, jumper"
-						      :total="tCount">
-						   </el-pagination>
-					    </div>
+						<pagination @setPageSize="getPageSize" @setCurrentPage="getCurrentPage" :currentPage="cPage" :everyPage="ePage" :totalCount="tCount"></pagination>
 					</el-col>
 				</div>
 			</el-col>
@@ -129,7 +117,8 @@
 
 <script>
 	
-	import mainMethod from '@/components/mainMethod'//主表相关公有方法写在这里
+	import publicMethod from '@/module/public/publicMethod'//主表相关公有方法
+	import pagination from '@/module/public/pagination'//分页组件
 	
 	const pageInfo =  {
 		"hasPrePage": false,
@@ -806,9 +795,12 @@
 			}
 		},
 		props:['mainContentHeight'],
-		mixins:[mainMethod],//引用主表公有方法
+		mixins:[publicMethod],//引用主表公有方法
+		
+		components:{pagination},
+		
 		created(){
-			console.log(this.moment(new Date().getTime()).format("YYYY年MM月DD日 HH时mm分ss"));
+			
 			for(let item of this.pageList){
 				if(item.path === this.currentPath){
 					this.ePage=item.everyPage;
@@ -830,7 +822,9 @@
 			}
 		},
 		methods: {
-			
+			handleSelectionChange(data){
+				console.log(data);
+			},
 			handleCurrentChange(val) {
 				this.cPage = val;
 				for(let item of this.pageList){
@@ -874,7 +868,40 @@
 			},
 			handleNodeClick(data) {
 	        this.treeHeight = this.mainContentHeight+50+Math.random(0,0.1)+"px";
-	    },
+	    	},
+	    	getPageSize(pageSize){
+	    		
+				this.ePage=pageSize;
+				
+				for(let item of this.pageList){
+					if(item.path === this.currentPath){
+						this.ePage=inputEveryPage;
+						item.everyPage=inputEveryPage;
+						break;
+					}
+				}
+				
+				let maxPage = Math.ceil(this.tCount/inputEveryPage);
+				if(this.pageObj.currentPage>maxPage){//设置每页条数后，如果当前页超过总页数，则设为最大总页数
+					this.pageObj.currentPage = maxPage;
+					this.cPage = maxPage;
+				}
+				this.pageObj.everyPage = inputEveryPage;
+				
+				this.getNewsMainData();
+			},
+			getCurrentPage(pageNumber){
+				console.log(pageNumber);
+				this.cPage = pageNumber;
+				for(let item of this.pageList){
+					if(item.path === this.currentPath){
+						item.currentPage=pageNumber;
+						break;
+					}
+				}
+				this.pageObj.currentPage = pageNumber;
+				this.getNewsMainData();
+			},
 			addPanel:function(){
 				this.dialogVisible = true;
 				this.$router.push("/news/newsList/add");

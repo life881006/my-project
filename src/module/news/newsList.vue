@@ -20,17 +20,7 @@
 		</el-row>
 		
 		<el-row>
-			<el-col class="treeObj" :xs="5" :sm="5" :md="5" :lg="5">
-				<div class="treeInner">	
-					<h4 class="title">频道管理</h4>
-					<!--展示树-->
-					<el-scrollbar>
-					<el-tree ref="elTree1" lazy :data="treeData" :props="defaultProps" :style="{height:treeHeight}" @node-click="handleNodeClick" :load="loadNode" >
-						
-					</el-tree>
-					</el-scrollbar>
-				</div>
-			</el-col>
+			<tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="treeHeight"></tree>
 			
 			<el-col :xs="19" :sm="19" :md="19" :lg="19">		
 				<el-table ref="multipleTable" :height="mainTableHeight" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :default-sort="{prop:'id',order:'ascending'}">
@@ -92,39 +82,10 @@
 				</el-table>			
 
 				<div class="paginationArea">
-					<el-col :xs="8" :sm="8" :md="8" :lg="8">
-						<el-button-group>
-							<el-button type="danger" size="small">删除</el-button>
-							<el-button type="primary" size="small">排序</el-button>
-						</el-button-group>
-						<el-dropdown trigger="click">
-							<el-button size="small">审核</el-button>
-							<el-dropdown-menu slot="dropdown">
-								<el-dropdown-item>
-									<a @click="aaa()"><i class="el-icon-erp-pass"></i> 审核通过</a>
-								</el-dropdown-item>
-								<el-dropdown-item>
-									<a @click="bbb()"><i class="el-icon-erp-notPass"></i> 审核不通过</a>
-								</el-dropdown-item>
-							</el-dropdown-menu>
-						</el-dropdown>
-					</el-col>
+					<operations @refreshTabel="getNewsMainData" :selectedData="dataSelections"></operations>
 					
-					<el-col :xs="16" :sm="16" :md="16" :lg="16">
-						<div class="paginationComponent">
-							<span>总计 {{tCount}} 条</span>
-							<el-input id="everpageNumber" size="mini" :value="ePage" maxlength="5" @blur="setEveryPage">
-								<template slot="prepend">每页/条</template>
-							</el-input>
-							<el-pagination 
-						      @current-change="handleCurrentChange"
-						      :current-page="cPage"
-						      :page-size="ePage"
-						      layout=" prev, pager, next, jumper"
-						      :total="tCount">
-						   </el-pagination>
-					    </div>
-					</el-col>
+					<pagination @setPageSize="getPageSize" @setCurrentPage="getCurrentPage" :currentPage="cPage" :everyPage="ePage" :totalCount="tCount"></pagination>
+					
 				</div>
 			</el-col>
 		</el-row>
@@ -148,14 +109,20 @@
 
 <script>
 	
-	import mainMethod from '@/components/mainMethod'
-	import news from '@/module/news/news'
+	import publicMethod from '@/module/public/publicMethod'//公共方法
+	import pagination from '@/module/public/pagination'//分页组件
+	
+	import newsMethods from '@/module/news/methods/news'
+	
+	import tree from '@/module/news/component/tree'
+	import operations from '@/module/news/component/operations'
 	
 	export default {
 
 		data() {
 			return {
 				mainTableHeight: this.mainContentHeight + "px", //主表高度
+				treeHeight: this.mainContentHeight - 25 +"px",
 
 				//tableData: tableInfo.data,//主表数据
 				tableData: [],
@@ -164,7 +131,7 @@
 				},
 				transmitObj:{},
 
-				multipleSelection: [], //主表选中记录合集
+				dataSelections: [], //主表选中记录合集
 
 				options: [{ //select内容
 					value: "a.title",
@@ -176,30 +143,24 @@
 					value: "a.transfer",
 					label: "来源",
 				}],
-				treeData: [],
+				
 				normalSelectValue: "", //select选择的值
 				searchText: "", //搜索框内容
 
 				dialogVisible: false, //对话框是否显示 
 				
-				treeHeight:this.mainContentHeight - 25 +"px",//树高
-				defaultProps: {//树形结构默认设置
-		          children: 'children',
-		          label: 'label'
-		        },
-		        currentNodeIndex:"0",
-				
 				ePage:this.everyPage,//每页记录数
 				cPage:1,//当前第几页
 				tCount:0,//总个数
 				
-				
+				currentNode:"0",
 				pageList: this.$store.state.pagination.paginationList,
 				currentPath: this.$router.history.current.path,
 			}
 		},
 		props: ['mainContentHeight'],
-		mixins: [mainMethod,news],
+		mixins: [publicMethod,newsMethods],
+		components:{pagination,operations,tree},
 		created() {
 			/**
 			 * 获取、保存页码设置
@@ -231,104 +192,57 @@
 			
 			/*
 			 * 获取主表数据
-			 * 
+			 * news.js
 			 */			
 			this.getNewsMainData();
 			
-			/*
-			 * 获取树结构channels
-			 * 
-			 */
-			this.loadChannelTree().then((data)=>{
-				this.treeData = data;
-			});
 		},
 		methods: {
-			handleCurrentChange(val) {//点击分页页码时间
-				this.cPage = val;
-				for(let item of this.pageList){
-					if(item.path === this.currentPath){
-						item.currentPage=val;
-						break;
-					}
-				}
-				this.pageObj.currentPage = val;
-				this.getNewsMainData();
+			handleSelectionChange(data){//主表数据选中
+				this.dataSelections = data;
 			},
-			setEveryPage(){
-				let inputEveryPage = Number(document.getElementById("everpageNumber").value);
-				if(inputEveryPage===0){
-					return false;
-				}
-				if(inputEveryPage>this.tCount){
-					let h = this.$createElement;//elementUi创建html元素
-					this.$message({
-						//h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
-						message:h('p',null,[
-							//h('span',null,'出现错误：'),
-							h('i',{style:'color:red;font-weight:bolder'},'您输入每页条数超过总条数,请重新输入')
-						])
-					});
-					document.getElementById("everpageNumber").value="";
-					return false;
-				}
-				
+			getPageSize(pageSize){//变更每页条数
+				this.ePage=pageSize;				
 				for(let item of this.pageList){
 					if(item.path === this.currentPath){
-						this.ePage=inputEveryPage;
-						item.everyPage=inputEveryPage;
+						this.ePage=pageSize;
+						item.everyPage=pageSize;
 						break;
 					}
 				}
 				
-				let maxPage = Math.ceil(this.tCount/inputEveryPage);
+				let maxPage = Math.ceil(this.tCount/pageSize);
 				if(this.pageObj.currentPage>maxPage){//设置每页条数后，如果当前页超过总页数，则设为最大总页数
 					this.pageObj.currentPage = maxPage;
 					this.cPage = maxPage;
 				}
-				this.pageObj.everyPage = inputEveryPage;
-				
+				this.pageObj.everyPage = pageSize;				
 				this.getNewsMainData();
 			},
-			addPanel: function() { //打开弹窗
-				this.dialogVisible = true;
-				this.$router.push("/news/newsList/add");
+			getCurrentPage(pageNumber){//转到指定页
+				this.cPage = pageNumber;
+				for(let item of this.pageList){
+					if(item.path === this.currentPath){
+						item.currentPage=pageNumber;
+						break;
+					}
+				}
+				this.pageObj.currentPage = pageNumber;
+				this.getNewsMainData();
 			},
-			selectorValue: function(value) {
+			selectorValue: function(value) {//搜索框条件选择
 				let searchObj = {
 					path: this.$router.history.current.path,
 					normalSelect: value,
 					searchText: this.searchText,
 				}
 				this.normalSelectValue = value; //选择框绑定值
-				this.$store.dispatch('searchAdd', searchObj); //store保存选择的select对象				
-				/*
-				let obj = this.options.find(function(item) {
-					return item.value == value;
-				});
-				*/
+				this.$store.dispatch('searchAdd', searchObj); //store保存选择的select对象
 			},
-			handleNodeClick(data) {//data ：节点数据
-				this.currentNodeIndex = data.index;
-				this.getNewsMainData();
-		    },
-			loadNode(node, resolve) {//动态加载树结构子节点
-				if(!this.$refs.elTree1){
-					return false;
-				}
-				
-				this.currentNodeIndex = this.$refs.elTree1.getCurrentNode().index;
-				this.loadChannelTree().then((data)=>{
-					if(data.length===0){
-						resolve([]);
-					}else{					
-					    resolve(data);
-					}
-				});
-				/*
-		        this.treeHeight = this.mainContentHeight+50+Math.random(0,0.1)+"px";
-		        */
-		    },
+		    addPanel() { //打开弹窗
+				this.dialogVisible = true;
+				this.$router.push("/news/newsList/add");
+			},
 			normalSearch(){
 				if(this.normalSelectValue===""){
 					this.$notify.error({
@@ -341,35 +255,10 @@
 				document.getElementById("whereStr").value=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
 				this.getNewsMainData();
 			},
-		    loadChannelTree(){
-		    	/*
-		    	 * 根据当前节点id获取树结构子节点
-		    	 */
-		    	return new Promise((resolve,reject)=>{
-			    	let p = {};
-			    	let unitId = this.user.unitId;
-			    	p.sql = "SELECT a.id,a.name,a.pid,b.id AS childId FROM channel AS a LEFT JOIN channel AS b ON a.id = b.pid WHERE a.unitId = '"+unitId+"' AND a.pid = '"+this.currentNodeIndex+"' group by a.id ORDER BY a.serialNumber asc";
-			    	
-			    	this.axios({
-			            method: 'post',
-			            url: global.url_base,
-			            data: this.getData("HX_API","/https/channel/queryForMap.do",p),
-			            dataType: 'JSON'						 
-			        }).then((result)=> {
-			        	let resultData = result.data.data;
-			        	let temporaryTree = [];
-						for(let item of resultData){
-							
-							let temporaryTreeItem = {};
-							temporaryTreeItem.index = item.id;
-							temporaryTreeItem.label = item.name;
-							temporaryTree.push(temporaryTreeItem);
-						}
-			        	resolve(temporaryTree);
-			        }).catch((error)=> {
-			        	console.log(error);
-			        });
-		    	});
+		    refreshTableByTreeNode:(val)=>{
+				this.currentNode = val;
+				this.pageObj.currentPage = 1;
+		    	this.getNewsMainData();
 		    }
 		},
 		watch: {
@@ -396,17 +285,6 @@
 	@import url("../../style/headerNav.css");
 	@import url("../../style/mainList.css");
 	
-	
-	>>>.el-pagination__jump{margin-left:10px;}
-	>>>.el-input-group__prepend{padding:0px 5px;}
-	>>>#everpageNumber{text-align: center;padding:0px 5px;}
-	>>>.el-pager li{min-width: 30.5px;}
-	.paginationComponent{padding-top:2px;display: inline-block;float:right}
-	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:left}
-	.paginationComponent .el-input{width:90px;float:left;}
-	span{float:left;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:#888}
-	
-	
 	.el-tree{background-color:inherit;padding:5px;}
 	.treeObj{background-color: #fefefe;}
 	.treeInner{margin:0px 20px 0px 10px;background-color: #FAFAFA;}
@@ -414,11 +292,4 @@
 	
 	>>>#normalSelect{width:120px}
 	
-	@media only screen and (min-width: 100px) and (max-width: 1200px) {
-		>>>.el-pager li {
-			min-width: auto;
-			padding:0px 5px;
-		}
-		>>>.el-pagination__jump{margin-left:5px}
-	}
 </style>

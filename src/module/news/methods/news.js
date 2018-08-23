@@ -50,16 +50,10 @@
 				this.tCount = data.totalCount;
 				this.$store.dispatch("paginationAdd",this.pageObj);//将页码信息插入
 				this.transmitObj.handler = "/https/news/getNewssByPage.do";
-				return this.getPageData(this.pageObj,this.transmitObj)
+				return this.getPageData(this.pageObj,this.transmitObj);//获取主表具体条数
 			}).then((data)=>{
 				this.tableData = data;
 			});
-		},
-		aaa() {
-			alert("审核通过");
-		},
-		bbb() {
-			alert("审核不通过");
-		},
+		}
 	}
 }
