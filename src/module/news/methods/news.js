@@ -6,7 +6,7 @@
 			 */
 			let whereStr = document.getElementById("whereStr").value;
 			let unitId = this.user.unitId;
-			let currentChannelId = this.currentNodeIndex;
+			let currentChannelId = this.currentNode;
 			
 			if (unitId != ''){
 				if (whereStr != ''){
