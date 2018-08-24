@@ -8,6 +8,7 @@
 			let unitId = this.user.unitId;
 			let currentChannelId = this.currentNode;
 			
+			
 			if (unitId != ''){
 				if (whereStr != ''){
 					whereStr += " and a.unitId = '"+unitId+"'";
@@ -45,9 +46,9 @@
 			this.transmitObj.handler = "/https/news/getPageInfo.do";
 			
 			this.getPageData(this.pageObj,this.transmitObj).then((data)=> {	
-				this.ePage = data.everyPage;
-				this.cPage = data.currentPage;
-				this.tCount = data.totalCount;
+				this.pageObj.everyPage = data.everyPage;
+				this.pageObj.currentPage = data.currentPage;
+				this.pageObj.totalCount = data.totalCount;
 				this.$store.dispatch("paginationAdd",this.pageObj);//将页码信息插入
 				this.transmitObj.handler = "/https/news/getNewssByPage.do";
 				return this.getPageData(this.pageObj,this.transmitObj);//获取主表具体条数

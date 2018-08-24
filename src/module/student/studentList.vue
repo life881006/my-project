@@ -2,13 +2,13 @@
 	<div class="mainTableArea">
 		<el-row class="search">
 			<el-col :xs="23" :sm="23" :md="23" :lg="23">
-			<el-select size="small" id="selectOption1" ref="selectOption1" v-model="selectOptions" placeholder="请选择" @change="changeValue">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
-			</el-select>
-			<el-input size="small" placeholder="请输入内容" v-model="searchText" clearable >
-				
-			</el-input>
-			<el-button size="small" type="primary" icon="el-icon-search">检索</el-button>
+				<el-select size="small" id="selectOption1" ref="selectOption1" v-model="selectOptions" placeholder="请选择" @change="changeValue">
+					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
+				</el-select>
+				<el-input size="small" placeholder="请输入内容" v-model="searchText" clearable >
+					
+				</el-input>
+				<el-button size="small" type="primary" icon="el-icon-search">检索</el-button>
 			</el-col>
 			
 			<el-col :xs="1" :sm="1" :md="1" :lg="1">
@@ -119,6 +119,7 @@
 	
 	import publicMethod from '@/module/public/publicMethod'//主表相关公有方法
 	import pagination from '@/module/public/pagination'//分页组件
+	import searchLine from '@/module/news/component/search'
 	
 	const pageInfo =  {
 		"hasPrePage": false,
@@ -940,7 +941,6 @@
 </script>
 
 <style type="text/css" scoped="scoped">
-	@import url("../../style/headerNav.css");
 	@import url("../../style/mainList.css");
 	
 	>>>.el-pagination__jump{margin-left:10px;}

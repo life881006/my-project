@@ -20,7 +20,7 @@
 
 <script>
 	export default {
-		
+		name:"operations",
 		data(){
 			return {
 				selectedItem:this.selectedData

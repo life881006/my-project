@@ -23,7 +23,6 @@ export default {//主表公共函数，mixins到module各组件中
 		},
 		getPageData(pageObj,transmitObj){
 			let page = pageObj;
-			page.totalPage = undefined
 			let api = transmitObj.api;
 			let handler = transmitObj.handler;
 			return new Promise((resolve,reject)=>{//加载分页信息
@@ -33,7 +32,7 @@ export default {//主表公共函数，mixins到module各组件中
 		            data: this.getData(api,handler,page),
 		            dataType: 'JSON',
 		            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
-		       }).then((result)=> {
+		        }).then((result)=> {
 		        	resolve(result.data.data);
 		        }).catch((error)=> {
 		        	console.log(error);
@@ -41,11 +40,10 @@ export default {//主表公共函数，mixins到module各组件中
 			});
 		}
 	},
-	watch:{
-		mainContentHeight(val){
-			this.mainTableHeight = val+"px";
-			this.treeHeight = val+50+"px"
-		},		
+	watch:{		
+		mainContentHeight:function(val){
+				this.treeHeight = val - 25 + "px";
+		}
 	}
 	
 }

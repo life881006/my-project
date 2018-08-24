@@ -1,17 +1,12 @@
 <template>
 	<div class="mainTableArea">
 
-		<el-input type="hidden" id="whereStr" value=""></el-input>
+		<input type="hidden" id="whereStr" value="" />
 
 		<el-row class="search">
-			<el-col :xs="23" :sm="23" :md="23" :lg="23">				
-				<el-select size="small" id="normalSelect" ref="normalSelect" v-model="normalSelectValue" placeholder="请选择" @change="selectorValue">
-					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" :disabled="item.disabled"></el-option>
-				</el-select>
-				<el-input size="small" placeholder="请输入内容" v-model="searchText" clearable>
-
-				</el-input>
-				<el-button size="small" type="primary" icon="el-icon-search" @click="normalSearch">检索</el-button>
+			<el-col :xs="23" :sm="23" :md="23" :lg="23">
+				<!--搜索框组件-->
+				<searchBar @refreshTabel="getNewsMainData"></searchBar>
 			</el-col>
 
 			<el-col :xs="1" :sm="1" :md="1" :lg="1">
@@ -20,6 +15,7 @@
 		</el-row>
 		
 		<el-row>
+			<!--树组件-->
 			<tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="treeHeight"></tree>
 			
 			<el-col :xs="19" :sm="19" :md="19" :lg="19">		
@@ -60,10 +56,6 @@
 		
 					</el-table-column>
 		
-					<el-table-column align="center" label="编辑" prop="editor" min-width="6%">
-		
-					</el-table-column>
-		
 					<el-table-column align="center" label="编辑时间" prop="appearDate" min-width="12%">
 						<template slot-scope="scope">
 						{{ moment(scope.row.appearDate).format("YYYY-MM-DD") }}
@@ -84,7 +76,7 @@
 				<div class="paginationArea">
 					<operations @refreshTabel="getNewsMainData" :selectedData="dataSelections"></operations>
 					
-					<pagination @setPageSize="getPageSize" @setCurrentPage="getCurrentPage" :currentPage="cPage" :everyPage="ePage" :totalCount="tCount"></pagination>
+					<pagination @setPageSize="getPageSize" @setCurrentPage="getCurrentPage" :pageObj="pageObj"></pagination>
 					
 				</div>
 			</el-col>
@@ -114,81 +106,46 @@
 	
 	import newsMethods from '@/module/news/methods/news'
 	
+	import searchBar from '@/module/news/component/search'
 	import tree from '@/module/news/component/tree'
 	import operations from '@/module/news/component/operations'
+	
 	
 	export default {
 
 		data() {
 			return {
-				mainTableHeight: this.mainContentHeight + "px", //主表高度
-				treeHeight: this.mainContentHeight - 25 +"px",
+				mainTableHeight: this.mainContentHeight + "px",//主表高度
+				treeHeight: this.mainContentHeight - 25 +"px",//树高度
 
-				//tableData: tableInfo.data,//主表数据
-				tableData: [],
-				pageObj:{
-					path:this.$router.history.current.path,
-				},
-				transmitObj:{},
-
-				dataSelections: [], //主表选中记录合集
-
-				options: [{ //select内容
-					value: "a.title",
-					label: "标题",
-				}, {
-					value: "a.author",
-					label: "作者",
-				}, {
-					value: "a.transfer",
-					label: "来源",
-				}],
+				tableData: [],//主表数据
 				
-				normalSelectValue: "", //select选择的值
-				searchText: "", //搜索框内容
-
+				transmitObj:{},//请求路径参数
+				pageObj:{//请求分页信息
+					path:this.$router.history.current.path,
+					everyPage:this.everyPage,//每页记录数
+					currentPage:1,
+					totalCount:0,
+				},
+				dataSelections: [], //主表选中记录合集
 				dialogVisible: false, //对话框是否显示 
 				
-				ePage:this.everyPage,//每页记录数
-				cPage:1,//当前第几页
-				tCount:0,//总个数
-				
-				currentNode:"0",
-				pageList: this.$store.state.pagination.paginationList,
-				currentPath: this.$router.history.current.path,
+				currentNode:"0",//接收tree中点击的nodeIndex
 			}
 		},
 		props: ['mainContentHeight'],
 		mixins: [publicMethod,newsMethods],
-		components:{pagination,operations,tree},
+		components:{pagination,operations,tree,searchBar},
 		created() {
-			/**
-			 * 获取、保存页码设置
-			 */			
-			this.pageObj.everyPage = this.ePage;//挂载到vue中的everyPage
-			this.pageObj.currentPage = this.cPage;
 			
-			for(let item of this.pageList){//如果store中有保存过分页状态，则从store中获取				
-				if(item.path === this.currentPath){
-					this.pageObj.everyPage = item.everyPage;//store中存的页码数据
-					this.pageObj.currentPage = item.currentPage;
-					
+			for(let item of this.$store.state.pagination.paginationList){//如果store中有保存过分页状态，则从store中获取				
+				if(item.path === this.$router.history.current.path){
+					this.pageObj = item;
 					break;
 				}				
 			}
 		},
 		mounted() {
-			/**
-			 * 获取搜索框保存的选择状态
-			 */
-			const searchList = this.$store.state.search.searchList;
-			
-			for(let item of searchList) {
-				if(this.currentPath === item.path) {
-					this.searchText = item.searchText;
-					this.normalSelectValue = item.normalSelect;
-				}
-			}
 			
 			/*
 			 * 获取主表数据
@@ -196,64 +153,23 @@
 			 */			
 			this.getNewsMainData();
 			
-		},
+		},		
 		methods: {
 			handleSelectionChange(data){//主表数据选中
 				this.dataSelections = data;
 			},
-			getPageSize(pageSize){//变更每页条数
-				this.ePage=pageSize;				
-				for(let item of this.pageList){
-					if(item.path === this.currentPath){
-						this.ePage=pageSize;
-						item.everyPage=pageSize;
-						break;
-					}
-				}
-				
-				let maxPage = Math.ceil(this.tCount/pageSize);
-				if(this.pageObj.currentPage>maxPage){//设置每页条数后，如果当前页超过总页数，则设为最大总页数
-					this.pageObj.currentPage = maxPage;
-					this.cPage = maxPage;
-				}
-				this.pageObj.everyPage = pageSize;				
+			getPageSize(page){//变更每页条数
+				console.log(page);
+				this.pageObj= page;				
 				this.getNewsMainData();
 			},
-			getCurrentPage(pageNumber){//转到指定页
-				this.cPage = pageNumber;
-				for(let item of this.pageList){
-					if(item.path === this.currentPath){
-						item.currentPage=pageNumber;
-						break;
-					}
-				}
-				this.pageObj.currentPage = pageNumber;
+			getCurrentPage(page){//转到指定页
+				this.pageObj = page;
 				this.getNewsMainData();
-			},
-			selectorValue: function(value) {//搜索框条件选择
-				let searchObj = {
-					path: this.$router.history.current.path,
-					normalSelect: value,
-					searchText: this.searchText,
-				}
-				this.normalSelectValue = value; //选择框绑定值
-				this.$store.dispatch('searchAdd', searchObj); //store保存选择的select对象
 			},
 		    addPanel() { //打开弹窗
 				this.dialogVisible = true;
 				this.$router.push("/news/newsList/add");
-			},
-			normalSearch(){
-				if(this.normalSelectValue===""){
-					this.$notify.error({
-						title: '提示',
-				        message: '请选择查询类型',
-					});
-					this.$refs.normalSelect.focus();
-					return false;
-				}
-				document.getElementById("whereStr").value=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
-				this.getNewsMainData();
 			},
 		    refreshTableByTreeNode:function(nodeIndex){
 				this.currentNode = nodeIndex;
@@ -262,29 +178,17 @@
 		    }
 		},
 		watch: {
-			searchText: function(val) {
-				if(val == undefined) {
-					return false;
-				}
-				this.searchText = val;
-				let searchObj = {
-					path: this.$router.history.current.path,
-					normalSelect: this.normalSelectValue,
-					searchText: val,
-				}
-				this.$store.dispatch("searchAdd", searchObj);
-			},
-			mainContentHeight:function(val){
-				this.treeHeight = val - 25 + "px";
+			mainContentHeight(val){
+				this.mainTableHeight = val;
 			}
 		}
 	}
 </script>
 
-<style type="text/css" scoped="scoped">
-	@import url("../../style/headerNav.css");
+<style type="text/css">
+	
 	@import url("../../style/mainList.css");
 	
-	>>>#normalSelect{width:120px}
+	
 	
 </style>
