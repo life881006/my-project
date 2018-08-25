@@ -7,31 +7,28 @@
 			<el-input v-model="form.inputText2" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
-		<quill></quill>
-		
 		<el-col class="controll" :span='24'>
 			<el-button icon="el-icon-success">提交</el-button>
 		</el-col>
-		
+		<editor api-key = '5oudb8r9lujc4gfbtfjoe956y6oo1b77truk484jq0kysuvs' :init="{plugins: 'wordcount'}"></editor>
 		
 	</el-form>
 </template>
 
 <script>
-	
+		
+	import Editor from '@tinymce/tinymce-vue';
 	
 	export default{
 		data(){
 			return {
-				
 				form:{
 					inputText1:"laoli1",
 					inputText2:"laoli2"
 				},
-				
 			}
 		},
-		components:{quill},
+		components:{'editor':Editor},
 		methods:{
 			
 		},
