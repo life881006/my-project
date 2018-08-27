@@ -18,7 +18,15 @@
 			}
 		},
 		mounted(){
-			console.log(this.$store.state.textareaHtml.contentList);
+			console.log(this.$store.state.textarea.contentList);
+			if(this.$store.state.textarea.contentList.length!=0){
+				const filledContent = this.$store.state.textarea.contentList;
+				for(let item of filledContent){
+					if(item.path===this.$router.history.current.path){
+						this.textHtml = item.content;						
+					}
+				}
+			};
 			this.tinyMceInit();
 		},
 		activated() {
@@ -48,6 +56,11 @@
 		         	plugins: plugins,
 		         	toolbar: toolBar,
 					style_formats: styleFormats,
+					init_instance_callback:editor=>{
+						if(_this.textHtml!=""){
+							editor.setContent(_this.textHtml);
+						}
+					},
 					//content_css: "/static/tinymce/css/content.css",另附内容样式
 					setup: function(ed){//绑定tinymce方法
 					 	ed.on("blur",function(){
@@ -65,13 +78,16 @@
 				if (window.tinymce.get(this.MceEl)) {
 					window.tinymce.get(this.MceEl).destroy()
 				}
+				
 		    },
 		    setChanges(val){
-		    	let currentPath = this.$router.history.current.path;
+		    	const currentPath = this.$router.history.current.path;
 				let textareaObj = {"path":currentPath,"content":val};
-				console.log(val);
 				this.$store.dispatch("updateTextareaHtml",textareaObj);
 		    }
+		},
+		beforeDestroy(){
+			
 		},
 		destroyed() {
 		  this.destroyTinyMce()
