@@ -25,9 +25,9 @@
 		tinymce.init({
 			selector:"#testTiny",
 			language: "zh_CN",
-			images_upload_url: 'postAcceptor.php',
-			images_upload_base_path: '/some/basepath',
-			images_upload_credentials: true,
+			images_upload_url: 'postAcceptor.php',//图片上传
+			images_upload_base_path: '/some/basepath',//图片上传
+			images_upload_credentials: true,//图片上传
         	/*font_formats: "Andale Mono=andale mono,times;"+    //此处为初始默认字体样式，可不写
              "Arial=arial,helvetica,sans-serif;"+
              "Arial Black=arial black,avant garde;"+
@@ -53,7 +53,7 @@
          ],
          toolbar: "insertfile undo redo | styleselect fontselect fontsizeselect | bold italic image | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent  | print preview fullpage | forecolor backcolor",
          
-		 image_caption: true,
+		 image_caption: true,//图片标题
          style_formats: [
              {title: 'Bold text', inline: 'b'},
              {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},

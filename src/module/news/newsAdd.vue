@@ -7,17 +7,20 @@
 			<el-input v-model="form.inputText2" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
-		<el-col class="controll" :span='24'>
-			<el-button icon="el-icon-success">提交</el-button>
-		</el-col>
-		<editor api-key = '5oudb8r9lujc4gfbtfjoe956y6oo1b77truk484jq0kysuvs' :init="{plugins: 'wordcount'}"></editor>
 		
+		<editor ref="content" :tinyMce="newsContent"></editor>
+		<el-col class="controll" :span='24'>
+			<el-button icon="el-icon-success" @click="getEditorContent">提交</el-button>
+		</el-col>
+		<div id="editorContent" >
+			
+		</div>
 	</el-form>
 </template>
 
 <script>
-		
-	import Editor from '@tinymce/tinymce-vue';
+	
+	import editor from "@/components/tinyMce/tinyMce"
 	
 	export default{
 		data(){
@@ -26,11 +29,15 @@
 					inputText1:"laoli1",
 					inputText2:"laoli2"
 				},
+				newsContent:"newsTinyMce",
+				editorText:"",
 			}
 		},
-		components:{'editor':Editor},
+		components:{editor},
 		methods:{
-			
+			getEditorContent(){
+				this.editorText = this.$refs.content.getMceContent();//获取文本编辑器内容
+			}
 		},
 		mounted:function(){
 			
@@ -39,7 +46,8 @@
 </script>
 
 <style>
-	#addTable{height:auto;overflow-y:auto;}
+	#addTable{overflow-y:auto;}
 	.el-table-column{width:33%;}
 	.controll{text-align: center;}
+	
 </style>

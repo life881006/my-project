@@ -87,7 +87,9 @@
 			<!--:before-close="handleClose"-->
 
 			<div class="dialogMain">
-				<router-view :visibleAttr="dialogVisible"></router-view>
+				<keep-alive>
+					<router-view :visibleAttr="dialogVisible"></router-view>
+				</keep-alive>
 			</div>
 			<!--
 		  <span slot="footer" class="dialog-footer">
@@ -159,7 +161,6 @@
 				this.dataSelections = data;
 			},
 			getPageSize(page){//变更每页条数
-				console.log(page);
 				this.pageObj= page;				
 				this.getNewsMainData();
 			},

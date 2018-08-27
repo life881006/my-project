@@ -8,13 +8,20 @@
 		</el-form-item>
 		
 		
+		<editor ref="content" :tinyMce="studentContent"></editor>
 		<el-col class="controll" :span='24'>
-			<el-button icon="el-icon-success">提交</el-button>
+			<el-button icon="el-icon-success" @click="getEditorContent">提交</el-button>
 		</el-col>
+		<div id="editorContent" >
+			
+		</div>
 	</el-form>
 </template>
 
 <script>
+	
+	import editor from "@/components/tinyMce/tinyMce"
+	
 	export default{
 		data(){
 			return {
@@ -71,12 +78,18 @@
 					inputText1:"laoli1",
 					inputText2:"laoli2"
 				},
-				
+				studentContent:"studentTinyMce",
+				editorText:"",
 			}
 		},
 		methods:{
-			
+			getEditorContent(){
+				this.editorText = this.$refs.content.getMceContent();
+				document.getElementById("editorContent").innerHTML = this.editorText;
+			}
 		},
+		components:{editor},
+		props:[],
 		mounted:function(){
 			
 		}

@@ -892,7 +892,6 @@
 				this.getNewsMainData();
 			},
 			getCurrentPage(pageNumber){
-				console.log(pageNumber);
 				this.cPage = pageNumber;
 				for(let item of this.pageList){
 					if(item.path === this.currentPath){
@@ -905,7 +904,7 @@
 			},
 			addPanel:function(){
 				this.dialogVisible = true;
-				this.$router.push("/news/newsList/add");
+				this.$router.push("/student/studentList/add");
 			},
 			changeValue:function(value) {				
 				let searchObj = {
