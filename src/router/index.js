@@ -25,7 +25,7 @@ const router = new Router({
     			{
     				path:'add',
 	    			name:'table_add',
-	    			meta:{title:'添加',keepAlive:true},
+	    			meta:{title:'添加'},
 	    			component:() => import('@/module/news/newsAdd'),
     			},
     			{
@@ -79,11 +79,6 @@ const router = new Router({
     	name:'loginServer',
     	title:'登录',
     	component: () => import('@/module/login/login_server'),	
-    },{
-    	path:'/tinyMce',
-    	name:'tinyMce',
-    	title:'文本编辑器',
-    	component: () => import('@/components/tinyMce/tinyMce'),	
     }
     
     ]

@@ -19,8 +19,7 @@ const textarea = {
 		          state.contentList.splice(i, 1)
 		          break
 		        }
-		    }
-			console.log(state.contentList);
+		   }
 		}
 	},
 	actions:{

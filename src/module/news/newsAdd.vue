@@ -38,7 +38,7 @@
 			getEditorContent(){
 				this.editorText = this.$refs.content.getMceContent();//获取文本编辑器内容
 				/*
-				 点击提交后删除已保存的textarea内容
+				 点击提交后删除已保存到的textarea内容
 				 */
 				const currentPath = this.$router.history.current.path;
 				this.$store.dispatch("dropTextarea",currentPath);

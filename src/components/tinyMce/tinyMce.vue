@@ -1,5 +1,5 @@
 <template>
-	<textarea name="tinyMce" rows="1" cols="1" :id="MceEl" :ref="MceEl"></textarea>
+	<textarea name="tinyMce" :id="MceEl" :ref="MceEl"></textarea>
 </template>
 
 <script>
@@ -18,7 +18,6 @@
 			}
 		},
 		mounted(){
-			console.log(this.$store.state.textarea.contentList);
 			if(this.$store.state.textarea.contentList.length!=0){
 				const filledContent = this.$store.state.textarea.contentList;
 				for(let item of filledContent){
@@ -64,8 +63,18 @@
 					//content_css: "/static/tinymce/css/content.css",另附内容样式
 					setup: function(ed){//绑定tinymce方法
 					 	ed.on("blur",function(){
-					 		let content = ed.getContent();			 		
-					 		_this.setChanges(content);
+					 		let content = ed.getContent();
+					 		if(_this.textHtml != content){	
+					 			_this.$notify({
+						 			title:"通知",
+						 			type:"success",
+						 			message:"您编辑的文本内容已保存<br>刷新或关闭网页将重置文本",
+						 			showClose:false,
+						 			position:"botton-right",
+						 			duration:3000
+						 		});
+						 		_this.setChanges(content);
+					 		}
 					 	});
 					}
 				});
@@ -83,6 +92,7 @@
 		    setChanges(val){
 		    	const currentPath = this.$router.history.current.path;
 				let textareaObj = {"path":currentPath,"content":val};
+				this.textHtml = val;
 				this.$store.dispatch("updateTextareaHtml",textareaObj);
 		    }
 		},
