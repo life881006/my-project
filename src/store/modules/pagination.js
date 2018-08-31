@@ -9,11 +9,16 @@ const pagination = {
 			state.paginationList.push(Object.assign({},pagination));
 		},
 		GET_PAGINATION:(state,path)=>{
+			console.log(path);
 			for(let item of state.paginationList){
+				
 				if(path == item.path){
+					console.log(item);
 					state.currentPagination = item;
+					break;
 				}
 			}
+			
 		}
 	},
 	actions:{

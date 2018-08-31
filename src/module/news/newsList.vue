@@ -140,8 +140,6 @@
 		components:{pagination,operations,tree,searchBar},
 		created() {
 			
-			
-			console.log(new Date().getTime());
 			/*
 			 * 
 			 
@@ -152,8 +150,12 @@
 				}				
 			}
 			*/
-			this.$store.dispatch("getPagination",this.$router.history.current.path).then((data)=>{this.pageObj = data;});
-			console.log(new Date().getTime())
+			this.$store.dispatch("getPagination",this.$router.history.current.path).then((data)=>{
+				this.pageObj.currentPage = data.currentPage;
+				this.pageObj.everyPage = data.everyPage;
+				this.pageObj.totalCount = data.totalCount;
+			});	
+			
 		},
 		mounted() {
 			
