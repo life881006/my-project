@@ -44,9 +44,8 @@
 				tinymce.init({
 					selector:"#"+this.MceEl,
 					language: "zh_CN",
-					images_upload_url: 'postAcceptor.php',//图片上传
-					images_upload_base_path: '/some/basepath',//图片上传
-					images_upload_credentials: true,//图片上传
+					images_upload_base_path: '/some/basepath',//返回图片的前缀
+					images_upload_credentials: false,//图片上传
 				 	image_caption: true,//图片标题
 		        	font_formats: "Andale Mono=andale mono,times;"+    //此处为初始默认字体样式，可不写
 		             "Arial=arial,helvetica,sans-serif;"+
@@ -76,7 +75,34 @@
 						 		_this.setChanges(content);
 					 		}
 					 	});
-					}
+					},
+					images_upload_handler:(blobInfo, success, failure) => {//图片上传方法重新，官方示例
+			            let xhr, formData;						
+						    xhr = new XMLHttpRequest();
+						    xhr.withCredentials = false;
+						    xhr.open('POST', global.url_base2);
+						    
+						    xhr.onload = function() {
+						      let json;						
+						      if (xhr.status != 200) {
+						        failure('HTTP Error: ' + xhr.status);
+						        return;
+						      }						
+						      json = JSON.parse(xhr.responseText);						
+						      //if (!json || typeof json.url != 'string') {
+						      //  failure('Invalid JSON: ' + xhr.responseText);
+						      //  return;
+						      //}
+						      let data = json.data;
+						      console.log(data);
+						      success(global.webName+data.saveUrl+data.newFileName);
+						    };
+						
+						    formData = new FormData();
+						    formData.append('rootPath','/allWeb/huixue/news');
+						    formData.append('file', blobInfo.blob(), blobInfo.filename());
+						    xhr.send(formData);
+		            },
 				});
 			},
 			getMceContent(){

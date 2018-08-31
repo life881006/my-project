@@ -13,7 +13,6 @@ const textarea = {
 			state.contentList.push(Object.assign({},contentObj));			
 		},
 		DROP_TEXTAREA:(state,path)=>{
-			console.log(state.contentList);
 			for (const [i, v] of state.contentList.entries()) {//entries() 方法返回一个新的Array Iterator对象，该对象包含数组中每个索引的键/值对。
 		        if (v.path === path) {
 		          state.contentList.splice(i, 1)

@@ -140,12 +140,20 @@
 		components:{pagination,operations,tree,searchBar},
 		created() {
 			
+			
+			console.log(new Date().getTime());
+			/*
+			 * 
+			 
 			for(let item of this.$store.state.pagination.paginationList){//如果store中有保存过分页状态，则从store中获取				
 				if(item.path === this.$router.history.current.path){
 					this.pageObj = item;
 					break;
 				}				
 			}
+			*/
+			this.$store.dispatch("getPagination",this.$router.history.current.path).then((data)=>{this.pageObj = data;});
+			console.log(new Date().getTime())
 		},
 		mounted() {
 			

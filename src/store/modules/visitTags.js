@@ -11,7 +11,6 @@ const visitTagsList = {
 		    }));
 		},
 		DELETE_SINGLE_TAG:(state,visited)=>{
-			
 			for (const [i, v] of state.visitedTags.entries()) {//entries() 方法返回一个新的Array Iterator对象，该对象包含数组中每个索引的键/值对。
 		        if (v.path === visited.path) {
 		          state.visitedTags.splice(i, 1)
