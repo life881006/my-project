@@ -140,31 +140,18 @@
 		components:{pagination,operations,tree,searchBar},
 		created() {
 			
-			/*
-			 * 
-			 
-			for(let item of this.$store.state.pagination.paginationList){//如果store中有保存过分页状态，则从store中获取				
-				if(item.path === this.$router.history.current.path){
-					this.pageObj = item;
-					break;
-				}				
-			}
-			*/
-			this.$store.dispatch("getPagination",this.$router.history.current.path).then((data)=>{
-				this.pageObj.currentPage = data.currentPage;
-				this.pageObj.everyPage = data.everyPage;
-				this.pageObj.totalCount = data.totalCount;
-			});	
-			
 		},
 		mounted() {
 			
 			/*
 			 * 获取主表数据
+			 * 
 			 * news.js
-			 */			
-			this.getNewsMainData();
-			
+			 */	
+			this.$store.dispatch("getPagination",this.$router.history.current.path).then((data)=>{
+				this.pageObj = Object.assign(this.pageObj,data);
+				this.getNewsMainData();
+			});			
 		},		
 		methods: {
 			handleSelectionChange(data){//主表数据选中
