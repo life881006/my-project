@@ -1,5 +1,5 @@
 <template>
-	<textarea name="tinyMce" :id="MceEl" :ref="MceEl"></textarea>
+	<textarea name="tinyMce" :id="MceEl.name" :ref="MceEl.name" style="border:1px solid #dcdfe6;border-radius:4px;box-shadow: none;"></textarea>
 </template>
 
 <script>
@@ -7,6 +7,7 @@
 	import plugins from './plugins'
 	import styleFormats from './styleFormats'
 	import toolBar from './toolBar'
+	import fontFormats from './font_formats'
 	
 	export default {
 		name:this.MceEl,
@@ -42,18 +43,18 @@
 			tinyMceInit(){
 				const _this = this;
 				tinymce.init({
-					selector:"#"+this.MceEl,
+					selector:"#"+this.MceEl.name,
+					width:this.MceEl.width,
+					height:this.MceEl.height,
 					language: "zh_CN",
 					images_upload_base_path: '/some/basepath',//返回图片的前缀
 					images_upload_credentials: false,//图片上传
 				 	image_caption: true,//图片标题
-		        	font_formats: "Andale Mono=andale mono,times;"+    //此处为初始默认字体样式，可不写
-		             "Arial=arial,helvetica,sans-serif;"+
-		             "Arial Black=arial black,avant garde;"+
-		             "Times New Roman=times new roman,times;",
-		         	plugins: plugins,
-		         	toolbar: toolBar,
-					style_formats: styleFormats,
+		        	font_formats: fontFormats,//字体库
+		         	plugins: (this.MceEl.plugins.length===0?plugins:this.MceEl.plugins),//编辑器插件库
+		         	toolbar: (this.MceEl.toolBar.length===0?toolBar:this.MceEl.toolBar),//工具栏库
+					style_formats: (this.MceEl.styleFormats.length===0?styleFormats:this.MceEl.styleFormats),
+					menubar: this.MceEl.isShowMenuBar,//是否显示头部菜单栏
 					init_instance_callback:editor=>{
 						if(_this.textHtml!=""){
 							editor.setContent(_this.textHtml);
@@ -106,12 +107,12 @@
 				});
 			},
 			getMceContent(){
-				let content = tinymce.get(this.MceEl).getContent();
+				let content = tinymce.get(this.MceEl.name).getContent();
 				return content;
 			},
 			destroyTinyMce(){
-				if (window.tinymce.get(this.MceEl)) {
-					window.tinymce.get(this.MceEl).destroy()
+				if (window.tinymce.get(this.MceEl.name)) {
+					window.tinymce.get(this.MceEl.name).destroy()
 				}
 				
 		    },
@@ -127,12 +128,15 @@
 		},
 		destroyed() {
 		  this.destroyTinyMce()
-		},
+		},/*
 		watch : {
-			tinyMce(val){
-				this.MceEl = val; 
+			tinyMce:{
+				handler(newValue, oldValue) {
+			　　　　　　this.MceEl = newValue
+			　　　},
+			　　　deep: true
 			}
-		},
+		},*/
 	}
 </script>
 

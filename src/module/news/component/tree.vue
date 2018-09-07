@@ -1,10 +1,10 @@
 <template>
 	<el-col class="treeObj" :xs="5" :sm="5" :md="5" :lg="5">
 		<div class="treeInner">	
-			<h4 class="title">频道管理</h4>
+			<h4 class="title" @click="resetTable">频道管理</h4>
 			<!--展示树-->
 			<el-scrollbar>
-			<el-tree ref="elTree1" lazy :data="treeData" :props="defaultProps" :style="{height:tHeight}" @node-click="handleNodeClick" :load="loadNode" >
+			<el-tree ref="elTree" id="elTree" lazy :data="treeData" :props="defaultProps" :style="{height:tHeight}" @node-click="handleNodeClick" :load="loadNode" >
 				
 			</el-tree>
 			</el-scrollbar>
@@ -37,15 +37,19 @@
 		},
 		props:['treeHeight'],
 		methods:{
+			resetTable(){
+				this.currentNodeIndex = "0";
+				this.$emit("refreshTableByTreeNode",this.currentNodeIndex);
+			},
 			handleNodeClick(data) {//data ：节点数据
 				this.$emit("refreshTableByTreeNode",data.index);
 		    },
 			loadNode(node, resolve) {//动态加载树结构子节点
-				if(!this.$refs.elTree1){
+				if(!this.$refs.elTree){
 					return false;
 				}
 				
-				this.currentNodeIndex = this.$refs.elTree1.getCurrentNode().index;
+				this.currentNodeIndex = this.$refs.elTree.getCurrentNode().index;
 				this.loadChannelTree().then((data)=>{
 					if(data.length===0){
 						resolve([]);
@@ -88,19 +92,18 @@
 		},
 		watch:{
 			treeHeight(val){
-				this.tHeight = val;
+				document.getElementById("elTree").style.height = val + "px";
 			}
-			
 		}
 		
 	}
 </script>
 
 <style scoped="scoped">
-	
+	h4.title{cursor:pointer}
 	.el-tree{background-color:inherit;padding:5px;}
 	/*.treeObj{background-color: #fefefe;}*/
-	.treeInner{margin:0px 15px 0px 0px;background-color: #FAFAFA;}
-	.treeInner>.title{font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#333;font-weight:bolder;border-bottom:1px solid #ebeef5}
-	
+	.treeInner{margin:0px 25px 0px 0px;background-color: #FAFAFA;}
+	.treeInner>.title{font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#666;font-weight:bolder;border-bottom:1px solid #ebeef5}
+	.treeInner>.title:hover{color:#409eff}
 </style>

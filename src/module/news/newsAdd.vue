@@ -1,25 +1,26 @@
 <template>	
 	<el-form ref="form" :model="form" label-width="80px">
-		<el-form-item label="姓名">
+		<el-form-item label="标题">
 			<el-input v-model="form.inputText1" placeholder="请输入内容"></el-input>			
 		</el-form-item>
-		<el-form-item label="姓名">
+		
+		<el-form-item label="正文">
+		<editor ref="content" :tinyMce="tinyMceParams"></editor>
+		</el-form-item>
+		
+		<el-form-item label="文章类型">
 			<el-input v-model="form.inputText2" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
-		
-		<editor ref="content" :tinyMce="newsContent"></editor>
 		<el-col class="controll" :span='24'>
 			<el-button icon="el-icon-success" @click="getEditorContent">提交</el-button>
 		</el-col>
-		<div id="editorContent" >
-			
-		</div>
 	</el-form>
 </template>
 
 <script>
 	
+	//引入编辑器
 	import editor from "@/components/tinyMce/tinyMce"
 	
 	export default{
@@ -29,7 +30,15 @@
 					inputText1:"laoli1",
 					inputText2:"laoli2"
 				},
-				newsContent:"newsTinyMce",
+				tinyMceParams:{//编辑器参数设置
+					name:"newsTinyMce",
+					width:"100%",
+					height:"200px",
+					plugins:[],//编辑器插件,不填写加载默认插件
+					toolBar:[],//工具栏图标显示，不填写加载默认图标
+					styleFormats:[],//文本编辑器中内容样式
+					isShowMenuBar: true,//是否显示菜单栏
+				},
 				editorText:"",
 			}
 		},

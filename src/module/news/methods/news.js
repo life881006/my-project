@@ -4,7 +4,7 @@
 			/*			 
 			 * 主表条件语句 
 			 */
-			let whereStr = document.getElementById("whereStr").value;
+			let whereStr = this.whereStr;
 			let unitId = this.user.unitId;
 			let currentChannelId = this.currentNode;
 			
@@ -54,7 +54,40 @@
 				return this.getPageData(this.pageObj,this.transmitObj);//获取主表具体条数
 			}).then((data)=>{
 				this.tableData = data;
+				this.loading = false;
 			});
-		}
+		},
+		handleSelectionChange(data){//主表数据选中
+			this.dataSelections = data;
+		},
+		getPageSize(page){//变更每页条数
+			this.loading = true;
+			this.pageObj= page;
+			this.getNewsMainData();
+		},
+		getCurrentPage(page){//转到指定页
+			this.loading = true;
+			this.pageObj = page;
+			this.getNewsMainData();
+		},
+	    addPanel() { //打开弹窗
+			this.dialogVisible = true;
+			this.$router.push("/news/newsList/add");
+		},
+		refreshTable(){//子组件普通刷新主表
+			this.getNewsMainData();
+		},
+		refreshTableBySearch(whereStr){//子查询组件刷新主表
+	    	this.loading = true;
+			this.whereStr = whereStr;
+			this.pageObj.currentPage = 1;
+	    	this.getNewsMainData();
+	    },
+	    refreshTableByTreeNode(nodeIndex){//子树组件刷新主表
+	    	this.loading = true;
+			this.currentNode = nodeIndex;
+			this.pageObj.currentPage = 1;
+	    	this.getNewsMainData();
+	    },
 	}
 }

@@ -42,6 +42,7 @@
 				}
 			}
 		},
+		props:["whereStr"],
 		methods : {
 			selectorValue: function(value) {//搜索框条件选择
 				let searchObj = {
@@ -54,15 +55,23 @@
 			},
 			normalSearch(){
 				if(this.normalSelectValue===""){
-					this.$notify.error({
-						title: '提示',
+					this.$notify.info({
+						title: '提示',						
+						position: 'top-left',
+						offset:-10,
 				        message: '请选择查询类型',
 					});
 					this.$refs.normalSelect.focus();
 					return false;
 				}
-				document.getElementById("whereStr").value=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
-				this.$emit("refreshTabel");//调用父组件刷新表格
+				let whereStr = "";
+				if(this.searchText===""){
+					
+				}else{
+					whereStr +=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
+				}
+				console.log(whereStr);
+				this.$emit("refreshTabel",whereStr);//调用父组件刷新表格
 			},
 		},
 		watch : {

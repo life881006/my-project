@@ -1,12 +1,10 @@
 <template>
 	<div class="mainTableArea">
 
-		<input type="hidden" id="whereStr" value="" />
-
 		<el-row class="search">
 			<el-col :xs="23" :sm="23" :md="23" :lg="23">
 				<!--搜索框组件-->
-				<searchBar @refreshTabel="getNewsMainData"></searchBar>
+				<searchBar @refreshTabel="refreshTableBySearch" :whereStr="whereStr"></searchBar>
 			</el-col>
 
 			<el-col :xs="1" :sm="1" :md="1" :lg="1">
@@ -19,7 +17,15 @@
 			<tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="treeHeight"></tree>
 			
 			<el-col :xs="19" :sm="19" :md="19" :lg="19">		
-				<el-table ref="multipleTable" :height="mainTableHeight" :data="tableData" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :default-sort="{prop:'id',order:'ascending'}">
+				<el-table
+					 v-loading="loading" 
+					 ref="multipleTable" 
+					 :height="mainTableHeight" 
+					 :data="tableData" 
+					 tooltip-effect="dark" 
+					 style="width: 100%" 
+					 @selection-change="handleSelectionChange"
+					 :default-sort="{prop:'id',order:'ascending'}">
 					<el-table-column align="center" type="selection" width="55">
 					</el-table-column>
 		
@@ -74,7 +80,7 @@
 				</el-table>			
 
 				<div class="paginationArea">
-					<operations @refreshTabel="getNewsMainData" :selectedData="dataSelections"></operations>
+					<operations @refreshTabel="refreshTable" :selectedData="dataSelections"></operations>
 					
 					<pagination @setPageSize="getPageSize" @setCurrentPage="getCurrentPage" :pageObj="pageObj"></pagination>
 					
@@ -118,10 +124,9 @@
 		data() {
 			return {
 				mainTableHeight: this.mainContentHeight + "px",//主表高度
-				treeHeight: this.mainContentHeight - 25 +"px",//树高度
-
+				treeHeight: this.mainContentHeight +"px",//树高度
+				loading:true,
 				tableData: [],//主表数据
-				
 				transmitObj:{},//请求路径参数
 				pageObj:{//请求分页信息
 					path:this.$router.history.current.path,
@@ -131,8 +136,8 @@
 				},
 				dataSelections: [], //主表选中记录合集
 				dialogVisible: false, //对话框是否显示 
-				
 				currentNode:"0",//接收tree中点击的nodeIndex
+				whereStr:"",//whereStr
 			}
 		},
 		props: ['mainContentHeight'],
@@ -154,30 +159,12 @@
 			});			
 		},		
 		methods: {
-			handleSelectionChange(data){//主表数据选中
-				this.dataSelections = data;
-			},
-			getPageSize(page){//变更每页条数
-				this.pageObj= page;				
-				this.getNewsMainData();
-			},
-			getCurrentPage(page){//转到指定页
-				this.pageObj = page;
-				this.getNewsMainData();
-			},
-		    addPanel() { //打开弹窗
-				this.dialogVisible = true;
-				this.$router.push("/news/newsList/add");
-			},
-		    refreshTableByTreeNode:function(nodeIndex){
-				this.currentNode = nodeIndex;
-				this.pageObj.currentPage = 1;
-		    	this.getNewsMainData();
-		    }
+			
 		},
 		watch: {
 			mainContentHeight(val){
 				this.mainTableHeight = val;
+				this.treeHeight = val;
 			}
 		}
 	}
