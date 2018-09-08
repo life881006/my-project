@@ -19,10 +19,7 @@ export default{//表单提交信息验证模块
 			rules.push({validator:checkInput,trigger:'blur'});//写判断方法
 			
 			switch(item.type){
-				case "username":
-					rules.push({ pattern: /^(\S)+$/,message: '请勿输入空格', trigger: 'blur' });	//直接写正则
-				break;
-				case "password":
+				case "nomarlCheck":
 					rules.push({ pattern: /^(\S)+$/,message: '请勿输入空格', trigger: 'blur' });	//直接写正则
 				break;
 			}
@@ -34,7 +31,7 @@ export default{//表单提交信息验证模块
 
 
 function checkInputValue(value){//校验调用的方法
-	let patt = new RegExp("select|add|update|delete");
+	let patt = new RegExp("select|insert|update|delete");
 	if(patt.test(value)){
 		return false;	
 	}else{

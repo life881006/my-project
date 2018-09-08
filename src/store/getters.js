@@ -4,6 +4,7 @@ const getters = {
 	pagination : state => state.pagination.paginationList,
 	currentPagination : state => state.pagination.currentPagination,
 	search : state => state.search.searchList,
+	currentSearch : state => state.search.currentSearch,
 	textarea : state => state.textarea.contentList,
 }
 

@@ -5,7 +5,15 @@ const pagination = {
 	},
 	mutations:{
 		PAGINATION_ADD:(state,pagination)=>{
-			if(state.paginationList.some(v => v.path === pagination.path)) return;
+			if(state.paginationList.some(v => v.path === pagination.path)){
+				for (const [i, v] of state.paginationList.entries()) {
+					if(v.path===pagination.path){
+						state.paginationList.splice(i, 1);
+						state.paginationList.push(pagination);
+						return false;
+					}
+				}
+			};
 			state.paginationList.push(Object.assign({},pagination));
 		},
 		GET_PAGINATION:(state,path)=>{

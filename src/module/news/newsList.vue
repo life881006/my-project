@@ -15,7 +15,6 @@
 		<el-row>
 			<!--树组件-->
 			<tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="treeHeight"></tree>
-			
 			<el-col :xs="19" :sm="19" :md="19" :lg="19">		
 				<el-table
 					 v-loading="loading" 
@@ -152,10 +151,17 @@
 			 * 获取主表数据
 			 * 
 			 * news.js
-			 */	
-			this.$store.dispatch("getPagination",this.$router.history.current.path).then((data)=>{
+			 */
+			const path = this.$router.history.current.path;
+			this.$store.dispatch("getPagination",path).then((data)=>{//获取vuex保存的分页状态
 				this.pageObj = Object.assign(this.pageObj,data);
-				this.getNewsMainData();
+				console.log(data);
+				this.$store.dispatch("getCurrentSearch",path).then((data)=>{//获取vuex保存的搜索框状态
+					if(data.path){
+						this.whereStr = " where "+data.normalSelect+" like '%"+data.searchText+"%'";
+					}
+					this.getNewsMainData();
+				});
 			});			
 		},		
 		methods: {

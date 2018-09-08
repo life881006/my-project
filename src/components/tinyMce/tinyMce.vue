@@ -68,7 +68,7 @@
 					 			_this.$notify({
 						 			title:"通知",
 						 			type:"success",
-						 			message:"您编辑的文本内容已保存<br>刷新或关闭网页将重置文本",
+						 			message:"您编辑的文本内容已保存,刷新或关闭网页将重置文本",
 						 			showClose:false,
 						 			position:"botton-right",
 						 			duration:3000

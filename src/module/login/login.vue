@@ -1,10 +1,10 @@
 <template>
 	<el-form :model="ruleForm" ref="ruleForm">
 		<!--prop必须与input的username一致，才能验证Input》username 中输入的值-->
-		<el-form-item label="用户名" :rules="filter_inputs({required:true,type:'username'})" prop="username">
+		<el-form-item label="用户名" :rules="filter_inputs({required:true,type:'nomarlCheck'})" prop="username">
 			<el-input class="input" size="small" v-model="ruleForm.username"></el-input>
 		</el-form-item>
-		<el-form-item label="密码" :rules="filter_inputs({required:true,type:'password'})" prop="password">
+		<el-form-item label="密码" :rules="filter_inputs({required:true,type:'nomarlCheck'})" prop="password">
 			<el-input class="input" size="small" v-model="ruleForm.password"></el-input>
 		</el-form-item>
 		<div class="auditLine" id="auditLine">

@@ -70,7 +70,6 @@
 				}else{
 					whereStr +=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
 				}
-				console.log(whereStr);
 				this.$emit("refreshTabel",whereStr);//调用父组件刷新表格
 			},
 		},

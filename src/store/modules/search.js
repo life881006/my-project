@@ -1,5 +1,6 @@
 const search = {
 	state: {
+		currentSearch:{},
 		searchList:[]
 	},
 	mutations:{
@@ -12,11 +13,25 @@ const search = {
 		    }
 			state.searchList.push(Object.assign({},searchObj));
 		},
+		GET_CURRENT_SEARCH:(state,path)=>{
+			for(let item of state.searchList){
+				if(path == item.path){
+					state.currentSearch = item;
+					break;
+				}
+			}
+		}
 	},
 	actions:{
 		searchAdd({commit,state},searchObj){
 			commit('SEARCH_ADD',searchObj);
 		},
+		getCurrentSearch({commit,state},path){
+			return new Promise((resolve,reject)=>{
+				commit('GET_CURRENT_SEARCH',path);
+				resolve(state.currentSearch);
+			});
+		}
 	}
 }
 

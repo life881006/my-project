@@ -1,10 +1,10 @@
 <template>	
-	<el-form ref="form" :model="form" label-width="80px">
-		<el-form-item label="标题">
+	<el-form ref="form" :model="form" :rules="rules" label-width="80px">
+		<el-form-item label="标题" :rules="filter_inputs({required:true,type:'nomarlCheck'})" prop="inputText1">
 			<el-input v-model="form.inputText1" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
-		<el-form-item label="正文">
+		<el-form-item label="正文" :rules="filter_inputs({required:true,type:'nomarlCheck'})">
 		<editor ref="content" :tinyMce="tinyMceParams"></editor>
 		</el-form-item>
 		
@@ -26,6 +26,11 @@
 	export default{
 		data(){
 			return {
+				rules:{
+					inputText1:[
+						{min:3,max:5,message:"长度在3-5之间",trigger:"blur"},
+					]
+				},//表单追加验证
 				form:{
 					inputText1:"laoli1",
 					inputText2:"laoli2"
