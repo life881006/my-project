@@ -1,14 +1,14 @@
 <template>	
 	<el-form ref="form" :model="form" :rules="rules" label-width="80px">
-		<el-form-item label="标题" :rules="filter_inputs({required:true,type:'nomarlCheck'})" prop="inputText1">
+		<el-form-item label="标题" :rules="filter_inputs('required,space,email')" prop="inputText1">
 			<el-input v-model="form.inputText1" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
-		<el-form-item label="正文" :rules="filter_inputs({required:true,type:'nomarlCheck'})">
-		<editor ref="content" :tinyMce="tinyMceParams"></editor>
+		<el-form-item label="正文">
+			<editor ref="content" :tinyMce="tinyMceParams"></editor>
 		</el-form-item>
 		
-		<el-form-item label="文章类型">
+		<el-form-item label="文章类型" :rules="filter_inputs('required,space,length_1_3')" prop="inputText2">
 			<el-input v-model="form.inputText2" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
@@ -32,8 +32,8 @@
 					]
 				},//表单追加验证
 				form:{
-					inputText1:"laoli1",
-					inputText2:"laoli2"
+					inputText1:"",
+					inputText2:""
 				},
 				tinyMceParams:{//编辑器参数设置
 					name:"newsTinyMce",

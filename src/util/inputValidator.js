@@ -13,17 +13,27 @@ export default{//表单提交信息验证模块
 		Vue.prototype.filter_inputs = function(item){//统一调用的方法，在main.js里调用
 			let rules = [];
 			
-			if(item.required){
-				rules.push({ required: true,message:'该项为必填项', trigger: 'blur' });//必填项
-			}
+			
 			rules.push({validator:checkInput,trigger:'blur'});//写判断方法
 			
-			switch(item.type){
-				case "nomarlCheck":
-					rules.push({ pattern: /^(\S)+$/,message: '请勿输入空格', trigger: 'blur' });	//直接写正则
-				break;
+			const validateList = item.split(",");
+			for(let item of validateList){
+				if(item.indexOf("required")>=0){
+					rules.push({ required: true,message:'该项为必填项', trigger: 'blur' });//必填项
+				}else if(item.indexOf("space")>=0){
+					
+					rules.push({ pattern: /^(\S)+$/,message: '请勿输入空格', trigger: 'blur' });	
+					
+				}else if(item.indexOf("length")>=0){
+					
+					var minIndex = Number(item.split("_")[1]);
+					var maxIndex = Number(item.split("_")[2]);	
+					rules.push({ min: minIndex,max: maxIndex,message: '长度在'+minIndex+'到'+maxIndex+'之间', trigger: 'blur' });	
+					
+				}else if(item.indexOf("email")>=0){
+					rules.push({ type:'email',message: '输入的邮箱格式不正确', trigger: 'blur' });
+				}
 			}
-			
 			return rules;
 		}
 	}

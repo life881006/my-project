@@ -69,7 +69,7 @@
 			    	
 			    	this.axios({
 			            method: 'post',
-			            url: global.url_base,
+			            url: this.baseConfig.url_base,
 			            data: this.getData("HX_API","/https/channel/queryForMap.do",p),
 			            dataType: 'JSON'						 
 			        }).then((result)=> {

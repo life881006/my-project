@@ -67,7 +67,7 @@
 						</template>
 					</el-table-column>
 		
-					<el-table-column align="center" label="阅读次数" prop="editor" min-width="8%">
+					<el-table-column align="center" label="阅读次数" prop="readTimes" min-width="8%">
 		
 					</el-table-column>
 		
@@ -88,7 +88,7 @@
 		</el-row>
 
 		<!--弹框-->
-		<el-dialog title="提示" :visible.sync="dialogVisible" width="80%" top="5vh">
+		<el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="80%" top="5vh">
 			<!--:before-close="handleClose"-->
 
 			<div class="dialogMain">
@@ -120,7 +120,7 @@
 	
 	export default {
 
-		data() {
+		data(){
 			return {
 				mainTableHeight: this.mainContentHeight + "px",//主表高度
 				treeHeight: this.mainContentHeight +"px",//树高度
@@ -129,7 +129,7 @@
 				transmitObj:{},//请求路径参数
 				pageObj:{//请求分页信息
 					path:this.$router.history.current.path,
-					everyPage:this.everyPage,//每页记录数
+					everyPage:this.baseConfig.everyPage,//每页记录数
 					currentPage:1,
 					totalCount:0,
 				},
@@ -137,6 +137,7 @@
 				dialogVisible: false, //对话框是否显示 
 				currentNode:"0",//接收tree中点击的nodeIndex
 				whereStr:"",//whereStr
+				dialogTitle:"",
 			}
 		},
 		props: ['mainContentHeight'],
@@ -162,7 +163,7 @@
 					}
 					this.getNewsMainData();
 				});
-			});			
+			});
 		},		
 		methods: {
 			

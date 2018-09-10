@@ -41,7 +41,7 @@
 			this.pageObj.orderStr = "order by a.editTime desc";			
 			
 					
-			this.transmitObj.url = global.url_base;
+			this.transmitObj.url = this.baseConfig.url_base;
 			this.transmitObj.api = "HX_API";
 			this.transmitObj.handler = "/https/news/getPageInfo.do";
 			
@@ -72,6 +72,7 @@
 		},
 	    addPanel() { //打开弹窗
 			this.dialogVisible = true;
+			this.dialogTitle = "添加";
 			this.$router.push("/news/newsList/add");
 		},
 		refreshTable(){//子组件普通刷新主表

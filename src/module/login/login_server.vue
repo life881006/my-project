@@ -1,10 +1,10 @@
 <template>
 	<el-form :model="ruleForm" ref="ruleForm" :rules="rules">
 		<!--prop必须与input的username一致，才能验证Input》username 中输入的值-->
-		<el-form-item label="用户名" :rules="filter_inputs({required:true,type:'nomarlCheck'})" prop="username">
+		<el-form-item label="用户名" :rules="filter_inputs('required,space')" prop="username">
 			<el-input class="input" size="small" v-model="ruleForm.username"></el-input>
 		</el-form-item>
-		<el-form-item label="密码" :rules="filter_inputs({required:true,type:'nomarlCheck'})" prop="password">
+		<el-form-item label="密码" :rules="filter_inputs('required,space')" prop="password">
 			<el-input class="input" size="small" v-model="ruleForm.password"></el-input>
 		</el-form-item>
 		<div class="auditLine" id="auditLine">
@@ -102,7 +102,7 @@
 				  		
 				  		this.axios({
 				            method: 'post',
-				            url: global.url_base,//url_base为全局变量，调用时前面加global,参数在util->config.js中
+				            url: this.baseConfig.url_base,//url_base为全局变量，调用时前面加global,参数在util->config.js中
 				            data: this.getData("HX_EXT_API","/https/user/loginByPwd.do",p),//getData为全局方法，方法加入到vue中，调用前需加this，方法在util->methods.js中
 				            dataType: 'JSON'						 
 				        }).then((result)=> {
@@ -155,7 +155,7 @@
 				p.id = userId;
 				this.axios({
 					method:'post',
-					url:global.url_base,
+					url:this.baseConfig.url_base,
 					data: this.getData("HX_EXT_API","/https/user/queryUserInfo.do",p),
 					dataType:"json",
 				}).then((result)=>{

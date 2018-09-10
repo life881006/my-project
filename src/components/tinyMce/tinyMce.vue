@@ -81,7 +81,7 @@
 			            let xhr, formData;						
 						    xhr = new XMLHttpRequest();
 						    xhr.withCredentials = false;
-						    xhr.open('POST', global.url_base2);
+						    xhr.open('POST', this.baseConfig.url_base2);
 						    
 						    xhr.onload = function() {
 						      let json;						
@@ -96,7 +96,7 @@
 						      //}
 						      let data = json.data;
 						      console.log(data);
-						      success(global.webName+data.saveUrl+data.newFileName);
+						      success(this.baseConfig.webName+data.saveUrl+data.newFileName);
 						    };
 						
 						    formData = new FormData();
