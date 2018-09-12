@@ -149,14 +149,13 @@
 		mounted() {
 			
 			/*
-			 * 获取主表数据
+			 * 获取主表数据、保存的状态数据
 			 * 
 			 * news.js
 			 */
 			const path = this.$router.history.current.path;
 			this.$store.dispatch("getPagination",path).then((data)=>{//获取vuex保存的分页状态
 				this.pageObj = Object.assign(this.pageObj,data);
-				console.log(data);
 				this.$store.dispatch("getCurrentSearch",path).then((data)=>{//获取vuex保存的搜索框状态
 					if(data.path){
 						this.whereStr = " where "+data.normalSelect+" like '%"+data.searchText+"%'";

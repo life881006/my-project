@@ -7,7 +7,7 @@ import ElementUI from 'element-ui'
 import axios from 'axios'
 import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
-import config from './util/config' //引入公共url参数
+import baseConfig from './util/config' //引入公共url参数
 import getD from './util/methods' //引入axios数据打包函数
 import filter_inputs from './util/inputValidator' //引入表单输入信息校验模块
 import "./assets/iconfont/iconfont.css"
@@ -27,7 +27,8 @@ Vue.use(filter_inputs)
  */
 
 Vue.prototype.axios = axios
-Vue.prototype.baseConfig = config
+Vue.prototype.baseConfig = baseConfig
+
 
 /* eslint-disable no-new */
 new Vue({

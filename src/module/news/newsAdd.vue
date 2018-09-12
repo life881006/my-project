@@ -1,6 +1,10 @@
 <template>	
 	<el-form ref="form" :model="form" :rules="rules" label-width="80px">
-		<el-form-item label="标题" :rules="filter_inputs('required,space,email')" prop="inputText1">
+		<el-form-item>
+			
+		</el-form-item>
+		
+		<el-form-item label="标题" :rules="filter_inputs('required,')" prop="inputText1">
 			<el-input v-model="form.inputText1" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
@@ -8,7 +12,7 @@
 			<editor ref="content" :tinyMce="tinyMceParams"></editor>
 		</el-form-item>
 		
-		<el-form-item label="文章类型" :rules="filter_inputs('required,space,length_1_3')" prop="inputText2">
+		<el-form-item label="文章类型" :rules="filter_inputs('required')" prop="inputText2">
 			<el-input v-model="form.inputText2" placeholder="请输入内容"></el-input>			
 		</el-form-item>
 		
@@ -48,6 +52,9 @@
 			}
 		},
 		components:{editor},
+		mounted:function(){
+			this.loadChannel();
+		},
 		methods:{
 			getEditorContent(){
 				this.editorText = this.$refs.content.getMceContent();//获取文本编辑器内容
@@ -56,11 +63,26 @@
 				 */
 				const currentPath = this.$router.history.current.path;
 				this.$store.dispatch("dropTextarea",currentPath);
+			},
+			loadChannel(){
+				const sql = "SELECT id,name FROM channel WHERE unitId = '"+this.user.unitId+"' order by serialNumber asc";
+				let p = {};
+				p.sql = sql; 
+			
+				this.axios({
+					url:this.baseConfig.url_base,
+					dataType:"JSON",
+					method:"post",
+					data:this.getData("HX_API","/https/channel/queryForMap.do",p),
+				}).then((result)=>{
+					let data = result.data.data;
+					
+				}).catch((error)=>{
+					console.log(error);
+					
+				});
 			}
 		},
-		mounted:function(){
-			
-		}
 	}
 </script>
 
