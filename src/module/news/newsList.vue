@@ -111,11 +111,11 @@
 	import publicMethod from '@/module/public/publicMethod'//公共方法
 	import pagination from '@/module/public/pagination'//分页组件
 	
-	import newsMethods from '@/module/news/methods/news'
+	import newsMethods from '@/module/news/methods/news'//公共方法
 	
-	import searchBar from '@/module/news/component/search'
-	import tree from '@/module/news/component/tree'
-	import operations from '@/module/news/component/operations'
+	import searchBar from '@/module/news/component/search'//公共组件
+	import tree from '@/module/news/component/tree'//公共组件
+	import operations from '@/module/news/component/operations'//公共组件
 	
 	
 	export default {

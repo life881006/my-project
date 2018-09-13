@@ -63,16 +63,20 @@
 					//content_css: "/static/tinymce/css/content.css",另附内容样式
 					setup: function(ed){//绑定tinymce方法
 					 	ed.on("blur",function(){
-					 		let content = ed.getContent();
+					 		const content = ed.getContent();
+					 		//const textContent = _this.$trim(ed.getContent({"format":"text"})); 
 					 		if(_this.textHtml != content){	
-					 			_this.$notify({
+					 			/*
+					 			 * _this.$notify({
 						 			title:"通知",
 						 			type:"success",
 						 			message:"您编辑的文本内容已保存,刷新或关闭网页将重置文本",
 						 			showClose:false,
 						 			position:"botton-right",
 						 			duration:3000
-						 		});
+						 		});						 		
+						 		* 
+						 		* */
 						 		_this.setChanges(content);
 					 		}
 					 	});
@@ -82,7 +86,7 @@
 						    xhr = new XMLHttpRequest();
 						    xhr.withCredentials = false;
 						    xhr.open('POST', this.baseConfig.url_base2);
-						    
+						    const _this = this;
 						    xhr.onload = function() {
 						      let json;						
 						      if (xhr.status != 200) {
@@ -95,8 +99,7 @@
 						      //  return;
 						      //}
 						      let data = json.data;
-						      console.log(data);
-						      success(this.baseConfig.webName+data.saveUrl+data.newFileName);
+						      success(_this.baseConfig.webName+data.saveUrl+data.newFileName);
 						    };
 						
 						    formData = new FormData();
@@ -107,20 +110,25 @@
 				});
 			},
 			getMceContent(){
-				let content = tinymce.get(this.MceEl.name).getContent();
-				return content;
+				let textContent = this.$trim(tinymce.get(this.MceEl.name).getContent({"format":"text"}));
+				
+				let wholeContent = tinymce.get(this.MceEl.name).getContent();
+				const contentObj = {text:textContent,html:wholeContent};
+				return contentObj;
 			},
 			destroyTinyMce(){
 				if (window.tinymce.get(this.MceEl.name)) {
 					window.tinymce.get(this.MceEl.name).destroy()
 				}
-				
 		    },
 		    setChanges(val){
 		    	const currentPath = this.$router.history.current.path;
 				let textareaObj = {"path":currentPath,"content":val};
 				this.textHtml = val;
 				this.$store.dispatch("updateTextareaHtml",textareaObj);
+		    },
+		    claerMce(){
+		    	tinymce.get(this.MceEl.name).setContent("");
 		    }
 		},
 		beforeDestroy(){

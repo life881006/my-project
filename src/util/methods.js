@@ -1,11 +1,5 @@
 import qs from 'qs'
-/* 加密设置
-import CryptoJS from 'crypto-js/crypto-js'
 
-const KEY = CryptoJS.enc.Utf8.parse("1234567890123456");
-const IV = CryptoJS.enc.Utf8.parse('1234567890123456');
-
-*/
 export default{
   install(Vue,options)
   {
@@ -16,27 +10,14 @@ export default{
 	    d.path = path;
 	    d.json = JSON.stringify(json);
 	    d.abc = new Date().getTime();
-	    /**加密
-	    let dataJsonStr = qs.stringify(d);	     * 
-		  var encrypted = CryptoJS.AES.encrypt(dataJsonStr, KEY, {
-		    iv: IV,
-		    mode: CryptoJS.mode.CBC,
-		    padding: CryptoJS.pad.ZeroPadding
-		  });
-	    let encodeObj = CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
-	    console.log(encodeObj);
-	           加密结束**/
 	    
-	    /**解密
-	   	let decodeStr = CryptoJS.AES.decrypt(encodeObj,KEY,
-      //{
-            iv:IV,
-            mode:CryptoJS.mode.CBC,
-            padding:CryptoJS.pad.ZeroPadding
-        });
-      console.log(decodeStr.toString(CryptoJS.enc.Utf8));
-	   	**/
 	   	return qs.stringify(d);
+    }
+    Vue.prototype.$trim = function(str){
+    	str = str.replace(/\ +/g, "");
+			str = str.replace(/[ ]/g, "");
+			str = str.replace(/[\r\n]/g, "");
+    	return str;
     }
   }
 }

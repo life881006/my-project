@@ -1,6 +1,8 @@
 const webName = "/HX_WEB";
 const req_path = "/net/requestHandle.do";
 const config = {
+	webName:webName,
+	req_path:req_path,
 	url_proj:window.location.protocol+"//"+window.location.host+webName,
 	url_base:window.location.protocol+"//"+window.location.host+webName+req_path,
 	url_base2:window.location.protocol+"//"+window.location.host+webName+"/net/updateFile2.do",
