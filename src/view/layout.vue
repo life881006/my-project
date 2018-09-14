@@ -8,7 +8,9 @@
 			</el-header>
 			<el-main>
 				<transition name="fade-transform" mode="out-in">
+					<keep-alive :include="keepAliveMenu">
 					<router-view :mainContentHeight="mainContentHeight"></router-view>
+					</keep-alive>
 				</transition>
 			</el-main>
 		</el-container>
@@ -32,6 +34,7 @@
 				sideBarWidth:defaultClientWidth,
 				sideBarHeight:defaultClientHeight,
 				mainContentHeight:defaultClientHeight-210,
+				keepAliveMenu:"newsAdd",
 			}
 		},
 		components:{sideBar,navBar,visitTags},

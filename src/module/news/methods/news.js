@@ -71,9 +71,7 @@
 			this.getNewsMainData();
 		},
 	    addPanel() { //打开弹窗
-			this.dialogVisible = true;
-			this.dialogTitle = "添加";
-			this.$router.push("/news/newsList/add");
+			this.$router.push("/news/newsAdd");
 		},
 		refreshTable(){//子组件普通刷新主表
 			this.getNewsMainData();
