@@ -1,15 +1,31 @@
 <template>
-	<div class="visitTagContainer" ref="visitTagContainer" @wheel.prevent="handleScroll">
-		<div class="visitTags" ref="visitTags" :style="{left:left+'px'}">
-			<router-link :class="[isActive(item)?'active':'','routerTags']" :key="item.path" ref="item" :to="item.path" v-for="item in Array.from(routerHistory)">{{item.title}}
-			<i class="el-icon-close"  v-on:click.stop.prevent="deleteVisitor(item)"></i>
-			</router-link>
+	<div @click="hideMenu">
+		<div class="visitTagContainer" ref="visitTagContainer" @wheel.prevent="handleScroll">
+			<div class="visitTags" ref="visitTags" :style="{left:left+'px'}">
+				<router-link 
+					:class="[isActive(item.path)?'active':'','routerTags']" 
+					:key="item.path" 
+					ref="item" 
+					:to="item.path" 
+					v-for="item in Array.from(routerHistory)" 
+					@contextmenu.native.prevent="showTagsMenu" 
+					>{{item.title}}
+				<i class="el-icon-close"  v-on:click.stop.prevent="deleteVisitor(item.path)"></i>
+				</router-link>
+			</div>
+		</div>
+		<div id="tagMenu" class="tagsMenu" :style="{'display':tagsMenuShow?'block':'none'}">
+			<ul>
+				<li><a @click="deleteCurrentTag">关闭</a></li>
+				<li><a @click="">关闭其他</a></li>
+				<li><a @click="">全部关闭</a></li>
+			</ul>
 		</div>
 	</div>
 </template>
 
 <script>
-	const padding=15
+	const padding=15;
 	export default{
 		name:"visitTags",
 		beforeCreate(){//直接访问三级路由跳转到二级路由
@@ -23,7 +39,9 @@
 		data:function(){
 			return {
 				left: 0,
-				routerHistory:this.$store.state.visitTags.visitedTags
+				routerHistory:this.$store.state.visitTags.visitedTags,
+				tagsMenuShow: false,
+				currentTagPath:"",
 			}
 		},
 		created:function(){
@@ -50,9 +68,9 @@
 		      }
 		      this.$store.dispatch('addVistedTags', route)
 		    },
-			deleteVisitor(item){
-				this.$store.dispatch('deleteSingleTag',item).then((items)=>{
-					if(this.isActive(item)){
+			deleteVisitor(path){
+				this.$store.dispatch('deleteSingleTag',path).then((items)=>{
+					if(this.isActive(path)){
 						const lastVisited = items.slice(-1)[0];
 						if(lastVisited){
 							this.$router.push(lastVisited);
@@ -64,8 +82,8 @@
 					}
 				});//再继续操作
 			},			
-			isActive(Obj){
-				return this.$router.history.current.path === Obj.path;
+			isActive(path){
+				return this.$router.history.current.path === path;
 			},
 			moveToCurrentTag() {
 			    const items = this.$refs.item;			    
@@ -117,6 +135,19 @@
 		        // tag in the right
 		        this.left = -($targetLeft - ($containerWidth - $targetWidth) + padding)
 		      }
+		    },
+		    hideMenu(){
+		    	this.tagsMenuShow = false;
+		    },
+		    showTagsMenu(event){
+		    	this.currentTagPath = event.currentTarget.href;
+		    	document.getElementById("tagMenu").style.left = event.x+"px";
+		    	document.getElementById("tagMenu").style.top = event.y+"px";
+		    	this.tagsMenuShow = true;
+		    },
+		    deleteCurrentTag(){
+		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
+		    	this.deleteVisitor(path);
 		    }
 		},
 		watch:{
@@ -140,4 +171,10 @@
 	.visitTags .active{background-color:#42B983;opacity: 1;color:#fff;border:0px}
 	.visitTags .active:before{content: "";width: 8px;height:8px;border-radius: 50%;background-color: #fff;display: inline-block;top:12px;margin-right:5px}
 	.visitTags .active i{color:#fff}
+	
+	.tagsMenu{width: 150px;height: 100px;position: absolute;background-color: #fff;border-radius: 3px;border:1px solid #fafafa;z-index: 20;}
+	.tagsMenu ul{margin:0px;padding:0px;}
+	.tagsMenu ul li{list-style: none;height:33px;line-height:33px;margin:0px;font-size:12px;color:#666;}
+	.tagsMenu ul li a{padding-left:10px;display: block;}
+	.tagsMenu ul li a:hover{cursor: pointer;background-color: #fdfdfd;}
 </style>
