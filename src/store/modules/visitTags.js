@@ -17,6 +17,9 @@ const visitTagsList = {
 		          break
 		        }
 		    }
+		},
+		DELETE_ALL_TAGS:(state)=>{
+			state.visitedTags = state.visitedTags[0];
 		}
 	},
 	actions: {//用于异步变更state
@@ -27,6 +30,12 @@ const visitTagsList = {
 			return new Promise((resolve) => {//异步处理actions
 		       commit('DELETE_SINGLE_TAG', path);
 		       resolve([...state.visitedTags]);
+		    })
+		},
+		deleteAllTags({commit,state}){
+			return new Promise((resolve) => {//异步处理actions
+		       commit('DELETE_ALL_TAGS');
+		       resolve([state.visitedTags]);
 		    })
 		}
 	}

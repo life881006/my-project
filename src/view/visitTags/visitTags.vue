@@ -18,7 +18,7 @@
 			<ul>
 				<li><a @click="deleteCurrentTag">关闭</a></li>
 				<li><a @click="">关闭其他</a></li>
-				<li><a @click="">全部关闭</a></li>
+				<li><a @click="deleteAllTag">全部关闭</a></li>
 			</ul>
 		</div>
 	</div>
@@ -148,6 +148,12 @@
 		    deleteCurrentTag(){
 		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
 		    	this.deleteVisitor(path);
+		    },
+		    deleteAllTag(){
+		    	this.$store.dispatch("deleteAllTags").then((data)=>{
+		    		this.routerHistory = data;		    		
+		    		this.$router.push(data[0].path);
+		    	});
 		    }
 		},
 		watch:{
