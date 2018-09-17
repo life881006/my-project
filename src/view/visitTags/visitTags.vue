@@ -17,7 +17,7 @@
 		<div id="tagMenu" class="tagsMenu" :style="{'display':tagsMenuShow?'block':'none'}">
 			<ul>
 				<li><a @click="deleteCurrentTag">关闭</a></li>
-				<li><a @click="">关闭其他</a></li>
+				<li><a @click="deleteOthersTag">关闭其他</a></li>
 				<li><a @click="deleteAllTag">全部关闭</a></li>
 			</ul>
 		</div>
@@ -149,10 +149,19 @@
 		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
 		    	this.deleteVisitor(path);
 		    },
+		    deleteOthersTag(){
+		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
+		    	this.$store.dispatch("deleteOthersTag",path).then((data)=>{
+		    		
+		    		this.routerHistory = data;
+		    		this.$router.push(data.slice(-1)[0]);
+		    	});
+		    },
 		    deleteAllTag(){
 		    	this.$store.dispatch("deleteAllTags").then((data)=>{
-		    		this.routerHistory = data;		    		
-		    		this.$router.push(data[0].path);
+		    		
+		    		this.routerHistory = data;
+		    		this.$router.push(data.slice(-1)[0]);
 		    	});
 		    }
 		},
@@ -163,6 +172,7 @@
 				//}
 				this.addViewTags();
 				this.moveToCurrentTag();
+				this.routerHistory=this.$store.state.visitTags.visitedTags;
 			}
 		}		
 	}
