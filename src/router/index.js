@@ -31,11 +31,11 @@ const router = new Router({
     	]
     },{
     	path:'/home',
-    	redirect: 'home',
+    	redirect: '/home/index',
     	component: layout ,
     	children:[
     		{
-    			path:'home',
+    			path:'index',
     			name:'homePage',
     			meta:{title:'首页'},
     			component:() => import('@/module/home')
@@ -71,6 +71,11 @@ const router = new Router({
     	name:'loginServer',
     	title:'登录',
     	component: () => import('@/module/login/login_server'),	
+    },{
+    	path:'*',
+    	name:'404',
+    	title:'未找到页面',
+    	component: () => import('@/components/404/index'),	
     }
     
     ]

@@ -28,7 +28,19 @@ const visitTagsList = {
 		    }
 		},
 		DELETE_ALL_TAG:(state)=>{
-			state.visitedTags = [state.visitedTags[0]];
+			let flag = false;
+			for (const [i, v] of state.visitedTags.entries()) {//entries() 方法返回一个新的Array Iterator对象，该对象包含数组中每个索引的键/值对。
+				if (v.path.indexOf("/home")>=0) {
+					state.visitedTags = [v];
+					flag = true;
+					break;
+				}else{
+				}
+			}
+			console.log(state.visitedTags);
+			if(!flag){
+					state.visitedTags = [state.visitedTags[0]];
+			}
 		}
 	},
 	actions: {//用于异步变更state
@@ -51,7 +63,7 @@ const visitTagsList = {
 			return new Promise((resolve) => {//异步处理actions
 			   commit('DELETE_ALL_TAG');
 		       resolve([...state.visitedTags]);
-		    })
+		   })
 		}
 	}
 }

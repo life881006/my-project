@@ -10,15 +10,21 @@
 					v-for="item in Array.from(routerHistory)" 
 					@contextmenu.native.prevent="showTagsMenu" 
 					>{{item.title}}
-				<i class="el-icon-close"  v-on:click.stop.prevent="deleteVisitor(item.path)"></i>
+				<i class="el-icon-close"  v-on:click.stop.prevent="deleteTag(item.path)"></i>
 				</router-link>
 			</div>
 		</div>
 		<div id="tagMenu" class="tagsMenu" :style="{'display':tagsMenuShow?'block':'none'}">
 			<ul>
-				<li><a @click="deleteCurrentTag">关闭</a></li>
-				<li><a @click="deleteOthersTag">关闭其他</a></li>
-				<li><a @click="deleteAllTag">全部关闭</a></li>
+				<li>
+					<el-button type="text" @click="deleteCurrentTag" size="small" icon="el-icon-caret-right">关闭</el-button>
+				</li>
+				<li>
+					<el-button type="text" @click="deleteOthersTag" size="small" icon="el-icon-caret-right">关闭其他</el-button>
+				</li>
+				<li>
+					<el-button type="text" @click="deleteAllTag" size="small" icon="el-icon-caret-right">全部关闭</el-button>
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -42,6 +48,7 @@
 				routerHistory:this.$store.state.visitTags.visitedTags,
 				tagsMenuShow: false,
 				currentTagPath:"",
+				isHomePage:false,
 			}
 		},
 		created:function(){
@@ -68,19 +75,24 @@
 		      }
 		      this.$store.dispatch('addVistedTags', route)
 		    },
-			deleteVisitor(path){
+			deleteTag(path){
+				
+				if(path.indexOf("/home")>=0 && this.routerHistory.length===1){
+					return false;
+				}
+				
 				this.$store.dispatch('deleteSingleTag',path).then((items)=>{
 					if(this.isActive(path)){
 						const lastVisited = items.slice(-1)[0];
 						if(lastVisited){
 							this.$router.push(lastVisited);
 						}else{
-							this.$router.push("/");
+							this.$router.push("/home");
 						}
 					}else{
 						
 					}
-				});//再继续操作
+				});
 			},			
 			isActive(path){
 				return this.$router.history.current.path === path;
@@ -141,27 +153,31 @@
 		    },
 		    showTagsMenu(event){
 		    	this.currentTagPath = event.currentTarget.href;
+		    	if(this.currentTagPath.indexOf("/home/index")>=0){
+		    		this.isHomePage = true;
+		    	}else{
+		    		this.isHomePage = false;
+		    	}
 		    	document.getElementById("tagMenu").style.left = event.x+"px";
 		    	document.getElementById("tagMenu").style.top = event.y+"px";
 		    	this.tagsMenuShow = true;
+		    	
 		    },
 		    deleteCurrentTag(){
 		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
-		    	this.deleteVisitor(path);
+		    	this.deleteTag(path);
 		    },
 		    deleteOthersTag(){
 		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
 		    	this.$store.dispatch("deleteOthersTag",path).then((data)=>{
-		    		
 		    		this.routerHistory = data;
-		    		this.$router.push(data.slice(-1)[0]);
+		    		this.$router.push(data[0]);
 		    	});
 		    },
 		    deleteAllTag(){
 		    	this.$store.dispatch("deleteAllTags").then((data)=>{
-		    		
 		    		this.routerHistory = data;
-		    		this.$router.push(data.slice(-1)[0]);
+	    			this.$router.push(data[0]);//返回默认首页
 		    	});
 		    }
 		},
@@ -188,9 +204,19 @@
 	.visitTags .active:before{content: "";width: 8px;height:8px;border-radius: 50%;background-color: #fff;display: inline-block;top:12px;margin-right:5px}
 	.visitTags .active i{color:#fff}
 	
-	.tagsMenu{width: 150px;height: 100px;position: absolute;background-color: #fff;border-radius: 3px;border:1px solid #fafafa;z-index: 20;}
+	.tagsMenu{
+		width: 150px;
+		height: auto;
+		position: absolute;
+		background-color: #fdfdfd;
+		border-radius: 3px;
+		border:1px solid #eee;
+		z-index: 20;
+		-moz-box-shadow: 3px 3px 5px #ddd; /* 老的 Firefox */
+		box-shadow: 3px 3px 3px #ddd;
+		}
 	.tagsMenu ul{margin:0px;padding:0px;}
-	.tagsMenu ul li{list-style: none;height:33px;line-height:33px;margin:0px;font-size:12px;color:#666;}
-	.tagsMenu ul li a{padding-left:10px;display: block;}
-	.tagsMenu ul li a:hover{cursor: pointer;background-color: #fdfdfd;}
+	.tagsMenu ul li{list-style: none;height:33px;line-height:33px;margin:0px;font-size:12px;}
+	.tagsMenu ul li button{padding-left:10px;display: block;width: 100%;text-align: left;color:#999}
+	.tagsMenu ul li button:hover{color:#666;background-color:#fafafa}
 </style>

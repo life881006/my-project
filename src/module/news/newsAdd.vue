@@ -1,6 +1,127 @@
 <template>	
-	<el-form ref="newsAddform" :model="newsAddform" label-width="100px" :style="{'height':formHeight,overflow:'hidden'}">
+	<el-form ref="newsAddform" :model="newsAddform" label-width="100px" :style="{'height':formHeight+50+'px',overflow:'hidden'}">
+		
+		<!--基础设置栏-->
+		<div class="toolBar">
+			
+		    <el-dropdown trigger="click">
+		      <el-button class="el-dropdown-link" >
+		      	置顶<i class="el-icon-caret-bottom el-icon--right"></i>
+		      </el-button>
+		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+		        <el-form-item label-width="0px" prop="isTop">
+					<el-radio v-model="newsAddform.isTop" label="0">否</el-radio>
+					<el-radio v-model="newsAddform.isTop" label="1">是</el-radio>
+				</el-form-item>
+		      </el-dropdown-menu>
+		    </el-dropdown>
+		    		    
+		    <el-dropdown trigger="click">
+		      <el-button class="el-dropdown-link" >
+		      	发布到<i class="el-icon-caret-bottom el-icon--right"></i>
+		      </el-button>
+		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+		        <el-form-item label-width="0px" >
+					<el-checkbox-group v-model="newsAddform.releaseTo">
+						<el-checkbox label="releaseSite" key="releaseSite">
+							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到网站">
+								<i class="releaseToIcon el-icon-erp-website"></i>
+							</el-tooltip>
+						</el-checkbox>
+						<el-checkbox label="releaseWx" key="releaseWx">
+							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到微信">
+								<i class="releaseToIcon el-icon-erp-weixin" title=""></i>
+							</el-tooltip>
+						</el-checkbox>
+						<el-checkbox label="releaseMicroblog" key="releaseMicroblog">
+							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到微博">
+								<i class="releaseToIcon el-icon-erp-weibo"></i>
+							</el-tooltip>
+						</el-checkbox>
+						<el-checkbox label="releaseApp" key="releaseApp">
+							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到App">
+								<i class="releaseToIcon el-icon-erp-app"></i>
+							</el-tooltip>
+						</el-checkbox>						
+					</el-checkbox-group>
+				</el-form-item>
+		      </el-dropdown-menu>
+		    </el-dropdown>
+		    
+		    <el-dropdown trigger="click">
+		      <el-button class="el-dropdown-link" >
+		      	自动发布<i class="el-icon-caret-bottom el-icon--right"></i>
+		      </el-button>
+		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+		        <el-form-item label-width="0px" prop="isAutoAppear">
+					<el-radio v-model="newsAddform.isAutoAppear" label="0">否</el-radio>
+					<el-radio v-model="newsAddform.isAutoAppear" label="1">是</el-radio>
+				</el-form-item>
+		      </el-dropdown-menu>
+		    </el-dropdown>
+		    
+		    <el-dropdown trigger="click">
+		      <el-button class="el-dropdown-link" >
+		      	允许评论<i class="el-icon-caret-bottom el-icon--right"></i>
+		      </el-button>
+		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+		        <el-form-item label-width="0px" prop="isReview">
+					<el-radio v-model="newsAddform.isReview" label="0">否</el-radio>
+					<el-radio v-model="newsAddform.isReview" label="1">是</el-radio>
+				</el-form-item>
+		      </el-dropdown-menu>
+		    </el-dropdown>
+		    
+		    <el-dropdown trigger="click">
+		      <el-button class="el-dropdown-link" >
+		      	大图稿件<i class="el-icon-caret-bottom el-icon--right"></i>
+		      </el-button>
+		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+		        <el-form-item label-width="0px" prop="isBigImage">
+					<el-radio v-model="newsAddform.isBigImage" label="0">否</el-radio>
+					<el-radio v-model="newsAddform.isBigImage" label="1">是</el-radio>
+				</el-form-item>
+		      </el-dropdown-menu>
+		    </el-dropdown>
+		    
+		    
+		    <el-dropdown trigger="click">
+		      <el-button class="el-dropdown-link" >
+		      	电视稿件<i class="el-icon-caret-bottom el-icon--right"></i>
+		      </el-button>
+		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+		        <el-form-item label-width="0px" prop="isOriginal">
+					<el-radio v-model="newsAddform.isOriginal" label="0">否</el-radio>
+					<el-radio v-model="newsAddform.isOriginal" label="1">是</el-radio>
+				</el-form-item>
+		      </el-dropdown-menu>
+		    </el-dropdown>
+		    		    
+		    <el-dropdown trigger="click">
+		      <el-button class="el-dropdown-link" >
+		      	外链<i class="el-icon-caret-bottom el-icon--right"></i>
+		      </el-button>
+		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+		        <el-form-item label-width="0px" prop="linkUrl">
+					<el-input style="width:400px" v-model="newsAddform.linkUrl" size="small" placeholder="填写外链地址">
+						<template slot="prepend">外链地址</template>
+					</el-input>
+				</el-form-item>
+		      </el-dropdown-menu>
+		    </el-dropdown>
+		    
+			<div class="operations">
+				<el-form-item label-width="0px" class="right">
+					<el-button type="primary" icon="el-icon-success" @click="add('newsAddform')" >提交</el-button>
+					<el-button @click="reset('newsAddform')" >重置</el-button>
+				</el-form-item>
+			</div>
+		</div>
+		
+		
+		<div :style="{'height':formHeight+'px','overflow':'hidden','padding-top':'10px'}">
 		<el-scrollbar class="mainScroll">
+			
 		<el-form-item label="文章分类" :rules="filter_inputs('required')" prop="checkedChannels">
 			<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
   			<div style="margin: 15px 0;"></div>
@@ -18,11 +139,6 @@
 			<transition name="el-zoom-in-top">
 			<span class="tinyMeceInfo">{{newsAddform.tinyMceInfo}}</span>
 			</transition>
-		</el-form-item>
-		
-		<el-form-item label="文章类型" prop="type">
-			<el-radio v-model="newsAddform.type" label="0" border size="mini">发布新闻</el-radio>
-			<el-radio v-model="newsAddform.type" label="1" border size="mini">链接新闻</el-radio>
 		</el-form-item>
 		
 		<el-row>
@@ -53,76 +169,20 @@
 				<el-form-item label="编辑时间" :rules="filter_inputs('required')" prop="editTime">
 					<el-date-picker v-model="newsAddform.editTime" type="datetime" placeholder="请选择发布时间" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
 				</el-form-item>
-			</el-col>
-			
+			</el-col>			
 		</el-row>
-		
-		<el-row>
-			<el-col :span="8">
-				<el-form-item label="自动发布" prop="isAutoAppear">
-					<el-radio v-model="newsAddform.isAutoAppear" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isAutoAppear" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item label="允许评论" prop="isReview">
-					<el-radio v-model="newsAddform.isReview" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isReview" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item label="大图稿件" prop="isBigImage">
-					<el-radio v-model="newsAddform.isBigImage" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isBigImage" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-		</el-row>
-		
-		<el-row>			
-			<el-col :span="8">
-				<el-form-item label="发布到网站" prop="releaseSite">
-					<el-radio v-model="newsAddform.releaseSite" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.releaseSite" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item label="发布到app" prop="releaseApp">
-					<el-radio v-model="newsAddform.releaseApp" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.releaseApp" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item label="发布到微信" prop="releaseWx">
-					<el-radio v-model="newsAddform.releaseWx" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.releaseWx" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-		</el-row>
-		
-		<el-row>
-			<el-col :span="8">
-				<el-form-item label="发布到微博" prop="releaseMicroblog">
-					<el-radio v-model="newsAddform.releaseMicroblog" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.releaseMicroblog" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item label="置顶" prop="isTop">
-					<el-radio v-model="newsAddform.isTop" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isTop" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item label="电视稿件" prop="isOriginal">
-					<el-radio v-model="newsAddform.isOriginal" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isOriginal" label="1">是</el-radio>
-				</el-form-item>
-			</el-col>
-		</el-row>
-		
-		<el-form-item>
-			<el-button type="primary" icon="el-icon-success" @click="add('newsAddform')" size="small">提交</el-button>
-			<el-button @click="reset('newsAddform')" size="small">重置</el-button>
+		<el-form-item label="上传附件">
+			<el-upload 
+			  drag 
+			  :data="uploadData" 
+			  :action="baseConfig.url_base2" 
+			  :on-success="fileUploadSuccess" 
+			  :on-remove="removeAnnexItem"
+			  multiple>
+			  <i class="el-icon-upload"></i>
+			  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+			  <div class="el-upload__tip" slot="tip"></div>
+			</el-upload>
 		</el-form-item>
 		
 		<!--嵌套的dialog必须加append-to-body
@@ -131,6 +191,7 @@
 		</el-dialog>
 		-->
 		</el-scrollbar>
+		</div>
 	</el-form>
 </template>
 
@@ -143,26 +204,27 @@
 		name:"newsAdd",
 		data(){
 			return {
-				formHeight:this.mainContentHeight+110+"px",
+				formHeight:this.mainContentHeight+50,
+				uploadData:{
+					rootPath : "/allWeb/huixue/news"
+				},
 				newsAddform:{
 					title:"",
 					checkedChannels:[],
 					type:"0",
+					linkUrl:"",
 					tinyMceInfo:"",
-					author:"",
-					transfer:"",
-					appearDate:"",
-					editTime:"",
-					editor:"",
-					releaseMicroblog:"0",
+					author:this.user.realName,
+					transfer:this.user.realName,
+					appearDate:this.moment(new Date().getTime()).format("YYYY-MM-DD HH:MM:SS"),
+					editTime:this.moment(new Date().getTime()).format("YYYY-MM-DD HH:MM:SS"),
+					editor:this.user.realName,
 					isAutoAppear:"0",
 					isReview:"0",
 					isBigImage:"0",
-					releaseSite:"0",
-					releaseApp:"0",
-					releaseWx:"0",
+					releaseTo:[],
 					isTop:"0",
-					isOriginal:"1",
+					isOriginal:"0",
 				},
 				tinyMceParams:{//编辑器参数设置
 					name:"newsTinyMce",
@@ -178,6 +240,7 @@
 				channelsKeyArr:[],
 				checkAll:false,
 				isIndeterminate: false,
+				annexesList:[],
 			}
 		},
 		props:['mainContentHeight'],
@@ -216,10 +279,37 @@
 				}
 				this.$refs[formName].validate((valid) => {//验证
 					if (valid) {//验证通过后操作
-						const currentPath = this.$router.history.current.path;
-						this.$store.dispatch("dropTextarea",currentPath);
+						var p = {};						
 						
-						var p = {};	
+						p.releaseSite=0;
+						p.releaseApp=0;
+						p.releaseWx=0;
+						p.releaseMicroblog=0; 
+						
+						const releaseToArr = this.newsAddform.releaseTo;
+						for(const item of releaseToArr){
+							switch(item){
+								
+								case "releaseSite":
+								p.releaseSite = 1;
+								break;
+								
+								case "releaseApp":
+								p.releaseApp = 1;
+								break;
+								
+								case "releaseWx":
+								p.releaseWx = 1;
+								break;
+								
+								case "releaseMicroblog":
+								p.releaseMicroblog = 1;
+								break;
+							}
+						}
+						
+						
+						
 						p.unitId=this.user.unitId;
 						p.title=this.newsAddform.title;
 						p.content = this.editorText.html;
@@ -231,14 +321,11 @@
 						p.appearDate = this.newsAddform.appearDate;	
 						p.readTimes=0;
 						p.appearUserId=this.user.id; 
-						p.releaseSite=this.newsAddform.releaseSite;
-						p.releaseApp=this.newsAddform.releaseApp;
-						p.releaseWx=this.newsAddform.releaseWx;
-						p.releaseMicroblog=this.newsAddform.releaseMicroblog; 
-						p.isTop = this.newsAddform.isTop;
-						p.type = this.newsAddform.type;
 						
-						p.linkUrl = "";
+						p.isTop = this.newsAddform.isTop;
+						p.type = this.newsAddform.linkUrl==""?0:1;
+						
+						p.linkUrl = this.newsAddform.linkUrl;
 						p.isBigImage = this.newsAddform.isBigImage;
 						p.isReview = this.newsAddform.isReview;
 						p.isAutoAppear= this.newsAddform.isAutoAppear;	
@@ -320,15 +407,26 @@
 			reset(formName){
 				this.newsAddform.tinyMceInfo = "";
 				this.newsAddform.checkedChannels = [];
+				this.newsAddform.releaseTo = [];
 				this.checkAll = false;
+				this.isIndeterminate = false;
 				this.$refs.tinyMce.claerMce();
 				this.$refs[formName].resetFields();
 				this.$store.dispatch("dropTextarea",this.$router.history.current.path);
 			},
+			fileUploadSuccess(response, file, fileList){
+				console.log(response);
+				console.log(file);
+				console.log(fileList);
+				this.annexesList = fileList;
+			},
+			removeAnnexItem(file, fileList){
+				
+			}
 		},
 		watch:{
 			mainContentHeight(val){
-				this.formHeight = val+110+"px";
+				this.formHeight = val+50;
 			}
 		}
 	}
@@ -340,4 +438,10 @@
 	.controll{text-align: center;}
 	.tinyMeceInfo{font-size:12px;color:#f56c6c;transition: height 0.5s;}
 	>>>.el-scrollbar__wrap {overflow-x:hidden}
+	
+	.toolBar{height:50px;line-height:50px;width:auto;background-color: #ededed;padding:0px 10px}
+	.toolBar .operations{display:inline-block;float:right;margin-top:5px}
+	.toolBar .el-form-item,.dropDownMenu .el-form-item{margin-bottom:0px;}
+	.dropDownMenu{padding:5px 20px;margin-top:0px}
+	.releaseToIcon{font-size:20px;}
 </style>
