@@ -172,17 +172,7 @@
 			</el-col>			
 		</el-row>
 		<el-form-item label="上传附件">
-			<el-upload 
-			  drag 
-			  :data="uploadData" 
-			  :action="baseConfig.url_base2" 
-			  :on-success="fileUploadSuccess" 
-			  :on-remove="removeAnnexItem"
-			  multiple>
-			  <i class="el-icon-upload"></i>
-			  <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-			  <div class="el-upload__tip" slot="tip"></div>
-			</el-upload>
+			<upload :uploadData="uploadData" @getUploadedAnnex="getUploadedAnnex"></upload>
 		</el-form-item>
 		
 		<!--嵌套的dialog必须加append-to-body
@@ -199,6 +189,7 @@
 	
 	//引入编辑器
 	import editor from "@/components/tinyMce/tinyMce"
+	import upload from "@/components/fileUpload/index"
 	
 	export default{
 		name:"newsAdd",
@@ -206,7 +197,8 @@
 			return {
 				formHeight:this.mainContentHeight+50,
 				uploadData:{
-					rootPath : "/allWeb/huixue/news"
+					rootPath : "/allWeb/huixue/news",
+					addAnnexHandle:"/https/newsAnnex/add.do",
 				},
 				newsAddform:{
 					title:"",
@@ -228,7 +220,7 @@
 				},
 				tinyMceParams:{//编辑器参数设置
 					name:"newsTinyMce",
-					width:"99%",
+					width:"99.7%",
 					height:"200px",
 					plugins:[],//编辑器插件,不填写加载默认插件
 					toolBar:[],//工具栏图标显示，不填写加载默认图标
@@ -244,7 +236,7 @@
 			}
 		},
 		props:['mainContentHeight'],
-		components:{editor},
+		components:{editor,upload},
 		mounted:function(){
 			this.loadChannel();
 		},
@@ -413,57 +405,8 @@
 				this.$refs[formName].resetFields();
 				this.$store.dispatch("dropTextarea",this.$router.history.current.path);
 			},
-			fileUploadSuccess(response, file, fileList){
-				const p = response.data;
-				p.fbScheme = this.unitConfig.fbScheme;
-				p.fbIp = this.unitConfig.fbIp;
-				p.fbPort = this.unitConfig.fbPort;
-				p.fbName = this.unitConfig.fbName;
-				p.fbRootPath = this.unitConfig.fbRootPath; 
-				this.transferFile(p);
-			},
-			removeAnnexItem(file, fileList){
-				
-			},
-			transferFile(p){
-				this.axios({
-					method:'post',
-					url:this.baseConfig.url_transferFile,
-					data: this.getData("HX_API","/https/newsAnnex/add.do",p),
-					dataType:"json",
-				}).then((result)=>{
-					const filePathObj = result.data.data;			
-					p.contextPath = filePathObj.contextPath;
-					p.storageLocation = filePathObj.storageLocation; 
-					this.addAnnex(p);
-				}).catch((error)=>{
-					console.log(error);					
-				});	
-			},
-			addAnnex(p){
-				const annex = new Object();
-				annex.newsId = "";
-				annex.annexName = p.fileName; 
-				annex.fileType = p.fileType;
-				annex.fileSize = p.fileSize; 
-				annex.dirName = p.dirName;
-				annex.contextPath = p.contextPath; 
-				annex.saveUrl = p.saveUrl; 
-				annex.newFileName = p.newFileName; 
-				annex.originalFileName = p.newFileName; 
-				
-				this.axios({
-					method:'post',
-					url:this.baseConfig.url_base,
-					data: this.getData("HX_API","/https/newsAnnex/add.do",annex),
-					dataType:"json",
-				}).then((result)=>{
-					const fileId = result.data.data;			
-					this.annexesList.push(fileId);
-				}).catch((error)=>{
-					console.log(error);					
-				});	
-				
+			getUploadedAnnex(val){
+				console.log(val);
 			}
 		},
 		watch:{
