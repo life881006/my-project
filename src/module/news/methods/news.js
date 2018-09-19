@@ -58,6 +58,7 @@
 			});
 		},
 		handleSelectionChange(data){//主表数据选中
+			console.log(data);
 			this.dataSelections = data;
 		},
 		getPageSize(page){//变更每页条数

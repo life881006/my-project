@@ -31,6 +31,7 @@ const router = new Router({
     	]
     },{
     	path:'/home',
+    	name:'home',
     	redirect: '/home/index',
     	component: layout ,
     	children:[
@@ -101,6 +102,7 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 			
 			if(!Vue.prototype.user){//Vue没有挂载时挂载user对象
 				Vue.prototype.user = user;
+				Vue.prototype.unitConfig = JSON.parse(sessionStorage.getItem("unitConfig"));
 			}
 			//
 			next();

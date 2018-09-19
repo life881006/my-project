@@ -308,8 +308,6 @@
 							}
 						}
 						
-						
-						
 						p.unitId=this.user.unitId;
 						p.title=this.newsAddform.title;
 						p.content = this.editorText.html;
@@ -341,6 +339,7 @@
 						}).then((result)=>{
 							const newsId = result.data.data;
 							this.updateChannelNewsAssociate(0,newsId,this.newsAddform.checkedChannels);
+							
 						}).catch((error)=>{
 							console.log(error);
 							
@@ -415,12 +414,55 @@
 				this.$store.dispatch("dropTextarea",this.$router.history.current.path);
 			},
 			fileUploadSuccess(response, file, fileList){
-				console.log(response);
-				console.log(file);
-				console.log(fileList);
-				this.annexesList = fileList;
+				const p = response.data;
+				p.fbScheme = this.unitConfig.fbScheme;
+				p.fbIp = this.unitConfig.fbIp;
+				p.fbPort = this.unitConfig.fbPort;
+				p.fbName = this.unitConfig.fbName;
+				p.fbRootPath = this.unitConfig.fbRootPath; 
+				this.transferFile(p);
 			},
 			removeAnnexItem(file, fileList){
+				
+			},
+			transferFile(p){
+				this.axios({
+					method:'post',
+					url:this.baseConfig.url_transferFile,
+					data: this.getData("HX_API","/https/newsAnnex/add.do",p),
+					dataType:"json",
+				}).then((result)=>{
+					const filePathObj = result.data.data;			
+					p.contextPath = filePathObj.contextPath;
+					p.storageLocation = filePathObj.storageLocation; 
+					this.addAnnex(p);
+				}).catch((error)=>{
+					console.log(error);					
+				});	
+			},
+			addAnnex(p){
+				const annex = new Object();
+				annex.newsId = "";
+				annex.annexName = p.fileName; 
+				annex.fileType = p.fileType;
+				annex.fileSize = p.fileSize; 
+				annex.dirName = p.dirName;
+				annex.contextPath = p.contextPath; 
+				annex.saveUrl = p.saveUrl; 
+				annex.newFileName = p.newFileName; 
+				annex.originalFileName = p.newFileName; 
+				
+				this.axios({
+					method:'post',
+					url:this.baseConfig.url_base,
+					data: this.getData("HX_API","/https/newsAnnex/add.do",annex),
+					dataType:"json",
+				}).then((result)=>{
+					const fileId = result.data.data;			
+					this.annexesList.push(fileId);
+				}).catch((error)=>{
+					console.log(error);					
+				});	
 				
 			}
 		},

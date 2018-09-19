@@ -1,5 +1,5 @@
 <template>
-	<el-form :model="ruleForm" ref="ruleForm" :rules="rules">
+	<el-form :model="ruleForm" ref="ruleForm">
 		<!--prop必须与input的username一致，才能验证Input》username 中输入的值-->
 		<el-form-item label="用户名" :rules="filter_inputs('required,space')" prop="username">
 			<el-input class="input" size="small" v-model="ruleForm.username"></el-input>
@@ -12,7 +12,7 @@
 			<span class="moveBlock" id="moveBlock" @mousedown="mouseDown">
 			</span>
 		</div>
-		<el-button type="primary" size="small" @click="submit">确定</el-button>
+		<el-button type="primary" size="small" @click="submit" >确定<i v-show="iconLoading" class="el-icon-loading el-icon--right"></i></el-button>
 	</el-form>
 </template>
 
@@ -28,7 +28,7 @@
 					username: "",
 					password: "",
 				},
-				rules:{}
+				iconLoading:false,
 			}
 		},
 		methods:{
@@ -85,7 +85,7 @@
 					if(!valid){//基本验证不通过
 						
 					}else{//基本验证通过
-								
+						
 						let loginName = this.ruleForm.username;
 				  		let loginPwd = this.ruleForm.password;
 				  		
@@ -98,7 +98,7 @@
 				  		//let _this = this;
 				  		p.name = this.ruleForm.username;
 						p.pwd = this.ruleForm.password;
-				  		
+				  		this.iconLoading = true;
 				  		
 				  		this.axios({
 				            method: 'post',
@@ -108,11 +108,11 @@
 				        }).then((result)=> {
 				        	let status = result.data.data.status; 
 		    			    let userObj = result.data.data.obj;
-		    			    let userToken = result.data.data.userToken;  			 
+		    			    let userToken = result.data.data.userToken.access_token;  			 
 							let userId = userObj.id;
 			    			let unitId = userObj.unitId;
 							sessionStorage.setItem("userId",userId);
-							sessionStorage.setItem("unitId",unitId);	
+							sessionStorage.setItem("unitId",unitId);
 							if(status == '0'){
 		    				    if (userObj.status == 0){
 		    				       alert("您的帐号还未审核通过，不能登录系统。");
@@ -123,7 +123,8 @@
 									   case 4:
 									   case 5:
 									   case 6:
-									   		this.getUser(userId);
+									   
+									   		this.getUserInfoByToken(userToken);
 											break;
 									   case 2:
 								       case 3:
@@ -150,6 +151,29 @@
 					}				
 				});
 			},
+			getUserInfoByToken(userToken){
+				let p = {}; 
+				p.access_token=userToken;
+				this.axios({
+					method:'post',
+					url:this.baseConfig.url_base,
+					dataType:"JSON",
+					data:this.getData("HX_EXT_API","/https/userToken/getLoginInfoByToken.do",p),
+				}).then((result)=>{
+					let infoData = result.data.data;
+					if(infoData.isValid==0){
+					      this.$message({type:"warning",message:"已在其他地方登录，请重新登录"});
+					      this.$router.push('../login');
+					}else{
+					    var userToken = infoData[0];
+			    	    sessionStorage.setItem("unitConfig",JSON.stringify(infoData.unitConfig));
+						this.getUser(infoData.userId); 
+					} 
+					
+				}).catch((error)=>{
+					console.log(error);
+				});
+			},
 			getUser:function(userId){
 				let p = {};
 				p.id = userId;
@@ -165,12 +189,13 @@
 					userObj.functionalModules = userModules;
 			  		let userJson = JSON.stringify(userObj);
 			  		sessionStorage.setItem("user",userJson);
-					this.$router.push("/home/home");
+					this.$router.push("/home");
 				}).catch((error)=>{
 					console.log(error);
 					
 				});
-			}
+			},
+			
 		},
 		watch:{			
 			ruleForm:{//深度监听表单变化，ruleForm为表单:model，handler不可改变
