@@ -15,7 +15,10 @@
 			<div class="annexItem" v-for="item in fileList">
 				<el-button class="delete" type="text" icon="el-icon-close" @click="removeAnnexItem(item)"></el-button>
 				<img v-if="item.fileType=='png'||item.fileType=='jpg'" width="160px" height="150px" :src="'http://192.168.100.106:8082'+baseConfig.webName+item.saveUrl+item.newFileName"></img>
-				<a class="itemName" @mouseenter="showEdit(item)">{{item.name}}<el-button v-show="item.showEditButton" icon="el-icon-edit"></el-button></a>
+				<div class="item" @mouseover="showEdit(item)" @mouseleave="hideEdit(item)">
+					<a class="itemText">{{item.name}}</a>
+					<el-button type='text' v-show="item.showEditButton" icon="el-icon-edit"></el-button>
+				</div>
 				
 			</div>
 		</div>
@@ -31,15 +34,15 @@
 				Data:this.uploadData,
 				ifShowList:false,
 				fileList:[
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
-					{name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'}
+					{showEditButton:false,uid:'1',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'2',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'3',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'4',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'5',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'6',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'7',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'8',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'},
+					{showEditButton:false,uid:'9',name:']0K$3KHAKE7TNTM}65Q$SL0.png',fileSize:'43791',fileType:'png',saveUrl:'/allWeb/huixue/news/2018/9/',newFileName:'20180920154006_667.png'}
 				]
 			}
 		},
@@ -73,7 +76,10 @@
 				});	
 			},
 			showEdit(item){
-				item.showEditButton = true
+				item.showEditButton = true;
+			},
+			hideEdit(item){
+				item.showEditButton = false;
 			},
 			removeAnnexItem(file, fileList){
 				
@@ -104,6 +110,16 @@
 				right:0px
 				
 			
-			.itemName
+			.item
 				font-size:12px
+				width:100%
+				
+				display:inline-flex
+				
+				
+				.itemText
+					width:140px
+					white-space: nowrap
+					overflow: hidden
+					text-overflow: ellipsis
 </style>
