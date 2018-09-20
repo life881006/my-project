@@ -5,11 +5,12 @@ import router from './router/'
 import store from './store/store'
 import ElementUI from 'element-ui'
 import axios from 'axios'
-import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import baseConfig from './util/config' //引入公共url参数
 import publicMethods from './util/methods' //引入axios数据打包函数
 import filter_inputs from './util/inputValidator' //引入表单输入信息校验模块
+
+import 'element-ui/lib/theme-chalk/index.css'
 import "./assets/iconfont/iconfont.css"
 
 

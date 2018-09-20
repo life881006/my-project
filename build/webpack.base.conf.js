@@ -82,7 +82,12 @@ module.exports = {
 	    {
 	      test: /\\\\\\\\.(eot|woff|woff2|ttf)([\\\\\\\\?]?.*)$/,
 	      loader: "file"
-	    }
+	    },
+	    {
+			  test:/\.css$/,
+			  loader:'style-loader!css-loader!stylus-loader',
+			  include:[]
+			}
     ]
   },
   node: {

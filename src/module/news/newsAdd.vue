@@ -197,6 +197,8 @@
 			return {
 				formHeight:this.mainContentHeight+50,
 				uploadData:{
+					api:"HX_API",
+					action:this.baseConfig.url_base2,
 					rootPath : "/allWeb/huixue/news",
 					addAnnexHandle:"/https/newsAnnex/add.do",
 				},
@@ -405,8 +407,31 @@
 				this.$refs[formName].resetFields();
 				this.$store.dispatch("dropTextarea",this.$router.history.current.path);
 			},
-			getUploadedAnnex(val){
-				console.log(val);
+			getUploadedAnnex(p){//获取文件上传后返回的数据
+				
+				const annex = new Object();
+				annex.newsId = "";
+				annex.annexName = p.fileName; 
+				annex.fileType = p.fileType;
+				annex.fileSize = p.fileSize; 
+				annex.dirName = p.dirName;
+				annex.contextPath = p.contextPath; 
+				annex.saveUrl = p.saveUrl; 
+				annex.newFileName = p.newFileName; 
+				annex.originalFileName = p.newFileName; 
+				
+				this.axios({
+					method:'post',
+					url:this.baseConfig.url_base,
+					data: this.getData("HX_API",this.uploadData.addAnnexHandle,annex),
+					dataType:"json",
+				}).then((result)=>{
+					const fileId = result.data.data;
+						
+				}).catch((error)=>{
+					console.log(error);					
+				});	
+				
 			}
 		},
 		watch:{
