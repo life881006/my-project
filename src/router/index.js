@@ -68,11 +68,6 @@ const router = new Router({
     	title:'登录',
     	component: () => import('@/module/login/login'),	
     },{
-    	path:'/loginServer',
-    	name:'loginServer',
-    	title:'登录',
-    	component: () => import('@/module/login/login_server'),	
-    },{
     	path:'*',
     	name:'404',
     	title:'未找到页面',
