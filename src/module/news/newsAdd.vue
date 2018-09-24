@@ -172,7 +172,7 @@
 			</el-col>			
 		</el-row>
 		<el-form-item label="上传附件">
-			<upload :uploadData="uploadData" @getUploadedAnnex="getUploadedAnnex"></upload>
+			<upload :configData="configData" :fileListData="fileListData" @getUploadedAnnex="getUploadedAnnex"></upload>
 		</el-form-item>
 		
 		<!--嵌套的dialog必须加append-to-body
@@ -196,12 +196,16 @@
 		data(){
 			return {
 				formHeight:this.mainContentHeight+50,
-				uploadData:{
+				configData:{//附件上传参数
+					isFirstButton:true,
+					statusButton:true,
 					api:"HX_API",
 					action:this.baseConfig.url_base2,
 					rootPath : "/allWeb/huixue/news",
 					addAnnexHandle:"/https/newsAnnex/add.do",
+					deleteAnnexHandle:"/https/newsAnnex/delete.do"
 				},
+				fileListData:[],//附件列表
 				newsAddform:{
 					title:"",
 					checkedChannels:[],
@@ -407,7 +411,7 @@
 				this.$refs[formName].resetFields();
 				this.$store.dispatch("dropTextarea",this.$router.history.current.path);
 			},
-			getUploadedAnnex(p){//获取文件上传后返回的数据
+			getUploadedAnnex(p,arr){//获取文件上传后返回的数据
 				
 				const annex = new Object();
 				annex.newsId = "";
@@ -423,15 +427,23 @@
 				this.axios({
 					method:'post',
 					url:this.baseConfig.url_base,
-					data: this.getData("HX_API",this.uploadData.addAnnexHandle,annex),
+					data: this.getData("HX_API",this.configData.addAnnexHandle,annex),
 					dataType:"json",
 				}).then((result)=>{
 					const fileId = result.data.data;
-						
+					for(const [i,v] of arr.entries()){
+						if(i===v.serialNumber){
+							v.id=fileId;
+						}
+					}
+					this.fileListData = arr;
 				}).catch((error)=>{
 					console.log(error);					
 				});	
-				
+			},
+			deleteAnnex(annexList){
+				console.log(annexList);
+				this.fileListData = annexList;
 			}
 		},
 		watch:{

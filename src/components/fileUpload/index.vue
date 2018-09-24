@@ -5,6 +5,7 @@
 		  :data="Data" 
 		  :action="Data.action" 
 		  :on-success="fileUploadSuccess" 
+		  :file-list="fileList"
 		  :show-file-list="ifShowList" 
 		  multiple>
 		  <i class="el-icon-upload"></i>
@@ -15,26 +16,50 @@
 		<div class="el-fileUpload-list">
 			<div 
 				class="annexItem" 
-				@mouseover.native="item.hover=true" 
-				@mouseleave.native="item.hover=false" 
 				v-for="(item,index) in fileList">
 				
 				<div class="serialNumberArea">
-					<span class="serialNumer">{{index+1}}</span>
+					<span class="serialNumer">{{Number(item.serialNumber)+1}}</span>
 				</div>
 				
 				<el-button 
-					v-show="item.hover" 
 					class="delete" 
 					type="text" 
 					icon="el-icon-close" 
-					@click.native="removeAnnexItem(index)"></el-button>
+					@click="removeAnnexItem(index,item.id)"></el-button>
 					
+				<el-dropdown 
+					class="setting" 
+					trigger="click"
+					>
+					<el-button type="text" class="el-dropdown-link"><i class="el-icon-setting"/></el-button>
+					<el-dropdown-menu slot="dropdown">
+						<el-dropdown-item v-if="Data.isFirstButton">
+							是否首页：
+							<el-radio v-model="item.response.data.isFirstButton" label="0">
+								否
+							</el-radio>
+							<el-radio v-model="item.response.data.isFirstButton" label="1">
+								是
+							</el-radio>
+						</el-dropdown-item>
+						<el-dropdown-item v-if="Data.statusButton">
+							是否显示：
+							<el-radio v-model="item.response.data.statusButton" label="0">
+								否
+							</el-radio>
+							<el-radio v-model="item.response.data.statusButton" label="1">
+								是
+							</el-radio>
+						</el-dropdown-item>
+					</el-dropdown-menu>
+				</el-dropdown>
+				
 				<div 
 					:class="item.view?'coverViewDark':'coverViewLight'" 
-					@mouseover.native="item.view=true" 
-					@mouseleave.native="item.view=false" 
-					@click.native="annexVisible=true;currentImg='http://hw.jshuixue.com'+baseConfig.webName+item.response.data.saveUrl+item.response.data.newFileName">
+					@mouseover="item.view=true" 
+					@mouseleave="item.view=false" 
+					@click="annexVisible=true;currentImg='http://hw.jshuixue.com'+baseConfig.webName+item.response.data.saveUrl+item.response.data.newFileName">
 					
 					<i class="el-icon-zoom-in"></i>
 				</div>
@@ -46,7 +71,7 @@
 					:src="'http://hw.jshuixue.com'+baseConfig.webName+item.response.data.saveUrl+item.response.data.newFileName"></img>
 				
 				<template v-if="!item.edit">
-					<div class="item" @click="editName(item)" >
+					<div class="item" @mouseover="item.hover=true" @mouseleave="item.hover=false"  @click="editName(item)" >
 						<a class="itemText">{{item.response.data.annexName}}</a>
 						<el-button type='text' v-show="item.hover" icon="el-icon-edit"></el-button>
 					</div>
@@ -62,7 +87,7 @@
 							type="button"
 							size="mini"
 							v-model="item.response.data.annexName"
-							@click.native="saveName(item)">保存</el-button>						
+							@click="saveName(item)">保存</el-button>						
 					</div>
 					<span class="alertInfo">{{item.info}}</span>
 				</template>
@@ -85,7 +110,7 @@
 		name:"upload",
 		data(){
 			return {
-				Data:this.uploadData,
+				Data:this.configData,
 				ifShowList:false,
 				fileList:[],
 				annexIndex:-1,
@@ -94,27 +119,38 @@
 				currentImg:""
 			}
 		},
-		props : ['uploadData'],
+		props : ['configData','fileListData'],
 		mixins : [],
 		components : {},
 		methods : {			
 			fileUploadSuccess(response, file, fileList){
 				const p = response.data;
-				for(let item of fileList){
+				let arr = [];
+				for(const [i,item] of fileList.entries()){
 					item.info = "";
+					item.serialNumber = i;
 					item.hover = false;
 					item.view = false;
 					item.edit = false;
+					let statusObj = Object.assign({},item);
+					arr.push(statusObj);
 				}
-				this.fileList = fileList;
+				
+				if(this.Data.isFirstButton){
+					p.isFirstButton = "0";
+				}
+				if(this.Data.statusButton){
+					p.statusButton = "0";
+				}
+				
 				p.fbScheme = this.unitConfig.fbScheme;
 				p.fbIp = this.unitConfig.fbIp;
 				p.fbPort = this.unitConfig.fbPort;
 				p.fbName = this.unitConfig.fbName;
 				p.fbRootPath = this.unitConfig.fbRootPath; 
-				this.transferFile(p);
+				this.transferFile(p,arr);
 			},			
-			transferFile(p){
+			transferFile(p,arr){//传文件
 				this.axios({
 					method:'post',
 					url:this.baseConfig.url_transferFile,
@@ -125,7 +161,7 @@
 					p.contextPath = filePathObj.contextPath;
 					p.storageLocation = filePathObj.storageLocation; 
 					
-					this.$emit("getUploadedAnnex",p);
+					this.$emit("getUploadedAnnex",p,arr);
 				}).catch((error)=>{
 					console.log(error);					
 				});	
@@ -136,8 +172,44 @@
 			hideEdit(index){
 				this.annexIndex = -1;
 			},
-			removeAnnexItem(index){
-				this.fileList.splice(index,1);
+			removeAnnexItem(index,annexId){
+				
+				this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+		        	confirmButtonText: '确定',
+		        	cancelButtonText: '取消',
+		        	type: 'warning'
+		        }).then(() => {
+		          
+		       	  const p = {};
+		       	  p.id = annexId;
+		       	  
+		          
+		          this.axios({
+		          	url : this.baseConfig.url_base,
+					dataType : "JSON",
+					data : this.getData(this.Data.api,this.Data.deleteAnnexHandle,p),
+					method : "post",
+		          }).then((data)=>{
+		          	
+		          	this.fileList.splice(index,1);
+		          	
+		          	this.$emit("deleteAnnex",this.fileList);
+		          	this.$message({
+			            type: 'success',
+			            message: '删除成功!'
+			        });
+		          }).catch((error)=>{
+		          	console.log(error);
+		          	
+		          });
+		          
+		        }).catch((error) => {
+		          this.$message({
+		            type: 'info',
+		            message: '已取消删除'
+		          }); 
+		        });
+				
 			},
 			editName(item,name){
 				item.edit = true;
@@ -153,6 +225,9 @@
 			}
 		},
 		watch : {
+			fileListData(val){
+				this.fileList = val;
+			}
 		},
 		
 	}
@@ -167,7 +242,7 @@
 		
 		.annexItem
 			width:260px
-			padding:20px
+			padding:30px 20px 20px 20px
 			position:relative
 			border:1px solid #dcdcdc
 			border-radius:4px
@@ -209,6 +284,11 @@
 				top:-6px
 				right:5px
 			
+			.setting
+				position:absolute
+				top:-6px
+				right:25px
+			
 			.item
 				margin:10px 0px 0px
 				font-size:12px
@@ -234,7 +314,7 @@
 				width:260px
 				height:150px
 				position:absolute
-				top:20px
+				top:30px
 				left:20px
 				z-index:100
 				text-align:center
@@ -244,7 +324,7 @@
 				width:260px
 				height:150px
 				position:absolute
-				top:20px
+				top:30px
 				left:20px
 				z-index:100
 				text-align:center
