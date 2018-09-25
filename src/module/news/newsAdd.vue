@@ -429,13 +429,6 @@
 					headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 				}).then((result)=>{
 					const fileId = result.data.data;
-					/*for(let item of arr){
-						if(item.uid==p.uid){
-							item.id = fileId;
-						}
-					}
-					this.fileListData = arr;
-					*/
 					p.id = fileId;
 					this.fileListData.push(p)
 				}).catch((error)=>{
@@ -443,20 +436,18 @@
 				});	
 			},
 			updateAnnexMsg(newsId){
-				const annexes = [];
-				console.log(this.fileListData);
-				for(const item of this.fileListData){
+				let annexes = {};
+				for(const [i,item] of this.fileListData.entries()){
 					const annex = {};
 					annex.id= item.id;
-					annex.serialNumber = item.serialNumber;
+					annex.serialNumber = i+1;
 					annex.newsId = newsId;
-					annex.annexName = item.response.data.annexName;
+					annex.annexName = item.annexName;
 					annex.content = "";
-					annex.isFirst = item.response.data.isFirst;
-					annex.status = item.response.data.status;
-					annexes.push(annex);
+					annex.isFirst = item.isFirst;
+					annex.status = item.status;
+					annexes[i]=annex;
 				}
-				console.log(annexes);
 				
 				this.axios({
 					method:"post",
@@ -475,7 +466,6 @@
 				});
 			},
 			deleteAnnex(annexList){
-				console.log(annexList);
 				this.fileListData = annexList;
 			}
 		},

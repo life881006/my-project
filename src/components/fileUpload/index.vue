@@ -18,14 +18,9 @@
 				class="annexItem" 
 				v-for="(item,index) in fileList" :key="item.id">
 				
-				<el-dropdown 
-					class="serialNumberArea" 
-					trigger="click">
-					<el-button type="text" class="serialNumer el-dropdown-link">{{item.serialNumber}}</el-button>
-					<el-dropdown-menu slot="dropdown">
-						<el-input size='mini' v-model="item.serialNumber"></el-input>
-					</el-dropdown-menu>
-				</el-dropdown>
+				<div class="serialNumberArea" >
+					<span class="serialNumer el-dropdown-link">{{index+1}}</span>
+				</div>
 				
 				<el-button 
 					class="delete" 
@@ -39,24 +34,24 @@
 					>
 					<el-button type="text" class="el-dropdown-link"><i class="el-icon-setting"/></el-button>
 					<el-dropdown-menu slot="dropdown">
-						<el-dropdown-item v-if="Data.isFirstButton">
-							是否首页：
+						<div v-if="Data.isFirstButton" class="menuItem">
+							<span class="label">首选图片</span>
 							<el-radio v-model="item.isFirst" label="0">
 								否
 							</el-radio>
 							<el-radio v-model="item.isFirst" label="1">
 								是
 							</el-radio>
-						</el-dropdown-item>
-						<el-dropdown-item v-if="Data.statusButton">
-							是否显示：
-							<el-radio v-model="item.status" label="0">
-								否
-							</el-radio>
+						</div>
+						<div v-if="Data.statusButton" class="menuItem">
+							<span class="label">状态</span>
 							<el-radio v-model="item.status" label="1">
-								是
+								显示
 							</el-radio>
-						</el-dropdown-item>
+							<el-radio v-model="item.status" label="0">
+								不显示
+							</el-radio>
+						</div>
 					</el-dropdown-menu>
 				</el-dropdown>
 				
@@ -83,13 +78,13 @@
 					width="260px" 
 					height="150px"
 					v-if="item.dirName==='image'" 
-					:src="'http://192.168.100.106:8082'+baseConfig.webName+item.saveUrl+item.newFileName"></img>
+					:src="'http://hw.jshuixue.com'+baseConfig.webName+item.saveUrl+item.newFileName"></img>
 				
 				<img 
 					width="260px" 
 					height="150px"
 					v-else 
-					:src="'http://192.168.100.106:8082'+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"></img>
+					:src="'http://hw.jshuixue.com'+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"></img>
 					
 				<template v-if="!item.edit">
 					<div class="item" @mouseover="item.hover=true" @mouseleave="item.hover=false"  @click="editName(item)" >
@@ -107,7 +102,6 @@
 							class="editBtn"
 							type="button"
 							size="mini"
-							v-model="item.annexName"
 							@click="saveName(item)">保存</el-button>						
 					</div>
 					<span class="alertInfo">{{item.info}}</span>
@@ -118,7 +112,7 @@
 		
 		<el-dialog center :title="typeTitle" :visible.sync="annexVisible">
 			<div style="text-align:center">
-				<img v-if="showType==='image'" :src="'http://192.168.100.106:8082'+baseConfig.webName+currentItem.saveUrl+currentItem.newFileName"/>
+				<img v-if="showType==='image'" :src="'http://hw.jshuixue.com'+baseConfig.webName+currentItem.saveUrl+currentItem.newFileName"/>
 				
 			</div>
 		</el-dialog>
@@ -150,11 +144,6 @@
 		methods : {
 			fileUploadSuccess(response, file, fileList){
 				const p = response.data;
-				for(let i=fileList.length-1;i>=0;i--){
-					if(response.data.annexName==fileList[i].name){
-						p.serialNumber = i+1;
-					}
-				}
 				p.info = "";
 				p.hover = false;
 				p.view = false;
@@ -165,7 +154,7 @@
 					p.isFirst = "0";
 				}
 				if(this.Data.statusButton){
-					p.status = "0";
+					p.status = "1";
 				}
 				
 				p.fbScheme = this.unitConfig.fbScheme;
@@ -215,9 +204,6 @@
 					method : "post",
 		          }).then((data)=>{
 		          	this.fileList.splice(index,1);
-		          	for(let [i,item] of this.fileList.entries()){
-		          		item.serialNumber = i+1;
-		          	}
 		          	this.$emit("deleteAnnex",this.fileList);
 		          	this.$message({
 			            type: 'success',
@@ -251,6 +237,7 @@
 		},
 		watch : {
 			fileListData(val){
+				
 				this.fileList = val;
 			}
 		},
@@ -289,7 +276,6 @@
 				background-color:#409eff
 				overflow:hidden
 				
-				
 				.serialNumer
 					width:30px;
 					height:30px;
@@ -300,8 +286,8 @@
 					transform: rotate(-45deg)
 					display:block
 					color:#fff;
-					z-index:200
-				
+					z-index:200;
+									
 			.delete
 				position:absolute
 				top:-6px
@@ -320,6 +306,8 @@
 					transform: rotate(90deg);
 					transition: transform 1s;
 				}
+				
+				
 			
 			.item
 				margin:10px 0px 0px
@@ -378,5 +366,16 @@
 			line-height:initial
 			padding:0px
 			margin:0px
-			font-size:12px			
+			font-size:12px		
+	
+	.menuItem
+		padding:5px 20px
+		font-size:12px	
+		
+		.label{
+			width:50px;
+			display: inline-block
+			padding-right:10px
+			text-align: right
+		}	
 </style>
