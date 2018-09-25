@@ -338,6 +338,7 @@
 							const newsId = result.data.data;
 							this.updateChannelNewsAssociate(0,newsId,this.newsAddform.checkedChannels);
 							
+							
 						}).catch((error)=>{
 							console.log(error);
 							
@@ -385,14 +386,10 @@
 						console.log(error);					
 					});	
 				};
-				this.$message({
-					type:"success",
-					message:"添加成功"
-				});
-				this.reset("newsAddform");
+				
+				this.updateAnnexMsg(newsId);
 			},
 			handleCheckAllChange(val) {
-				
 		        this.newsAddform.checkedChannels = val ? this.channelsKeyArr : [];
 		        this.isIndeterminate = false;
 		    },
@@ -409,10 +406,10 @@
 				this.isIndeterminate = false;
 				this.$refs.tinyMce.claerMce();
 				this.$refs[formName].resetFields();
+				this.fileListData = [];
 				this.$store.dispatch("dropTextarea",this.$router.history.current.path);
 			},
-			getUploadedAnnex(p,arr){//获取文件上传后返回的数据
-				
+			getUploadedAnnex(p){//获取文件上传后返回的数据
 				const annex = new Object();
 				annex.newsId = "";
 				annex.annexName = p.fileName; 
@@ -429,17 +426,53 @@
 					url:this.baseConfig.url_base,
 					data: this.getData("HX_API",this.configData.addAnnexHandle,annex),
 					dataType:"json",
+					headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 				}).then((result)=>{
 					const fileId = result.data.data;
-					for(const [i,v] of arr.entries()){
-						if(i===v.serialNumber){
-							v.id=fileId;
+					/*for(let item of arr){
+						if(item.uid==p.uid){
+							item.id = fileId;
 						}
 					}
 					this.fileListData = arr;
+					*/
+					p.id = fileId;
+					this.fileListData.push(p)
 				}).catch((error)=>{
 					console.log(error);					
 				});	
+			},
+			updateAnnexMsg(newsId){
+				const annexes = [];
+				console.log(this.fileListData);
+				for(const item of this.fileListData){
+					const annex = {};
+					annex.id= item.id;
+					annex.serialNumber = item.serialNumber;
+					annex.newsId = newsId;
+					annex.annexName = item.response.data.annexName;
+					annex.content = "";
+					annex.isFirst = item.response.data.isFirst;
+					annex.status = item.response.data.status;
+					annexes.push(annex);
+				}
+				console.log(annexes);
+				
+				this.axios({
+					method:"post",
+					url:this.baseConfig.url_base,
+					dataType:"JSON",
+					data:this.getData("HX_EXT_API","/https/newsAnnex/updateAnnex.do",annexes),
+					headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+				}).then((data)=>{
+					this.$message({
+						type:"success",
+						message:"添加成功"
+					});
+					this.reset("newsAddform");
+				}).catch((error)=>{
+					console.log(error);
+				});
 			},
 			deleteAnnex(annexList){
 				console.log(annexList);

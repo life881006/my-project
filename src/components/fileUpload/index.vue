@@ -16,11 +16,16 @@
 		<div class="el-fileUpload-list">
 			<div 
 				class="annexItem" 
-				v-for="(item,index) in fileList">
+				v-for="(item,index) in fileList" :key="item.id">
 				
-				<div class="serialNumberArea">
-					<span class="serialNumer">{{Number(item.serialNumber)+1}}</span>
-				</div>
+				<el-dropdown 
+					class="serialNumberArea" 
+					trigger="click">
+					<el-button type="text" class="serialNumer el-dropdown-link">{{item.serialNumber}}</el-button>
+					<el-dropdown-menu slot="dropdown">
+						<el-input size='mini' v-model="item.serialNumber"></el-input>
+					</el-dropdown-menu>
+				</el-dropdown>
 				
 				<el-button 
 					class="delete" 
@@ -36,19 +41,19 @@
 					<el-dropdown-menu slot="dropdown">
 						<el-dropdown-item v-if="Data.isFirstButton">
 							是否首页：
-							<el-radio v-model="item.response.data.isFirstButton" label="0">
+							<el-radio v-model="item.isFirst" label="0">
 								否
 							</el-radio>
-							<el-radio v-model="item.response.data.isFirstButton" label="1">
+							<el-radio v-model="item.isFirst" label="1">
 								是
 							</el-radio>
 						</el-dropdown-item>
 						<el-dropdown-item v-if="Data.statusButton">
 							是否显示：
-							<el-radio v-model="item.response.data.statusButton" label="0">
+							<el-radio v-model="item.status" label="0">
 								否
 							</el-radio>
-							<el-radio v-model="item.response.data.statusButton" label="1">
+							<el-radio v-model="item.status" label="1">
 								是
 							</el-radio>
 						</el-dropdown-item>
@@ -56,29 +61,45 @@
 				</el-dropdown>
 				
 				<div 
+					v-if="item.dirName==='image'"
 					:class="item.view?'coverViewDark':'coverViewLight'" 
 					@mouseover="item.view=true" 
 					@mouseleave="item.view=false" 
-					@click="annexVisible=true;currentImg='http://hw.jshuixue.com'+baseConfig.webName+item.response.data.saveUrl+item.response.data.newFileName">
-					
+					@click="annexVisible=true;showType='image';currentItem=item;typeTitle='查看原图'">
 					<i class="el-icon-zoom-in"></i>
 				</div>
-								
+				
+				<a v-else :href="item.contextPath+item.saveUrl+item.newFileName" target="_blank">
+				<div 
+					:class="item.view?'coverViewDark':'coverViewLight'" 
+					@mouseover="item.view=true" 
+					@mouseleave="item.view=false" 
+					>
+					<i class="el-icon-download"></i>
+				</div>
+				</a>
+				
 				<img 
 					width="260px" 
 					height="150px"
-					v-if="item.response.data.fileType=='png'||item.response.data.fileType=='jpg'" 
-					:src="'http://hw.jshuixue.com'+baseConfig.webName+item.response.data.saveUrl+item.response.data.newFileName"></img>
+					v-if="item.dirName==='image'" 
+					:src="'http://192.168.100.106:8082'+baseConfig.webName+item.saveUrl+item.newFileName"></img>
 				
+				<img 
+					width="260px" 
+					height="150px"
+					v-else 
+					:src="'http://192.168.100.106:8082'+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"></img>
+					
 				<template v-if="!item.edit">
 					<div class="item" @mouseover="item.hover=true" @mouseleave="item.hover=false"  @click="editName(item)" >
-						<a class="itemText">{{item.response.data.annexName}}</a>
+						<a class="itemText">{{item.annexName}}</a>
 						<el-button type='text' v-show="item.hover" icon="el-icon-edit"></el-button>
 					</div>
 				</template>
 				<template v-else>
 					<div class="item">
-						<el-input class='editInput' size='small' v-model="item.response.data.annexName">
+						<el-input class='editInput' size='small' v-model="item.annexName">
 							
 						</el-input>
 						
@@ -86,7 +107,7 @@
 							class="editBtn"
 							type="button"
 							size="mini"
-							v-model="item.response.data.annexName"
+							v-model="item.annexName"
 							@click="saveName(item)">保存</el-button>						
 					</div>
 					<span class="alertInfo">{{item.info}}</span>
@@ -95,9 +116,10 @@
 			</div>
 		</div>
 		
-		<el-dialog center title="查看原图" :visible.sync="annexVisible">
+		<el-dialog center :title="typeTitle" :visible.sync="annexVisible">
 			<div style="text-align:center">
-			<img :src="currentImg"/>
+				<img v-if="showType==='image'" :src="'http://192.168.100.106:8082'+baseConfig.webName+currentItem.saveUrl+currentItem.newFileName"/>
+				
 			</div>
 		</el-dialog>
 		
@@ -105,6 +127,7 @@
 </template>
 
 <script>
+	
 	
 	export default {
 		name:"upload",
@@ -116,41 +139,43 @@
 				annexIndex:-1,
 				originalName:"",
 				annexVisible:false,
-				currentImg:""
+				showType:"",
+				typeTitle:"",
+				currentItem:{},
 			}
 		},
 		props : ['configData','fileListData'],
 		mixins : [],
 		components : {},
-		methods : {			
+		methods : {
 			fileUploadSuccess(response, file, fileList){
 				const p = response.data;
-				let arr = [];
-				for(const [i,item] of fileList.entries()){
-					item.info = "";
-					item.serialNumber = i;
-					item.hover = false;
-					item.view = false;
-					item.edit = false;
-					let statusObj = Object.assign({},item);
-					arr.push(statusObj);
+				for(let i=fileList.length-1;i>=0;i--){
+					if(response.data.annexName==fileList[i].name){
+						p.serialNumber = i+1;
+					}
 				}
-				
+				p.info = "";
+				p.hover = false;
+				p.view = false;
+				p.edit = false;
+				p.editSerialNumber = false;
+					
 				if(this.Data.isFirstButton){
-					p.isFirstButton = "0";
+					p.isFirst = "0";
 				}
 				if(this.Data.statusButton){
-					p.statusButton = "0";
+					p.status = "0";
 				}
 				
 				p.fbScheme = this.unitConfig.fbScheme;
 				p.fbIp = this.unitConfig.fbIp;
 				p.fbPort = this.unitConfig.fbPort;
 				p.fbName = this.unitConfig.fbName;
-				p.fbRootPath = this.unitConfig.fbRootPath; 
-				this.transferFile(p,arr);
+				p.fbRootPath = this.unitConfig.fbRootPath;
+				this.transferFile(p);
 			},			
-			transferFile(p,arr){//传文件
+			transferFile(p){//传文件
 				this.axios({
 					method:'post',
 					url:this.baseConfig.url_transferFile,
@@ -161,15 +186,14 @@
 					p.contextPath = filePathObj.contextPath;
 					p.storageLocation = filePathObj.storageLocation; 
 					
-					this.$emit("getUploadedAnnex",p,arr);
+					this.$emit("getUploadedAnnex",p);
 				}).catch((error)=>{
 					console.log(error);					
 				});	
 			},
 			showEdit(index){
 				this.annexIndex = index;
-			},
-			hideEdit(index){
+			},			hideEdit(index){
 				this.annexIndex = -1;
 			},
 			removeAnnexItem(index,annexId){
@@ -190,9 +214,10 @@
 					data : this.getData(this.Data.api,this.Data.deleteAnnexHandle,p),
 					method : "post",
 		          }).then((data)=>{
-		          	
 		          	this.fileList.splice(index,1);
-		          	
+		          	for(let [i,item] of this.fileList.entries()){
+		          		item.serialNumber = i+1;
+		          	}
 		          	this.$emit("deleteAnnex",this.fileList);
 		          	this.$message({
 			            type: 'success',
@@ -200,7 +225,6 @@
 			        });
 		          }).catch((error)=>{
 		          	console.log(error);
-		          	
 		          });
 		          
 		        }).catch((error) => {
@@ -222,7 +246,8 @@
 				}
 				item.info="";
 				item.edit=!item.edit
-			}
+			},
+			
 		},
 		watch : {
 			fileListData(val){
@@ -252,8 +277,6 @@
 			display:flex
 			flex-direction: column
 				
-			&:hover
-				cursor:pointer
 			
 			.serialNumberArea
 				width:60px
@@ -283,11 +306,20 @@
 				position:absolute
 				top:-6px
 				right:5px
+				&:hover{
+					transform: rotate(90deg);
+					transition: transform 0.5s;
+				}
+				
 			
 			.setting
 				position:absolute
 				top:-6px
 				right:25px
+				&:hover{
+					transform: rotate(90deg);
+					transition: transform 1s;
+				}
 			
 			.item
 				margin:10px 0px 0px
@@ -300,6 +332,8 @@
 					white-space: nowrap
 					overflow: hidden
 					text-overflow: ellipsis
+					&:hover
+						cursor:pointer
 				
 				.editInput 
 					width:245px
@@ -320,6 +354,7 @@
 				text-align:center
 				opacity:0
 				
+				
 			.coverViewDark
 				width:260px
 				height:150px
@@ -329,7 +364,8 @@
 				z-index:100
 				text-align:center
 				background-color:rgba(68,68,68,0.7)
-				
+				&:hover
+					cursor:pointer
 				i
 					font-size:30px
 					color:#fff
