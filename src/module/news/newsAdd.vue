@@ -267,7 +267,7 @@
 					
 				});
 			},
-			add(formName){
+			add(formName){//表单添加方法
 				this.editorText = this.$refs.tinyMce.getMceContent();//获取文本编辑器内容
 				if(this.editorText.text===""){//文本编辑器纯文本内容验证
 					this.newsAddform.tinyMceInfo = "请填写文章正文";
@@ -336,7 +336,7 @@
 				            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 						}).then((result)=>{
 							const newsId = result.data.data;
-							this.updateChannelNewsAssociate(0,newsId,this.newsAddform.checkedChannels);
+							this.addChannelNewsAssociate(newsId,this.newsAddform.checkedChannels);
 							
 							
 						}).catch((error)=>{
@@ -347,28 +347,6 @@
 						return false;
 					}
 		        });
-			},
-			updateChannelNewsAssociate(type,newsId,checked_channelId){
-				if (type==1){
-					this.deletecChannelNewsAssociate(newsId,checked_channelId);
-					return;
-				}
-				this.addChannelNewsAssociate(newsId,checked_channelId); 
-			},
-			deletecChannelNewsAssociate(newsId,checked_channelId){
-				let p = {}; 
-				p.sql="delete from channelNewsAssociate where newsId='"+newsId+"'"; 
-				
-				this.axios({
-					method:'post',
-					url:this.baseConfig.url_base,
-					data: this.getData("HX_API","/https/news/exec.do",p),
-					dataType:"json",
-				}).then((result)=>{
-					this.addChannelNewsAssociate(newsId,checked_channelId); 
-				}).catch((error)=>{
-					console.log(error);					
-				});				
 			},
 			addChannelNewsAssociate(newsId,checked_channelId){
 				for(const channelId of checked_channelId){
@@ -389,16 +367,16 @@
 				
 				this.updateAnnexMsg(newsId);
 			},
-			handleCheckAllChange(val) {
+			handleCheckAllChange(val) {//全选频道
 		        this.newsAddform.checkedChannels = val ? this.channelsKeyArr : [];
 		        this.isIndeterminate = false;
 		    },
-		    handleCheckedChannelChange(value) {
+		    handleCheckedChannelChange(value){//单选频道
 		        let checkedCount = value.length;
 		        this.checkAll = checkedCount === this.channels.length;
 		        this.isIndeterminate = checkedCount > 0 && checkedCount < this.channels.length;
 		    },
-			reset(formName){
+			reset(formName){//重置表单
 				this.newsAddform.tinyMceInfo = "";
 				this.newsAddform.checkedChannels = [];
 				this.newsAddform.releaseTo = [];
@@ -435,7 +413,7 @@
 					console.log(error);					
 				});	
 			},
-			updateAnnexMsg(newsId){
+			updateAnnexMsg(newsId){//更新附件上传后的newsId
 				let annexes = {};
 				for(const [i,item] of this.fileListData.entries()){
 					const annex = {};
@@ -465,7 +443,7 @@
 					console.log(error);
 				});
 			},
-			deleteAnnex(annexList){
+			deleteAnnex(annexList){//删除附件后更新附件列表
 				this.fileListData = annexList;
 			}
 		},

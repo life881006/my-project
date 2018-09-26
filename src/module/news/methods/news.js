@@ -29,36 +29,38 @@
 		getNewsMainData(){
 			/*
 			 * 获取主表数据
-			 * pageObj: 为数据对象
 			 * transmitObj: 为请求路径
 			 */
+			const transmitObj = {};
+			const p = {};
 			
 			let sql = "SELECT DISTINCT a.id,a.title,a.status,a.author,a.transfer,a.editor,a.editTime,a.appearDate,a.readTimes,a.releaseSite,a.releaseApp,a.releaseWx,a.releaseMicroblog,a.isTop FROM news AS a";
 			sql += " left join channelNewsAssociate as b on a.id = b.newsId left join channel as c on b.channelId = c.id";
 									
-			this.pageObj.sql = sql;			
-			this.pageObj.whereStr = this.getWhereStr();
-			this.pageObj.orderStr = "order by a.editTime desc";			
+			p.sql = sql;
+			p.everyPage = this.pageObj.everyPage;
+			p.currentPage = this.pageObj.currentPage;
+			p.whereStr = this.getWhereStr();
+			p.orderStr = "order by a.editTime desc";
 			
 					
-			this.transmitObj.url = this.baseConfig.url_base;
-			this.transmitObj.api = "HX_API";
-			this.transmitObj.handler = "/https/news/getPageInfo.do";
+			transmitObj.url = this.baseConfig.url_base;
+			transmitObj.api = "HX_API";
+			transmitObj.handler = "/https/news/getPageInfo.do";
 			
-			this.getPageData(this.pageObj,this.transmitObj).then((data)=> {	
+			this.getPageData(p,transmitObj).then((data)=> {	
 				this.pageObj.everyPage = data.everyPage;
 				this.pageObj.currentPage = data.currentPage;
 				this.pageObj.totalCount = data.totalCount;
 				this.$store.dispatch("paginationAdd",this.pageObj);//将页码信息插入
-				this.transmitObj.handler = "/https/news/getNewssByPage.do";
-				return this.getPageData(this.pageObj,this.transmitObj);//获取主表具体条数
+				transmitObj.handler = "/https/news/getNewssByPage.do";
+				return this.getPageData(p,transmitObj);//获取主表具体条数
 			}).then((data)=>{
 				this.tableData = data;
 				this.loading = false;
 			});
 		},
 		handleSelectionChange(data){//主表数据选中
-			console.log(data);
 			this.dataSelections = data;
 		},
 		getPageSize(page){//变更每页条数

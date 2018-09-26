@@ -73,7 +73,23 @@
 		
 					<el-table-column align="center" label="操作" min-width="12%">
 						<template slot-scope="scope">
-							<el-button size="mini" type="danger" @click="deleteThis(scope.$index,scope.row)">删除</el-button>
+							<el-dropdown trigger="click">
+								<el-button type="text" size="mini" class="el-dropdow-link">操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+								<el-dropdown-menu slot="dropdown">
+									<el-dropdown-item>
+										<el-button type="text" size="mini" @click="gotoView(scope.$index,scope.row)">查看</el-button>
+									</el-dropdown-item>
+									<el-dropdown-item>
+										<el-button type="text" size="mini" @click="deleteThis(scope.$index,scope.row)">H5链接</el-button>
+									</el-dropdown-item>
+									<el-dropdown-item v-if="scope.row.status!=2">
+										<el-button type="text" size="mini" @click="deleteThis(scope.$index,scope.row)">修改</el-button>
+									</el-dropdown-item>
+									<el-dropdown-item>	
+										<el-button type="text" size="mini" @click="deleteThis(scope.$index,scope.row)">复制</el-button>
+									</el-dropdown-item>
+								</el-dropdown-menu>
+							</el-dropdown>
 						</template>
 					</el-table-column>		
 				</el-table>			
@@ -126,7 +142,6 @@
 				treeHeight: this.mainContentHeight +"px",//树高度
 				loading:true,
 				tableData: [],//主表数据
-				transmitObj:{},//请求路径参数
 				pageObj:{//请求分页信息
 					path:this.$router.history.current.path,
 					everyPage:this.baseConfig.everyPage,//每页记录数
