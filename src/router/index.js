@@ -78,21 +78,23 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next)=>{//全局导航守卫
-	if(to.path==="/loginServer" || to.path==="/login" || to.path==="/regist"){
+	if(to.path==="/login" || to.path==="/regist"){
 //		sessionStorage.clear();
 //		localStorage.clear();
 		next();
 	}else{
 		let user = JSON.parse(sessionStorage.getItem("user"));
 		if(user===null){
-			new Vue().$notify({
-	          title: '提示',
-	          message: '页面需登录后才能访问，您尚未登录！',
-	          type: 'warning',
-	          onClose:()=>{
-	          	router.push("/login");
-	          }
-	        });			
+			new Vue().$confirm('请登录账号后进入系统', '提示',{
+                confirmButtonText: '确定',
+                showCancelButton:false,
+                type: 'warning'
+	        }).then(()=>{
+                router.push("/login");
+            }).catch((error)=>{
+                router.push("/login")
+
+            });			
 		}else{
 			
 			if(!Vue.prototype.user){//Vue没有挂载时挂载user对象

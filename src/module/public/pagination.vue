@@ -9,6 +9,7 @@
 		      @current-change="handleCurrentChange"
 		      :current-page="page.currentPage"
 		      :page-size="page.everyPage"
+		      pager-count="5"
 		      layout=" prev, pager, next, jumper"
 		      :total="page.totalCount">
 		   </el-pagination>
@@ -52,13 +53,10 @@
 						
 			let totalCount = this.page.totalCount;
 			if(inputEveryPage>totalCount){
-				let h = this.$createElement;//elementUi创建html元素
 				this.$message({
 					//h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
-					message:h('p',null,[
-						//h('span',null,'出现错误：'),
-						h('i',{style:'color:red;font-weight:bolder'},'您输入每页条数超过总条数,请重新输入')
-					])
+					message:'您输入每页条数超过总条数,请重新输入',
+					type:'error'
 				});
 				document.getElementById("everpageNumber").value="";
 				return false;

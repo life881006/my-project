@@ -4,7 +4,7 @@
 		<el-row class="search">
 			<el-col :xs="23" :sm="23" :md="23" :lg="23">
 				<!--搜索框组件-->
-				<searchBar @refreshTabel="refreshTableBySearch" :whereStr="whereStr"></searchBar>
+				<searchBar @refreshTable="refreshTableBySearch" :whereStr="whereStr"></searchBar>
 			</el-col>
 
 			<el-col :xs="1" :sm="1" :md="1" :lg="1">
@@ -95,10 +95,8 @@
 				</el-table>			
 
 				<div class="paginationArea">
-					<operations @refreshTabel="refreshTable" :selectedData="dataSelections"></operations>
-					
+					<operations @refreshTableOperation="refreshTable" :selectedData="dataSelections"></operations>
 					<pagination @setPageSize="getPageSize" @setCurrentPage="getCurrentPage" :pageObj="pageObj"></pagination>
-					
 				</div>
 			</el-col>
 		</el-row>

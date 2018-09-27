@@ -129,6 +129,7 @@
 		    },
 		    claerMce(){
 		    	tinymce.get(this.MceEl.name).setContent("");
+		    	this.textHtml="";
 		    }
 		},
 		beforeDestroy(){

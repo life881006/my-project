@@ -99,11 +99,22 @@
 	}
 </script>
 
-<style scoped="scoped">
-	h4.title{cursor:pointer}
-	.el-tree{background-color:inherit;padding:5px;}
-	/*.treeObj{background-color: #fefefe;}*/
-	.treeInner{margin:0px 25px 0px 0px;background-color: #FAFAFA;}
-	.treeInner>.title{font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#666;font-weight:bolder;border-bottom:1px solid #ebeef5}
-	.treeInner>.title:hover{color:#409eff}
+<style scoped="scoped" lang="stylus">
+	h4.title
+		cursor:pointer
+
+	.el-tree
+		background-color:inherit;padding:5px
+		
+	.treeInner
+		margin:0px 25px 0px 0px;background-color: #FAFAFA
+		
+	.treeInner
+		.title
+			font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#666;font-weight:bolder;border-bottom:1px solid #ebeef5
+			
+	.treeInner
+		.title
+			&:hover
+				color:#409eff
 </style>

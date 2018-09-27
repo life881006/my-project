@@ -258,42 +258,41 @@
 	}
 </script>
 
-<style scoped="scoped">
-	.input{width:100px}
-	.auditLine {
-		width: 300px;
-		border: 1px solid #dcdfe6;
-		background-color: #C0CCDA;
-		font-size: 12px;
-		text-align: center;
-		height: 50px;
-		position: relative;
-		user-select: none;
-		transition: background-color 0.5s;
-	}
+<style scoped="scoped" lang="stylus">
+	.input
+		width:100px
+		
+	.auditLine
+		width: 300px
+		border: 1px solid #dcdfe6
+		background-color: #C0CCDA
+		font-size: 12px
+		text-align: center
+		height: 50px
+		position: relative
+		user-select: none
+		transition: background-color 0.5s
 	
-	.textBlock {
-		position: relative;
-		float:left;
-		z-index: 200;
-		top: 15px;
-		min-width: 100px;
-		margin-left:60px;
-		text-align: left;
-		color: #fff;
-		font-size: 14px;
-	}
+	.textBlock
+		position: relative
+		float:left
+		z-index: 200
+		top: 15px
+		min-width: 100px
+		margin-left:60px
+		text-align: left
+		color: #fff
+		font-size: 14px
 	
-	.moveBlock {
-		width: 50px;
-		height: 50px;
-		display: inline-block;
-		background-color: #409EFF;
-		position: absolute;
-		cursor: pointer;
-		top: 0px;
-		left: 0px;
-		transition: left 0.5s;
-	}	
+	.moveBlock
+		width: 50px
+		height: 50px
+		display: inline-block
+		background-color: #409EFF
+		position: absolute
+		cursor: pointer
+		top: 0px
+		left: 0px
+		transition: left 0.5s
 	
 </style>

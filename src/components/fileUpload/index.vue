@@ -102,7 +102,6 @@
 
 <script>
 	
-	
 	export default {
 		name:"upload",
 		data(){
@@ -123,7 +122,7 @@
 				p.hover = false;
 				p.edit = false;
 				p.editSerialNumber = false;
-					
+				
 				if(this.Data.isFirstButton){
 					p.isFirst = "0";
 				}
@@ -196,15 +195,16 @@
 				}
 				item.info="";
 				item.edit=!item.edit
-			}			
+			}
 		},
 		watch : {
 			fileListData(val){
 				this.fileList = val;
 			}
-		},
+		}
 		
 	}
+
 </script>
 
 <style scoped="scoped" lang="stylus" rel="stylesheet/stylus">

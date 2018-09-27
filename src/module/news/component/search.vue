@@ -70,7 +70,7 @@
 				}else{
 					whereStr +=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
 				}
-				this.$emit("refreshTabel",whereStr);//调用父组件刷新表格
+				this.$emit("refreshTable",whereStr);//调用父组件刷新表格
 			},
 		},
 		watch : {
@@ -91,10 +91,12 @@
 	}
 </script>
 	
-<style scoped="scoped">
-	/*@import url('../../../style/headerNav.css');*/
-	.search{margin-bottom:15px;}
-	.searchText{width: 180px;}
-	
-	#normalSelect{width:120px}
+<style scoped="scoped" lang="stylus">
+	.searchBar
+		
+		.searchText
+			width: 180px
+
+		#normalSelect
+			width:120px
 </style>

@@ -77,6 +77,8 @@
 			this.$router.push("/news/newsAdd");
 		},
 		refreshTable(){//子组件普通刷新主表
+			this.loading = true;
+			this.pageObj.currentPage = 1;
 			this.getNewsMainData();
 		},
 		refreshTableBySearch(whereStr){//子查询组件刷新主表
