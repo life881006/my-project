@@ -9,7 +9,6 @@
 		      @current-change="handleCurrentChange"
 		      :current-page="page.currentPage"
 		      :page-size="page.everyPage"
-		      pager-count="5"
 		      layout=" prev, pager, next, jumper"
 		      :total="page.totalCount">
 		   </el-pagination>
@@ -87,20 +86,49 @@
 }
 </script>
 
-<style scoped="scoped">
-	>>>.el-pagination__jump{margin-left:10px;}
-	>>>.el-input-group__prepend{padding:0px 5px;}
-	>>>#everpageNumber{text-align: center;padding:0px 5px;}
-	>>>.el-pager li{min-width: 30.5px;}
-	.el-input{width:90px;float:left;}
-	.paginationComponent{padding-top:2px;display: inline-block;float:right}
-	.el-pagination{width:auto;text-align: right;padding:0px 5px;float:left}
-	span{float:left;margin-right:5px;line-height: 2;font-weight:normal;font-size:14px;color:#888}
-	@media only screen and (min-width: 100px) and (max-width: 1200px) {
-		>>>.el-pager li {
-			min-width: auto;
-			padding:0px 5px;
-		}
-		>>>.el-pagination__jump{margin-left:5px}
-	}
+<style scoped="scoped" lang="stylus">
+	>>>.el-pagination__jump
+		margin-left:10px
+		
+	>>>.el-input-group__prepend
+		padding:0px 5px
+		
+	>>>#everpageNumber
+		text-align: center
+		padding:0px 5px
+	>>>.el-pager
+		li
+			min-width: 30.5px
+	.el-input
+		width:90px
+		float:left
+		
+	.paginationComponent
+		padding-top:2px
+		display: inline-block
+		float:right
+		
+	.el-pagination
+		width:auto
+		text-align: right
+		padding:0px 5px
+		float:left
+		
+	span
+		float:left
+		margin-right:5px
+		line-height: 2
+		font-weight:normal
+		font-size:14px
+		color:#888
+		
+	@media only screen and (min-width: 100px) and (max-width: 1200px) 
+		>>>.el-pager
+			li 
+			min-width: auto
+			padding:0px 5px
+			
+		>>>.el-pagination__jump
+			margin-left:5px
+		
 </style>

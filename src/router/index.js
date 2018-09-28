@@ -21,10 +21,17 @@ const router = new Router({
     			name:'newsList',
     			meta:{title:'新闻频道'},
     			component:() => import('@/module/news/newsList'),
+                children:[
+                    {
+                        path:'view',
+                        name:"newsView",
+                        component:() => import('@/module/news/newsView')
+                    }
+                ]
     		},
     		{
 				path:'newsAdd',
-    			name:'table_add',
+    			name:'newsAdd',
     			meta:{title:'新闻频道-添加'},
     			component:() => import('@/module/news/newsAdd'),
 			}

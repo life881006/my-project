@@ -3,7 +3,7 @@
 		<div class="treeInner">	
 			<h4 class="title" @click="resetTable">频道管理</h4>
 			<!--展示树-->
-			<el-scrollbar>
+			<el-scrollbar :sss="random">
 			<el-tree ref="elTree" id="elTree" lazy :data="treeData" :props="defaultProps" :style="{height:tHeight}" @node-click="handleNodeClick" :load="loadNode" >
 				
 			</el-tree>
@@ -24,6 +24,7 @@
 		          label: 'label'
 		        },
 		        currentNodeIndex:"0",
+		        random:0,
 			}
 		},
 		mounted() {			
@@ -55,6 +56,7 @@
 						resolve([]);
 					}else{					
 					    resolve(data);
+					    this.random = Math.random(0,1);
 					}
 				});
 		    },
@@ -104,14 +106,24 @@
 		cursor:pointer
 
 	.el-tree
-		background-color:inherit;padding:5px
+		background-color:inherit;
+		padding:5px
+		
+	>>>.el-tree-node__children{
+		overflow:inherit
+	}
 		
 	.treeInner
 		margin:0px 25px 0px 0px;background-color: #FAFAFA
 		
 	.treeInner
 		.title
-			font-size:14px;padding:14px 0px 14px 20px;margin:0px;color:#666;font-weight:bolder;border-bottom:1px solid #ebeef5
+			font-size:14px;
+			padding:14px 0px 14px 20px;
+			margin:0px;
+			color:#666;
+			font-weight:bolder;
+			border-bottom:1px solid #ebeef5
 			
 	.treeInner
 		.title

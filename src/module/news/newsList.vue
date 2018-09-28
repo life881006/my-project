@@ -28,65 +28,146 @@
 					<el-table-column align="center" type="selection" width="55">
 					</el-table-column>
 		
-					<el-table-column prop="title" label="标题" min-width="30%">
-						<template slot-scope="scope">{{ scope.row.title }}</template>
+					<el-table-column prop="title" label="标题" min-width="35%">
+						<template slot-scope="scope">
+							<a class="title" @click="gotoView(scope.row)">
+								<i v-if="scope.row.isTop==1" class="setTop el-icon-erp-setTop"></i>
+								{{ scope.row.title }}
+							</a>
+						</template>
 					</el-table-column>
 		
 					<el-table-column prop="title" align="center" label="发布平台" min-width="12%">
 						<template slot-scope="scope">
-							<span>{{ scope.row.releaseWx==1?"微信":"无微信"}}</span>
-							<span>{{ scope.row.releaseApp==1?"App":"无App"}}</span>
-							<span>{{ scope.row.releaseSite==1?"网站":"无网站"}}</span>
+
+							<a class="releaseBtn webActive" v-if="scope.row.releaseSite==1" @click="exChangeRelease(scope.row,'releaseSite',0)"><i class="el-icon-erp-website"></i></a>
+							<a class="releaseBtn" v-else @click="exChangeRelease(scope.row,'releaseSite',1)"><i class="el-icon-erp-website"></i></a>
+														
+							<a class="releaseBtn appActive" v-if="scope.row.releaseApp==1" @click="exChangeRelease(scope.row,'releaseApp',0)"><i class="el-icon-erp-app"></i></a>
+							<a class="releaseBtn" v-else @click="exChangeRelease(scope.row,'releaseApp',1)"><i class="el-icon-erp-app"></i></a>
+
+							<a class="releaseBtn wxActive" v-if="scope.row.releaseWx==1" @click="exChangeRelease(scope.row,'releaseWx',0)"><i class="el-icon-erp-weixin"></i></a>
+							<a class="releaseBtn" v-else @click="exChangeRelease(scope.row,'releaseWx',1)"><i class="el-icon-erp-weixin"></i></a>
+							
 						</template>
 					</el-table-column>
 		
-					<el-table-column prop="status" align="center" label="状态" min-width="9%">
+					<el-table-column sortable prop="status" align="center" label="状态" min-width="9%">
 						<template slot-scope="scope">
-							<span v-if="scope.row.status==0">未审核</span>
-							<span v-else-if="scope.row.status==1">初审通过</span>
-							<span v-else-if="scope.row.status==2">终审通过</span>
-							<span v-else-if="scope.row.status==3">退稿</span>
-							<span v-else-if="scope.row.status==4">不通过</span>
+							<el-dropdown trigger="click">
+								<el-button type="text" size="small" class="el-dropdow-link unAudit" v-if="scope.row.status==0">
+									未审核
+									<i class="el-icon-arrow-down"></i>
+								</el-button>
+								<el-button type="text" size="small" class="el-dropdow-link audited" v-else-if="scope.row.status==1">
+									初审通过
+									<i class="el-icon-arrow-down"></i>
+								</el-button>
+								<el-button type="text" size="small" class="el-dropdow-link finalAudited" v-else-if="scope.row.status==2">
+									终审通过
+									<i class="el-icon-arrow-down"></i>
+								</el-button>
+								<el-button type="text" size="small" class="el-dropdow-link reject" v-else-if="scope.row.status==3">
+									退稿
+									<i class="el-icon-arrow-down"></i>
+								</el-button>
+								<el-button type="text" size="small" class="el-dropdow-link noPass" v-else-if="scope.row.status==4">
+									不通过
+									<i class="el-icon-arrow-down"></i>
+								</el-button>
+
+								<el-dropdown-menu slot="dropdown" v-if="scope.row.status==0">
+									<el-dropdown-item @click.native="auditNews(scope.row,1)">
+										<a><i class="el-icon-erp-pass"></i>初审通过</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,2)">
+										<a><i class="el-icon-erp-pass"></i>终审通过</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,3)">
+										<a><i class="el-icon-erp-notPass"></i>退稿</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,4)">
+										<a><i class="el-icon-erp-notPass"></i>不通过</a>
+									</el-dropdown-item>
+								</el-dropdown-menu>
+								<el-dropdown-menu slot="dropdown" v-if="scope.row.status==1">
+									<el-dropdown-item @click.native="auditNews(scope.row,2)">
+										<a><i class="el-icon-erp-pass"></i>终审通过</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,3)">
+										<a><i class="el-icon-erp-notPass"></i>退稿</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,4)">
+										<a><i class="el-icon-erp-notPass"></i>不通过</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,0)">
+										<a><i class="el-icon-erp-pass"></i>撤销</a>
+									</el-dropdown-item>
+								</el-dropdown-menu>
+								<el-dropdown-menu slot="dropdown" v-if="scope.row.status==2">
+									
+									<el-dropdown-item @click.native="auditNews(scope.row,3)">
+										<a><i class="el-icon-erp-notPass"></i>退稿</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,4)">
+										<a><i class="el-icon-erp-notPass"></i>不通过</a>
+									</el-dropdown-item>
+									<el-dropdown-item @click.native="auditNews(scope.row,1)">
+										<a><i class="el-icon-erp-pass"></i>撤销</a>
+									</el-dropdown-item>
+								</el-dropdown-menu>
+								<el-dropdown-menu slot="dropdown" v-if="scope.row.status==3">
+									<el-dropdown-item @click.native="auditNews(scope.row,0)">
+										<a><i class="el-icon-erp-pass"></i>撤销</a>
+									</el-dropdown-item>
+								</el-dropdown-menu>
+								<el-dropdown-menu slot="dropdown" v-if="scope.row.status==4">
+									<el-dropdown-item @click.native="auditNews(scope.row,0)">
+										<a><i class="el-icon-erp-pass"></i>撤销</a>
+									</el-dropdown-item>
+								</el-dropdown-menu>
+							</el-dropdown>
+
+							
+
 						</template>
 					</el-table-column>
 		
-					<el-table-column align="center" prop="isTop" label="置顶" min-width="6%">
-						<template slot-scope="scope">
-							<span v-if="scope.row.isTop==1">置顶</span>
-							<span v-else=""></span>
-						</template>
-					</el-table-column>
-		
-					<el-table-column align="center" label="作者" prop="author" min-width="6%">
+					<el-table-column align="center" label="作者" prop="author" min-width="10%">
 		
 					</el-table-column>
 		
-					<el-table-column align="center" label="编辑时间" prop="appearDate" min-width="12%">
+					<el-table-column sortable align="center" label="编辑时间" prop="appearDate" min-width="12%">
 						<template slot-scope="scope">
 						{{ moment(scope.row.appearDate).format("YYYY-MM-DD") }}
 						</template>
 					</el-table-column>
 		
-					<el-table-column align="center" label="阅读次数" prop="readTimes" min-width="8%">
-		
-					</el-table-column>
 		
 					<el-table-column align="center" label="操作" min-width="12%">
 						<template slot-scope="scope">
 							<el-dropdown trigger="click">
-								<el-button type="text" size="mini" class="el-dropdow-link">操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+								<el-button type="text" size="small" class="el-dropdow-link">操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item>
-										<el-button type="text" size="mini" @click="gotoView(scope.$index,scope.row)">查看</el-button>
+
+									<el-dropdown-item v-if="scope.row.isTop==0" @click.native="setTop(scope.row,1)">
+										<el-button type="text" size="mini">置顶</el-button>
 									</el-dropdown-item>
-									<el-dropdown-item>
-										<el-button type="text" size="mini" @click="deleteThis(scope.$index,scope.row)">H5链接</el-button>
+
+									<el-dropdown-item v-else @click.native="setTop(scope.row,0)">
+										<el-button type="text" size="mini">撤销置顶</el-button>
 									</el-dropdown-item>
-									<el-dropdown-item v-if="scope.row.status!=2">
-										<el-button type="text" size="mini" @click="deleteThis(scope.$index,scope.row)">修改</el-button>
+									
+									<el-dropdown-item v-if="scope.row.status!=2" @click.native="deleteThis(scope.$index,scope.row)">
+										<el-button type="text" size="mini">修改</el-button>
 									</el-dropdown-item>
-									<el-dropdown-item>	
-										<el-button type="text" size="mini" @click="deleteThis(scope.$index,scope.row)">复制</el-button>
+
+									<el-dropdown-item @click.native="deleteThis(scope.$index,scope.row)">
+										<el-button type="text" size="mini">H5链接</el-button>
+									</el-dropdown-item>
+									
+									<el-dropdown-item @click.native="deleteThis(scope.$index,scope.row)">	
+										<el-button type="text" size="mini">复制</el-button>
 									</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
@@ -102,13 +183,14 @@
 		</el-row>
 
 		<!--弹框-->
-		<el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="80%" top="5vh">
+		<el-dialog :title="currentItem.title" :visible.sync="dialogVisible" width="80%" top="1vh">
 			<!--:before-close="handleClose"-->
+			<div class="signature">
+				<span>{{currentItem.author}}</span>
+				<span>{{moment(currentItem.appearDate).format("YYYY-MM-DD") }}</span>
+			</div>
 
-			<div class="dialogMain">
-				<keep-alive>
-					<router-view :visibleAttr="dialogVisible"></router-view>
-				</keep-alive>
+			<div class="dialogMain" v-html="currentItem.content">
 			</div>
 			<!--
 		  <span slot="footer" class="dialog-footer">
@@ -131,6 +213,8 @@
 	import tree from '@/module/news/component/tree'//公共组件
 	import operations from '@/module/news/component/operations'//公共组件
 	
+	let sortType = "desc";
+
 	
 	export default {
 
@@ -150,7 +234,8 @@
 				dialogVisible: false, //对话框是否显示 
 				currentNode:"0",//接收tree中点击的nodeIndex
 				whereStr:"",//whereStr
-				dialogTitle:"",
+				currentItem:{},
+				currentViewAnnex:[]//当前浏览的文章附件
 			}
 		},
 		props: ['mainContentHeight'],
@@ -178,7 +263,76 @@
 			});
 		},		
 		methods: {
-			
+			exChangeRelease(row,column,status){
+				const p = {};
+				p.sql = "update news set "+column+" = '"+status+"' where id = '"+row.id+"'";
+
+				this.axios({
+					method: 'post',
+		            url: this.baseConfig.url_base,
+		            data: this.getData("HX_API","/https/news/exec.do",p),
+		            dataType: 'JSON',
+				}).then((data)=>{
+					row[column]=status;
+				}).catch((error)=>{
+					console.log(error);
+				});
+			},
+			auditNews(row,status){				
+				var p = {};
+				p.sql = "update news set status='"+status+"' where id = '"+row.id+"'";
+				this.axios({
+		            method: 'post',
+		            url: this.baseConfig.url_base,
+		            data: this.getData("HX_API","/https/news/exec.do",p),
+		            dataType: 'JSON',
+		        }).then((result)=>{
+					row.status = status;
+
+		        }).catch((error)=>{
+		        	console.log(error);
+
+		        })
+			},			
+			setTop(row,status){
+				
+				var p = {};
+				p.sql = "update news set isTop='"+status+"' where id in ("+row.id+")";
+				this.axios({
+		            method: 'post',
+		            url: this.baseConfig.url_base,
+		            data: this.getData("HX_API","/https/news/exec.do",p),
+		            dataType: 'JSON',
+		        }).then((result)=>{
+					row.isTop = status;
+
+		        }).catch((error)=>{
+		        	console.log(error);
+
+		        })
+			},
+			gotoView(row){
+				this.dialogVisible = true;
+				this.currentItem = row;
+				this.getAnnex(row.id);
+			},
+			getAnnex(newsId){
+				const p = {};
+				p.sql = "select id,serialNumber,annexName,fileType,dirName,content,contextPath,saveUrl,newFileName from newsAnnex where newsId = '"+newsId+"' and status = 1 order by serialNumber asc";
+				this.axios({
+		            method: 'post',
+		            url: this.baseConfig.url_base,
+		            data: this.getData("HX_API","/https/newsAnnex/queryForMap.do",p),
+		            dataType: 'JSON',
+		        }).then((result)=>{
+					this.currentViewAnnex = result.data.data;
+
+		        }).catch((error)=>{
+		        	console.log(error);
+
+		        })
+			}
+
 		},
 		watch: {
 			mainContentHeight(val){
@@ -189,10 +343,69 @@
 	}
 </script>
 
-<style type="text/css">
+<style type="text/css" lang="stylus">
 	
 	@import url("../../style/mainList.css");
 	
+	.signature
+		text-align:right
+		
+		span
+			color:#909399
+			margin:0px 4px
+			font-style:italic
+		
+		&:before
+			content:""
+			width:50px
+			height:1px
+			top:-2px
+			position:relative
+			display:inline-block
+			border-top:1px solid #999
+			margin-right:2px
+			
+
+	.dialogMain
+		p
+			padding:0px
+			margin:0px
+
+	.title
+		&:hover
+			cursor:pointer
+		.setTop
+			font-size:22px
+			color:#409eff
+
+	.unAudit
+		color:#606266
+
+	.audited
+		color:#ffc107
+		
+	.finalAudited
+		color:#42b983
 	
+	.reject
+		color:#ddd
 	
+	.noPass
+		color:#f56c6c
+
+	.releaseBtn
+		color:#ddd
+		&:hover
+			cursor:pointer
+			
+	.wxActive
+		color:#00b80c
+	
+	.appActive
+		color:#03a9f4
+		
+	.webActive
+		color:#ff9800
+	
+
 </style>
