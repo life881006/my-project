@@ -150,6 +150,10 @@
 								<el-button type="text" size="small" class="el-dropdow-link">操作<i class="el-icon-arrow-down el-icon--right"></i></el-button>
 								<el-dropdown-menu slot="dropdown">
 
+									<el-dropdown-item v-if="scope.row.status!=2" @click.native="gotoEdit(scope.row.id)">
+										<el-button type="text" size="mini">修改</el-button>
+									</el-dropdown-item>
+
 									<el-dropdown-item v-if="scope.row.isTop==0" @click.native="setTop(scope.row,1)">
 										<el-button type="text" size="mini">置顶</el-button>
 									</el-dropdown-item>
@@ -157,12 +161,8 @@
 									<el-dropdown-item v-else @click.native="setTop(scope.row,0)">
 										<el-button type="text" size="mini">撤销置顶</el-button>
 									</el-dropdown-item>
-									
-									<el-dropdown-item v-if="scope.row.status!=2" @click.native="deleteThis(scope.$index,scope.row)">
-										<el-button type="text" size="mini">修改</el-button>
-									</el-dropdown-item>
 
-									<el-dropdown-item @click.native="deleteThis(scope.$index,scope.row)">
+									<el-dropdown-item @click.native="openHtml5Link(scope.$index,scope.row)">
 										<el-button type="text" size="mini">H5链接</el-button>
 									</el-dropdown-item>
 									
@@ -184,20 +184,12 @@
 
 		<!--弹框-->
 		<el-dialog :title="currentItem.title" :visible.sync="dialogVisible" width="80%" top="1vh">
-			<!--:before-close="handleClose"-->
 			<div class="signature">
-				<span>{{currentItem.author}}</span>
-				<span>{{moment(currentItem.appearDate).format("YYYY-MM-DD") }}</span>
+				作者:<span>{{currentItem.author}}</span>
+				发布时间:<span>{{moment(currentItem.appearDate).format("YYYY-MM-DD") }}</span>
 			</div>
-
 			<div class="dialogMain" v-html="currentItem.content">
 			</div>
-			<!--
-		  <span slot="footer" class="dialog-footer">
-		    <el-button @click="dialogVisible = false">取 消</el-button>
-		    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-		  </span>
-		  -->
 		</el-dialog>
 	</div>
 </template>
@@ -263,6 +255,10 @@
 			});
 		},		
 		methods: {
+			/*
+			修改发布到的平台
+			 */
+
 			exChangeRelease(row,column,status){
 				const p = {};
 				p.sql = "update news set "+column+" = '"+status+"' where id = '"+row.id+"'";
@@ -278,6 +274,9 @@
 					console.log(error);
 				});
 			},
+			/*
+			审核新闻
+			 */
 			auditNews(row,status){				
 				var p = {};
 				p.sql = "update news set status='"+status+"' where id = '"+row.id+"'";
@@ -293,7 +292,10 @@
 		        	console.log(error);
 
 		        })
-			},			
+			},
+			/*
+			置顶
+			 */	
 			setTop(row,status){
 				
 				var p = {};
@@ -311,11 +313,17 @@
 
 		        })
 			},
+			/*
+			查看
+			 */
 			gotoView(row){
 				this.dialogVisible = true;
 				this.currentItem = row;
 				this.getAnnex(row.id);
 			},
+			/*
+			获得新闻附件
+			 */
 			getAnnex(newsId){
 				const p = {};
 				p.sql = "select id,serialNumber,annexName,fileType,dirName,content,contextPath,saveUrl,newFileName from newsAnnex where newsId = '"+newsId+"' and status = 1 order by serialNumber asc";
@@ -331,6 +339,12 @@
 		        	console.log(error);
 
 		        })
+			},
+			/*
+			修改
+			 */
+			gotoEdit(newsId){
+				this.$router.push({path:"/news/newsEdit/"+newsId});
 			}
 
 		},

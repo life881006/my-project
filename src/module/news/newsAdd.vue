@@ -24,24 +24,16 @@
 		        <el-form-item label-width="0px" >
 					<el-checkbox-group v-model="newsAddform.releaseTo">
 						<el-checkbox label="releaseSite" key="releaseSite">
-							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到网站">
-								<i class="releaseToIcon el-icon-erp-website"></i>
-							</el-tooltip>
+							网站
 						</el-checkbox>
 						<el-checkbox label="releaseWx" key="releaseWx">
-							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到微信">
-								<i class="releaseToIcon el-icon-erp-weixin" title=""></i>
-							</el-tooltip>
+							微信
 						</el-checkbox>
 						<el-checkbox label="releaseMicroblog" key="releaseMicroblog">
-							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到微博">
-								<i class="releaseToIcon el-icon-erp-weibo"></i>
-							</el-tooltip>
+							微博
 						</el-checkbox>
 						<el-checkbox label="releaseApp" key="releaseApp">
-							<el-tooltip class="el-dropdown-link" effect="dark" content="发布到App">
-								<i class="releaseToIcon el-icon-erp-app"></i>
-							</el-tooltip>
+							APP
 						</el-checkbox>						
 					</el-checkbox-group>
 				</el-form-item>
@@ -455,16 +447,45 @@
 	}
 </script>
 
-<style scoped="scoped">
-	>>>.mainScroll{height:100%;}
-	.el-table-column{width:33%;}
-	.controll{text-align: center;}
-	.tinyMeceInfo{font-size:12px;color:#f56c6c;transition: height 0.5s;}
-	>>>.el-scrollbar__wrap {overflow-x:hidden}
+<style scoped="scoped" lang="stylus">
+	>>>.mainScroll
+		height:100%
 	
-	.toolBar{height:50px;line-height:50px;width:auto;background-color: #ededed;padding:0px 10px}
-	.toolBar .operations{display:inline-block;float:right;margin-top:5px}
-	.toolBar .el-form-item,.dropDownMenu .el-form-item{margin-bottom:0px;}
-	.dropDownMenu{padding:5px 20px;margin-top:0px}
-	.releaseToIcon{font-size:20px;}
+	.el-table-column
+		width:33%
+		
+	.controll
+		text-align: center
+		
+	.tinyMeceInfo
+		font-size:12px
+		color:#f56c6c
+		transition: height 0.5s
+		
+	>>>.el-scrollbar__wrap
+		overflow-x:hidden
+	
+	.toolBar
+		height:50px
+		line-height:50px
+		width:auto
+		background-color: #ededed
+		padding:0px 10px
+
+	.toolBar
+		.operations
+			display:inline-block
+			float:right
+			margin-top:5px
+			
+	.toolBar .el-form-item
+	.dropDownMenu .el-form-item
+		margin-bottom:0px
+		
+	.dropDownMenu
+		padding:5px 20px
+		margin-top:0px
+		
+	.releaseToIcon
+		font-size:20px
 </style>

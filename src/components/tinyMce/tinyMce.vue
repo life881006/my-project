@@ -22,7 +22,7 @@
 			if(this.$store.state.textarea.contentList.length!=0){
 				const filledContent = this.$store.state.textarea.contentList;
 				for(let item of filledContent){
-					if(item.path===this.$router.history.current.path){
+					if(item.path===this.$route.path){
 						this.textHtml = item.content;						
 					}
 				}
@@ -121,8 +121,12 @@
 					window.tinymce.get(this.MceEl.name).destroy()
 				}
 		    },
+		    setContent(val){
+		    	tinymce.get(this.MceEl.name).setContent(val);
+		    },
 		    setChanges(val){
-		    	const currentPath = this.$router.history.current.path;
+		    	console.log(val);
+		    	const currentPath = this.$route.path;
 				let textareaObj = {"path":currentPath,"content":val};
 				this.textHtml = val;
 				this.$store.dispatch("updateTextareaHtml",textareaObj);
@@ -137,15 +141,10 @@
 		},
 		destroyed() {
 		  this.destroyTinyMce()
-		},/*
+		},
 		watch : {
-			tinyMce:{
-				handler(newValue, oldValue) {
-			　　　　　　this.MceEl = newValue
-			　　　},
-			　　　deep: true
-			}
-		},*/
+			
+		}
 	}
 </script>
 
