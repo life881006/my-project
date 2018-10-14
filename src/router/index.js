@@ -29,7 +29,7 @@ const router = new Router({
     			component:() => import('@/module/news/newsAdd'),
 			},
             {
-                path:'newsEdit/:newsId',
+                path:'newsEdit',
                 name:'newsEdit',
                 meta:{title:'新闻频道-修改'},
                 component:() => import('@/module/news/newsEdit'),
@@ -106,6 +106,7 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 			if(!Vue.prototype.user){//Vue没有挂载时挂载user对象
 				Vue.prototype.user = user;
 				Vue.prototype.unitConfig = JSON.parse(sessionStorage.getItem("unitConfig"));
+                Vue.prototype.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 			}
 			//
 			next();

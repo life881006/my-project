@@ -167,6 +167,7 @@
 					}else{
 					    var userToken = infoData[0];
 			    	    sessionStorage.setItem("unitConfig",JSON.stringify(infoData.unitConfig));
+			    	    sessionStorage.setItem("userInfo",JSON.stringify(infoData.user));
 						this.getUser(infoData.userId); 
 					} 
 					

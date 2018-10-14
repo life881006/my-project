@@ -364,6 +364,8 @@
 		        this.isIndeterminate = false;
 		    },
 		    handleCheckedChannelChange(value){//单选频道
+		    	console.log(value);
+		    	console.log(this.newsAddform.checkedChannels);
 		        let checkedCount = value.length;
 		        this.checkAll = checkedCount === this.channels.length;
 		        this.isIndeterminate = checkedCount > 0 && checkedCount < this.channels.length;
@@ -448,8 +450,9 @@
 </script>
 
 <style scoped="scoped" lang="stylus">
-	>>>.mainScroll
+	.mainScroll
 		height:100%
+		overflow-y:auto
 	
 	.el-table-column
 		width:33%
@@ -462,8 +465,8 @@
 		color:#f56c6c
 		transition: height 0.5s
 		
-	>>>.el-scrollbar__wrap
-		overflow-x:hidden
+	.el-scrollbar__wrap
+		overflow:auto
 	
 	.toolBar
 		height:50px

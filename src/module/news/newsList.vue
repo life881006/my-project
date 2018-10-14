@@ -344,7 +344,7 @@
 			修改
 			 */
 			gotoEdit(newsId){
-				this.$router.push({path:"/news/newsEdit/"+newsId});
+				this.$router.push({name:"newsEdit",query:{id:newsId}});
 			}
 
 		},

@@ -104,7 +104,7 @@
 		    
 			<div class="operations">
 				<el-form-item label-width="0px" class="right">
-					<el-button type="primary" icon="el-icon-success" @click="add('newsEditform')" >提交</el-button>
+					<el-button type="primary" icon="el-icon-success" @click="update('newsEditform')" >提交</el-button>
 					<el-button @click="reset('newsEditform')" >重置</el-button>
 				</el-form-item>
 			</div>
@@ -186,7 +186,7 @@
 		data(){
 			return {
 				formHeight:this.mainContentHeight+50,
-				newsId:this.$route.path.substr(this.$route.path.lastIndexOf("/")+1,this.$route.path.length),
+				newsId:this.$route.query.id,
 				configData:{//附件上传参数
 					isFirstButton:true,
 					statusButton:true,
@@ -206,7 +206,24 @@
 					isShowMenuBar: true,//是否显示菜单栏
 				},
 				fileListData:[],//附件列表
-				newsEditform:{},
+				newsEditform:{
+					title:"",
+					checkedChannels:[],
+					type:"0",
+					linkUrl:"",
+					tinyMceInfo:"",
+					author:"",
+					transfer:"",
+					appearDate:"",
+					editTime:"",
+					editor:"",
+					isAutoAppear:"0",
+					isReview:"0",
+					isBigImage:"0",
+					releaseTo:[],
+					isTop:"0",
+					isOriginal:"0",
+				},
 				editorText:{
 					path:this.$route.path,
 					content:""
@@ -229,8 +246,8 @@
 		},
 		mounted(){
 			this.loadChannel();
-			this.getNews(this.newsId);
-			this.getNewsChannelAssociate(this.newsId);
+			this.laodNewsMsg();
+			this.loadNewsAnnexes();
 		},
 		beforeUpdate(){
 		
@@ -260,54 +277,116 @@
 					data:this.getData("HX_API","/https/channel/query.do",p),
 				}).then((result)=>{
 					this.channels = result.data.data;
-					for(let item of this.channels){
+
+					for(const item of this.channels){
 						this.channelsKeyArr.push(item.id);
 					}
+					
 				}).catch((error)=>{
 					console.log(error);
 					
 				});
 			},
-			getNews(id){
+			laodNewsMsg(){
 				const p = {};
-				p.id = id;
+				p.id = this.newsId;
 				this.axios({
 					url:this.baseConfig.url_base,
 					dataType:"JSON",
 					method:"post",
 					data:this.getData("HX_API","/https/news/getNews.do",p),
 				}).then((result)=>{
-					this.newsEditform = result.data.data;
-					this.newsEditform.appearDate = this.moment(this.newsEditform.appearDate).format("YYYY-MM-DD HH:mm:ss");
-					this.newsEditform.editTime = this.moment(this.newsEditform.editTime).format("YYYY-MM-DD HH:mm:ss");
-					this.editorText.content = this.newsEditform.content;
-					this.$refs.tinyMce.setContent(this.newsEditform.content);
+					const data = result.data.data;
+					this.newsEditform.type=data.type;
+					this.newsEditform.linkUrl=data.linkUrl;
+					this.newsEditform.tinyMceInfo="";
+					this.newsEditform.author=data.author;
+					this.newsEditform.transfer=data.transfer;
+					this.newsEditform.editor=data.editor;
+					this.newsEditform.isAutoAppear=data.isAutoAppear+"";
+					this.newsEditform.isReview=data.isReview+"";
+					this.newsEditform.isBigImage=data.isBigImage+"";
+					
+					if(data.releaseSite===1){
+						this.newsEditform.releaseTo.push("releaseSite");
+					}
+					if(data.releaseWx===1){
+						this.newsEditform.releaseTo.push("releaseWx");
+					}
+					if(data.releaseMicroblog===1){
+						this.newsEditform.releaseTo.push("releaseMicroblog");
+					}
+					if(data.releaseApp===1){
+						this.newsEditform.releaseTo.push("releaseApp");
+					}
+					this.newsEditform.isTop=data.isTop+"",
+					this.newsEditform.isOriginal=data.isOriginal+"",
+					this.newsEditform.title = data.title;
+
+					this.newsEditform.appearDate = this.moment(data.appearDate).format("YYYY-MM-DD HH:mm:ss");
+					this.newsEditform.editTime = this.moment(data.editTime).format("YYYY-MM-DD HH:mm:ss");
+					this.editorText.content = data.content;
+					this.$refs.tinyMce.setContent(data.content);
+
+					this.getNewsChannelAssociate();
 
 				}).catch((error)=>{
 
 				});
 			},
-			getNewsChannelAssociate(id){
+			getNewsChannelAssociate(){
 				const p = {};
-				p.sql = "select channelId from channelNewsAssociate where newsId = '"+id+"'";
+				p.sql = "select channelId from channelNewsAssociate where newsId = '"+this.newsId+"'";
 				this.axios({
 					url:this.baseConfig.url_base,
 					dataType:"JSON",
 					method:"post",
 					data:this.getData("HX_API","/https/channelNewsAssociate/queryForMap.do",p),
 				}).then((result)=>{
-					//this.newsEditform.checkedChannels = result.data.data;
-					console.log(this.newsEditform.checkedChannels);
+					let checkedChannels=[];
+					for(const item of result.data.data){
+						checkedChannels.push(item.channelId);
+					}
+					if(this.channels.length==checkedChannels.length){
+						this.isIndeterminate = false;
+					}else if(checkedChannels.length>0){
+						this.isIndeterminate = true;
+					}
+					this.newsEditform.checkedChannels=checkedChannels;
 				}).catch((error)=>{
 
 				});
+			},
+			loadNewsAnnexes(){
+				var p = {};
+				p.sql = "select id,serialNumber,annexName,fileType,fileSize,dirName,content,isFirst,status,contextPath,saveUrl,newFileName,originalFileName,smallPicture from newsAnnex where newsId ='"+this.newsId+"' order by serialNumber asc";
+				this.axios({
+					url:this.baseConfig.url_base,
+					dataType:"JSON",
+					method:"post",
+					data:this.getData("HX_API","/https/newsAnnex/query.do",p),
+				}).then((result)=>{
+					const resultData = result.data.data;
+					for(const i of resultData){
+						i.info = "";
+						i.isFirst = i.isFirst?"0":"1";
+						i.status = i.status?"1":"0";
+						i.hover = false;
+						i.edit = false;
+						i.editSerialNumber = false;
+					}
+					this.fileListData = resultData;
+				}).catch((error)=>{
+
+				});
+
+
 			},
 			handleCheckAllChange(val) {//全选频道
 		        this.newsEditform.checkedChannels = val ? this.channelsKeyArr : [];
 		        this.isIndeterminate = false;
 		    },
 		    handleCheckedChannelChange(value){//单选频道
-		    	console.log(value);
 		        let checkedCount = value.length;
 		        this.checkAll = checkedCount === this.channels.length;
 		        this.isIndeterminate = checkedCount > 0 && checkedCount < this.channels.length;
@@ -349,13 +428,13 @@
 					console.log(error);					
 				});	
 			},
-			updateAnnexMsg(newsId){//更新附件上传后的newsId
+			updateAnnexMsg(){//更新附件上传后的newsId
 				let annexes = {};
 				for(const [i,item] of this.fileListData.entries()){
 					const annex = {};
 					annex.id= item.id;
 					annex.serialNumber = i+1;
-					annex.newsId = newsId;
+					annex.newsId = this.newsId;
 					annex.annexName = item.annexName;
 					annex.content = "";
 					annex.isFirst = item.isFirst;
@@ -372,28 +451,140 @@
 				}).then((data)=>{
 					this.$message({
 						type:"success",
-						message:"添加成功"
+						message:"更新成功"
 					});
-					this.reset("newsEditform");
+					this.loadChannel();
+					this.laodNewsMsg();
+					this.loadNewsAnnexes();
 				}).catch((error)=>{
 					console.log(error);
 				});
 			},
 			deleteAnnex(annexList){//删除附件后更新附件列表
 				this.fileListData = annexList;
-			}
+			},
+			update(formName){//表单更新方法
+				this.editorText = this.$refs.tinyMce.getMceContent();//获取文本编辑器内容
+
+				if(this.editorText.text===""){//文本编辑器纯文本内容验证
+					this.newsEditform.tinyMceInfo = "请填写文章正文";
+				    return false;
+				}else{
+					this.newsEditform.tinyMceInfo = "";
+				}
+				this.$refs[formName].validate((valid) => {//验证
+					if (valid) {//验证通过后操作
+						var p = {};				
+						p.releaseSite=0;
+						p.releaseApp=0;
+						p.releaseWx=0;
+						p.releaseMicroblog=0; 
+						
+						const releaseToArr = this.newsEditform.releaseTo;
+						for(const item of releaseToArr){
+							switch(item){
+								
+								case "releaseSite":
+								p.releaseSite = 1;
+								break;
+								
+								case "releaseApp":
+								p.releaseApp = 1;
+								break;
+								
+								case "releaseWx":
+								p.releaseWx = 1;
+								break;
+								
+								case "releaseMicroblog":
+								p.releaseMicroblog = 1;
+								break;
+							}
+						}
+						p.id = this.newsId;
+						p.unitId=this.user.unitId;
+						p.title=this.newsEditform.title;
+						p.content = this.editorText.html;
+						p.status=0;
+						p.author=this.newsEditform.author;
+						p.transfer=this.newsEditform.transfer;
+						p.editor=this.newsEditform.editor;
+						p.editTime = this.newsEditform.editTime;	
+						p.appearDate = this.newsEditform.appearDate;	
+						p.readTimes=0;
+						p.appearUserId=this.user.id; 
+						
+						p.isTop = this.newsEditform.isTop;
+						p.type = this.newsEditform.linkUrl==""?0:1;
+						
+						p.linkUrl = this.newsEditform.linkUrl;
+						p.isBigImage = this.newsEditform.isBigImage;
+						p.isReview = this.newsEditform.isReview;
+						p.isAutoAppear= this.newsEditform.isAutoAppear;	
+						p.isOriginal = this.newsEditform.isOriginal;
+						p.lastTime = this.moment(new Date().getTime()).format("YYYY-MM-DD HH:MM:SS");	
+						
+						this.axios({
+							method:'post',
+							url:this.baseConfig.url_base,
+							data: this.getData("HX_API","/https/news/update.do",p),
+							dataType:"json",
+				            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+						}).then((result)=>{
+							this.updateChannelNewsAssociate(this.newsEditform.checkedChannels);
+						}).catch((error)=>{
+							console.log(error);
+						});
+					} else {//验证不通过
+						return false;
+					}
+		        });
+			},
+			updateChannelNewsAssociate(checked_channelId){
+				const p = {};
+				p.sql = "delete from channelNewsAssociate where newsId = '"+this.newsId+"'";
+
+				this.axios({
+					method:'post',
+					url:this.baseConfig.url_base,
+					data: this.getData("HX_API","/https/channelNewsAssociate/exec.do",p),
+					dataType:"json",
+				}).then((result)=>{
+					this.addChannelNewsAssociate(checked_channelId);
+				}).catch((error)=>{
+					console.log(error);
+				});
+			},
+			addChannelNewsAssociate(checked_channelId){
+				for(const channelId of checked_channelId){
+					var p = {};	
+					p.newsId=this.newsId;
+					p.channelId=channelId; 
+					this.axios({
+						method:'post',
+						url:this.baseConfig.url_base,
+						data: this.getData("HX_API","/https/channelNewsAssociate/add.do",p),
+						dataType:"json",
+					}).then((result)=>{
+						this.updateAnnexMsg();
+					}).catch((error)=>{
+						console.log(error);					
+					});	
+				};
+			},
 		},
 		watch : {
 			mainContentHeight(val){
 				this.formHeight = val+50;
-			}
+			},
 		},
 	}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-	>>>.mainScroll
+	.mainScroll
 		height:100%
+		overflow-y:auto
 	
 	.el-table-column
 		width:33%
@@ -406,8 +597,8 @@
 		color:#f56c6c
 		transition: height 0.5s
 		
-	>>>.el-scrollbar__wrap
-		overflow-x:hidden
+	.el-scrollbar__wrap
+		overflow:auto
 	
 	.toolBar
 		height:50px
