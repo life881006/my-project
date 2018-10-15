@@ -6,7 +6,7 @@
 					:class="[isActive(item.path)?'active':'','routerTags']" 
 					:key="item.path" 
 					ref="item" 
-					:to="item.path" 
+					:to="{name:item.name,query:item.query}" 
 					v-for="item in Array.from(routerHistory)" 
 					@contextmenu.native.prevent="showTagsMenu" 
 					>{{item.title}}
@@ -52,7 +52,6 @@
 			}
 		},
 		created:function(){
-			
 		},
 		computed:{
 			
@@ -101,7 +100,7 @@
 			    const items = this.$refs.item;			    
 			    this.$nextTick(() => {			    	
 				    for (const item of items) {
-				        if (item.to === this.$route.path) {
+				        if (item.to.name === this.$route.name) {
 				          this.moveToTarget(item.$el);
 				          //this.routerHistory = this.$route;
 				          break

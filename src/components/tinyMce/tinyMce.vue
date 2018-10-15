@@ -125,7 +125,6 @@
 		    	tinymce.get(this.MceEl.name).setContent(val);
 		    },
 		    setChanges(val){
-		    	console.log(val);
 		    	const currentPath = this.$route.path;
 				let textareaObj = {"path":currentPath,"content":val};
 				this.textHtml = val;

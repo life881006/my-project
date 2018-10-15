@@ -49,6 +49,19 @@ const router = new Router({
     		}
     	]
     },{
+        path:'/cropper',
+        name:'cropper',
+        redirect: '/cropper/index',
+        component: layout ,
+        children:[
+            {
+                path:'index',
+                name:'cropperIndex',
+                meta:{title:'图片裁切'},
+                component:() => import('@/components/cropper/index')
+            }
+        ]
+    },{
     	path:'/student',
     	redirect: 'studentList',
     	component: layout ,

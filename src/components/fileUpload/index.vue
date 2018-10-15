@@ -57,15 +57,15 @@
 				
 				<div class="annexImg">
 					
-					<a v-if="item.dirName==='image'" :href="'http://hw.jshuixue.com'+baseConfig.webName+item.saveUrl+item.newFileName" target="_blank">
+					<a v-if="item.dirName==='image'" :href="'http://192.168.100.106:8082'+baseConfig.webName+item.saveUrl+item.newFileName" target="_blank">
 					<img 
-						:src="'http://hw.jshuixue.com'+baseConfig.webName+item.saveUrl+item.newFileName"/>
+						:src="'http://192.168.100.106:8082'+baseConfig.webName+item.saveUrl+item.newFileName"/>
 					</a>
 					
 					<a v-else :href="item.contextPath+item.saveUrl+item.newFileName" target="_blank">
 					<img 					
 						
-						:src="'http://hw.jshuixue.com'+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"/>
+						:src="'http://192.168.100.106:8082'+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"/>
 					</a>
 				</div>
 				
@@ -122,7 +122,7 @@
 				p.hover = false;
 				p.edit = false;
 				p.editSerialNumber = false;
-				
+				console.log(p);
 				if(this.Data.isFirstButton){
 					p.isFirst = "0";
 				}
