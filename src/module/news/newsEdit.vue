@@ -113,7 +113,9 @@
 		
 		<div :style="{'height':formHeight+'px','overflow':'hidden','padding-top':'10px'}">
 		<el-scrollbar class="mainScroll">
-			
+		
+		<breadCom ></breadCom>
+
 		<el-form-item label="文章分类" :rules="filter_inputs('required')" prop="checkedChannels">
 			<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
   			<div style="margin: 15px 0;"></div>
@@ -180,6 +182,9 @@
 <script>
 	import editor from "@/components/tinyMce/tinyMce"
 	import upload from "@/components/fileUpload/index"
+	import breadCom from "@/components/breadComponent/breadCom"
+	
+
 	
 	export default {
 		name:"",
@@ -234,36 +239,15 @@
 				isIndeterminate: false,
 				annexesList:[],
 			}
-		},		
-		beforeCreate(){
-			
-		},
-		created(){
-		
-		},
-		beforeMount(){
-		
 		},
 		mounted(){
 			this.loadChannel();
 			this.laodNewsMsg();
 			this.loadNewsAnnexes();
 		},
-		beforeUpdate(){
-		
-		},
-		updated(){
-		
-		},
-		beforeDestroy(){
-		
-		},
-		destroyed(){
-		
-		},
 		props : ['mainContentHeight'],
 		mixins : [],
-		components : {editor,upload},
+		components : {editor,upload,breadCom},
 		methods : {
 			loadChannel(){
 				const sql = "SELECT id,name FROM channel WHERE unitId = '"+this.user.unitId+"' order by serialNumber asc";

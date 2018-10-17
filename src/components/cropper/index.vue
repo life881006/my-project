@@ -1,80 +1,31 @@
 <template>
-	<div class="wrapper">
-		<vueCropper
-		ref="cropper"
-		:img="option.img"
-		:outputSize="option.size"
-		:outputType="option.outputType"
-		:info="true"
-		:full="option.full"
-		:canMove="option.canMove"
-		:canMoveBox="option.canMoveBox"
-		:fixedBox="option.fixedBox"
-		:original="option.original"
-		@realTime="realTime"
-		></vueCropper>
-		<!-- 
-		<div class="test-button">
-			<button @click="changeImg" class="btn">changeImg</button>
-			<label class="btn" for="uploads">upload</label>
-			<input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)">
-			<button @click="startCrop" v-if="!crap" class="btn">start</button>
-			<button @click="stopCrop" v-else class="btn">stop</button>
-			<button @click="clearCrop" class="btn">clear</button>
-			
-			<button @click="changeScale(1)" class="btn">+</button>
-			<button @click="changeScale(-1)" class="btn">-</button>
-			 
-			<button @click="rotateLeft" class="btn">rotateLeft</button>
-			<button @click="rotateRight" class="btn">rotateRight</button>
-			<button @click="finish('base64')" class="btn">preview(base64)</button>
-			<button @click="finish('blob')" class="btn">preview(blob)</button>
-			<a @click="down('base64')" class="btn">download(base64)</a>
-			<a @click="down('blob')" class="btn">download(blob)</a>
-			
-			<div style="display:block; width: 100%;">
-				<label class="c-item">
-					<span>上传图片是否显示原始宽高 (针对大图 可以铺满)</span>
-					<input type="checkbox" v-model="option.original">
-				</label>
-				<label class="c-item">
-					<span>能否拖动图片</span>
-					<input type="checkbox" v-model="option.canMove">
-				</label>
-				<label class="c-item">
-					<span>能否拖动截图框</span>
-					<input type="checkbox" v-model="option.canMoveBox">
-				</label>
-				<label class="c-item">
-					<span>截图固定大小</span>
-					<input type="checkbox" v-model="option.fixedBox">
-				</label>
-				<label class="c-item">
-					<span>是否输出原图比例的截图</span>
-					<input type="checkbox" v-model="option.full">
-				</label>
-				<p>输出图片格式</p>
-				<label class="c-item">
-					<label>jpg  <input type="radio" name="type" value="jpeg" v-model="option.outputType"></label>
-					<label>png  <input type="radio" name="type" value="png" v-model="option.outputType"></label>
-					<label>webp <input type="radio" name="type" value="webp" v-model="option.outputType"></label>
-				</label>
-			</div>
-		</div>
-		-->
-		<div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
-			<div :style="previews.div">
-				<img :src="previews.url" :style="previews.img">
-			</div>
-		</div>
-	</div>
+	
+    <div class="cropper">
+		<VueCropper
+		  ref="cropper"
+		  :img="option.img"
+		  :outputSize="option.size"
+		  :outputType="option.outputType"
+		  :info="true"
+		  :full="option.full"
+		  :canMove="option.canMove"
+		  :canMoveBox="option.canMoveBox"
+		  :original="option.original"
+		  :autoCrop="option.autoCrop"
+		  :autoCropWidth="option.autoCropWidth"
+		  :autoCropHeight="option.autoCropHeight"
+		  :fixedBox="option.fixedBox"
+		  @realTime="realTime"
+		  @imgLoad="imgLoad"
+		></VueCropper>
+    </div>
 </template>
 
 <script>
 	import VueCropper from 'vue-cropper'
 
 	export default {
-		name:"cropper",
+		name:"cropper1",
 		data(){
 			return {
 				crap: false,
@@ -99,33 +50,27 @@
 				},
 				downImg: '#'
 			}
-		},		
-		beforeCreate(){
-			
-		},
-		created(){
-		
-		},
-		beforeMount(){
-		
 		},
 		mounted(){
-		
+			console.log(this.$refs.cropper);
+			this.$refs.cropper.getCropData(data => {
+	        this.fileinfo.url = data
+	        this.isShowCropper = false
+
+	       //先将显示图片地址清空，防止重复显示
+	        this.option.img = ''
+
+	       //将剪裁后base64的图片转化为file格式
+	        let file = this.convertBase64UrlToBlob(data)
+	        file.name = this.fileUpload.name
+
+	        //将剪裁后的图片执行上传
+	        this.uploadFile(file).then(res => {
+	          this.form.content = res.file_id    //将上传的文件id赋值给表单from的content
+	        })
+
+	      })
 		},
-		beforeUpdate(){
-		
-		},
-		updated(){
-		
-		},
-		beforeDestroy(){
-		
-		},
-		destroyed(){
-		
-		},
-		props : [''],
-		mixins : [],
 		components : {VueCropper},
 		methods : {
 			changeImg () {
@@ -148,6 +93,12 @@
 			// 实时预览函数
 			realTime (data) {
 				this.previews = data
+			},
+			imgLoad(){
+
+			},
+			create(){
+
 			},
 			finish (type) {
 				// 输出

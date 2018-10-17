@@ -6,7 +6,7 @@
 					:class="[isActive(item.path)?'active':'','routerTags']" 
 					:key="item.path" 
 					ref="item" 
-					:to="{name:item.name,query:item.query}" 
+					:to="isQuery(item)" 
 					v-for="item in Array.from(routerHistory)" 
 					@contextmenu.native.prevent="showTagsMenu" 
 					>{{item.title}}
@@ -34,13 +34,7 @@
 	const padding=15;
 	export default{
 		name:"visitTags",
-		beforeCreate(){//直接访问三级路由跳转到二级路由
-			const path = this.$router.history.current.path;
-			if(path.split("/").length>3){
-				const pathArr = path.split("/");
-				this.$router.push("/"+pathArr[1]+"/"+pathArr[2]);
-				return false;
-			}
+		beforeCreate(){
 		},
 		data:function(){
 			return {
@@ -95,6 +89,13 @@
 			},			
 			isActive(path){
 				return this.$router.history.current.path === path;
+			},
+			isQuery(routeItem){
+				if(JSON.stringify(routeItem.query)==="{}"){//验证是否带参数
+					return {name:routeItem.name};
+				}else{
+					return {name:routeItem.name,query:routeItem.query};
+				}
 			},
 			moveToCurrentTag() {
 			    const items = this.$refs.item;			    
@@ -182,9 +183,6 @@
 		},
 		watch:{
 			$route(to,from){
-				//if(to.path.split("/").length>3){
-				//	return false;
-				//}
 				this.addViewTags();
 				this.moveToCurrentTag();
 				this.routerHistory=this.$store.state.visitTags.visitedTags;

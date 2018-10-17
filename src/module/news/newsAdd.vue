@@ -110,9 +110,10 @@
 			</div>
 		</div>
 		
-		
 		<div :style="{'height':formHeight+'px','overflow':'hidden','padding-top':'10px'}">
 		<el-scrollbar class="mainScroll">
+
+		<breadCom ></breadCom>
 			
 		<el-form-item label="文章分类" :rules="filter_inputs('required')" prop="checkedChannels">
 			<el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
@@ -182,6 +183,7 @@
 	//引入编辑器
 	import editor from "@/components/tinyMce/tinyMce"
 	import upload from "@/components/fileUpload/index"
+	import breadCom from "@/components/breadComponent/breadCom"
 	
 	export default{
 		name:"newsAdd",
@@ -234,7 +236,7 @@
 			}
 		},
 		props:['mainContentHeight'],
-		components:{editor,upload},
+		components:{editor,upload,breadCom},
 		mounted:function(){
 			this.loadChannel();
 		},
@@ -449,10 +451,11 @@
 	}
 </script>
 
-<style scoped="scoped" lang="stylus">
+<style lang="stylus">
 	.mainScroll
 		height:100%
 		overflow-y:auto
+		overflow-x:hidden
 	
 	.el-table-column
 		width:33%
@@ -491,4 +494,6 @@
 		
 	.releaseToIcon
 		font-size:20px
+	
+	
 </style>

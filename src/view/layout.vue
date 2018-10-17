@@ -62,20 +62,29 @@
 	}
 </script>
 
-<style scoped="scoped">
-	.el-header{border-bottom:1px solid #DCDCDC;padding:0px}
-	.el-main{margin:5px;padding:0px;background-color: #fff;overflow: hidden;position: relative;}
+<style lang="stylus" scoped="scoped">
+	.el-header
+		border-bottom:1px solid #DCDCDC
+		padding:0px
+
+	.el-main
+		margin:5px
+		padding:0px
+		background-color: #fff
+		overflow: hidden
+		position: relative	
 	
 	.fade-transform-leave-active,
-	.fade-transform-enter-active {
-	  transition: all .3s;
-	}
-	.fade-transform-enter {
-	  opacity: 0;
-	  transform: translateX(-30px);
-	}
-	.fade-transform-leave-to {
-	  opacity: 0;
-	  transform: translateX(30px);
-	}
+	.fade-transform-enter-active 
+		transition: all .3s
+	
+	.fade-transform-enter 
+		opacity: 0
+		transform: translateX(-30px)
+	
+
+	.fade-transform-leave-to 
+		opacity: 0
+		transform: translateX(30px)
+	
 </style>

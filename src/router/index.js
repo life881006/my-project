@@ -14,24 +14,25 @@ const router = new Router({
     	path:'/news',
     	name:'news',
     	redirect:'/news/newsList',
+        meta:{title:'文章管理'},
     	component: layout ,
     	children:[
     		{
     			path:'newsList',
     			name:'newsList',
-    			meta:{title:'新闻频道'},
+    			meta:{title:'文章列表'},
     			component:() => import('@/module/news/newsList'),
     		},
     		{
 				path:'newsAdd',
     			name:'newsAdd',
-    			meta:{title:'新闻频道-添加'},
+    			meta:{title:'添加文章'},
     			component:() => import('@/module/news/newsAdd'),
 			},
             {
                 path:'newsEdit',
                 name:'newsEdit',
-                meta:{title:'新闻频道-修改'},
+                meta:{title:'修改文章'},
                 component:() => import('@/module/news/newsEdit'),
             }
     	]
