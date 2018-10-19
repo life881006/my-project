@@ -5,6 +5,7 @@
 		  :data="Data" 
 		  :action="Data.action" 
 		  :on-success="fileUploadSuccess" 
+		  :before-upload="test"
 		  :file-list="fileList"
 		  :show-file-list="ifShowList" 
 		  multiple>
@@ -93,8 +94,6 @@
 					</div>
 					<span class="alertInfo">{{item.info}}</span>
 				</template>
-				
-				
 			</div>
 		</div>
 	</div>
@@ -122,7 +121,6 @@
 				p.hover = false;
 				p.edit = false;
 				p.editSerialNumber = false;
-				console.log(p);
 				if(this.Data.isFirstButton){
 					p.isFirst = "0";
 				}
@@ -135,7 +133,8 @@
 				p.fbPort = this.unitConfig.fbPort;
 				p.fbName = this.unitConfig.fbName;
 				p.fbRootPath = this.unitConfig.fbRootPath;
-				this.transferFile(p);
+				console.log(response);
+				//this.transferFile(p);
 			},
 			transferFile(p){//传文件
 				this.axios({
@@ -158,7 +157,7 @@
 		        	confirmButtonText: '确定',
 		        	cancelButtonText: '取消',
 		        	type: 'warning'
-		       }).then(() => {
+		        }).then(() => {
 		       	  const p = {};
 		       	  p.id = annexId;
 		          this.axios({
@@ -195,6 +194,10 @@
 				}
 				item.info="";
 				item.edit=!item.edit
+			},
+			test(file){
+				console.log(file);
+				return false;
 			}
 		},
 		watch : {

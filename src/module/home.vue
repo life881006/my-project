@@ -1,8 +1,7 @@
 <template>
 	<div id="homePage" >
 		<div :style="{height:mainTableHeight+'px',overflow:'auto'}">
-			3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>
-			3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>3<br>1<br>
+			<router-view></router-view>
 		</div>
 	</div>
 </template>

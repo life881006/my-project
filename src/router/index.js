@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import layout from '@/view/layout'
-import home from '@/view/home'
+import home from '@/module/home'
 import {Notification} from 'element-ui'
 
 Vue.use(Router);
@@ -53,7 +53,7 @@ const router = new Router({
         path:'/cropper',
         name:'cropper',
         redirect: '/cropper/index',
-        component: layout ,
+        component: home ,
         children:[
             {
                 path:'index',
@@ -98,7 +98,7 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next)=>{//全局导航守卫
-	if(to.path==="/login" || to.path==="/regist"){
+	if(to.path==="/login" || to.path==="/regist" || to.path==="/cropper/index"){
 //		sessionStorage.clear();
 //		localStorage.clear();
 		next();

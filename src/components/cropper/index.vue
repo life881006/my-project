@@ -1,32 +1,84 @@
 <template>
-	
-    <div class="cropper">
-		<VueCropper
-		  ref="cropper"
-		  :img="option.img"
-		  :outputSize="option.size"
-		  :outputType="option.outputType"
-		  :info="true"
-		  :full="option.full"
-		  :canMove="option.canMove"
-		  :canMoveBox="option.canMoveBox"
-		  :original="option.original"
-		  :autoCrop="option.autoCrop"
-		  :autoCropWidth="option.autoCropWidth"
-		  :autoCropHeight="option.autoCropHeight"
-		  :fixedBox="option.fixedBox"
-		  @realTime="realTime"
-		  @imgLoad="imgLoad"
-		></VueCropper>
-    </div>
+	<div>
+	<div class="wrapper">
+		<vueCropper
+		ref="cropper"
+		:img="option.img"
+		:outputSize="option.size"
+		:outputType="option.outputType"
+		:info="true"
+		:full="option.full"
+		:canMove="option.canMove"
+		:canMoveBox="option.canMoveBox"
+		:fixedBox="option.fixedBox"
+		:original="option.original"
+		:autoCrop="option.autoCrop"
+		:autoCropWidth="option.autoCropWidth"
+		:autoCropHeight="option.autoCropHeight"
+		@realTime="realTime"
+		></vueCropper>
+		</div>
+		<div class="test-button">
+			<button @click="changeImg" class="btn">changeImg</button>
+			<label class="btn" for="uploads">upload</label>
+			<input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)">
+			<button @click="startCrop" v-if="!crap" class="btn">start</button>
+			<button @click="stopCrop" v-else class="btn">stop</button>
+			<button @click="clearCrop" class="btn">clear</button>
+			<!--
+				<button @click="refreshCrop" class="btn">refresh</button>
+				<button @click="rotateLeft" class="btn">rotateLeft</button>
+				<button @click="rotateRight" class="btn">rotateRight</button>
+			-->
+			<button @click="changeScale(1)" class="btn">+</button>
+			<button @click="changeScale(-1)" class="btn">-</button>
+			
+			<button @click="finish('base64')" class="btn">preview(base64)</button>
+			<button @click="finish('blob')" class="btn">preview(blob)</button>
+			<a @click="down('base64')" class="btn">download(base64)</a>
+			<a @click="down('blob')" class="btn">download(blob)</a>
+			<div style="display:block; width: 100%;">
+				<label class="c-item">
+					<span>上传图片是否显示原始宽高 (针对大图 可以铺满)</span>
+					<input type="checkbox" v-model="option.original">
+				</label>
+				<label class="c-item">
+					<span>能否拖动图片</span>
+					<input type="checkbox" v-model="option.canMove">
+				</label>
+				<label class="c-item">
+					<span>能否拖动截图框</span>
+					<input type="checkbox" v-model="option.canMoveBox">
+				</label>
+				<label class="c-item">
+					<span>截图固定大小</span>
+					<input type="checkbox" v-model="option.fixedBox">
+				</label>
+				<label class="c-item">
+					<span>是否输出原图比例的截图</span>
+					<input type="checkbox" v-model="option.full">
+				</label>
+				<p>输出图片格式</p>
+				<label class="c-item">
+					<label>jpg  <input type="radio" name="type" value="jpeg" v-model="option.outputType"></label>
+					<label>png  <input type="radio" name="type" value="png" v-model="option.outputType"></label>
+					<label>webp <input type="radio" name="type" value="webp" v-model="option.outputType"></label>
+				</label>
+			</div>
+		</div>
+		<div class="show-preview" :style="{'width': previews.w + 'px', 'height': previews.h + 'px',  'overflow': 'hidden', 'margin': '5px'}">
+			<div :style="previews.div">
+				<img :src="previews.url" :style="previews.img">
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-	import VueCropper from 'vue-cropper'
+	import vueCropper from 'vue-cropper'
 
 	export default {
-		name:"cropper1",
-		data(){
+		data: function () {
 			return {
 				crap: false,
 				previews: {},
@@ -39,40 +91,22 @@
 					}
 				],
 				option: {
-					img: 'http://ofyaji162.bkt.clouddn.com/touxiang.jpg',
+					img: '',
 					size: 1,
 					full: false,
 					outputType: 'png',
 					canMove: true,
 					fixedBox: false,
+					autoCropWidth: 300,
+					autoCropHeight: 250,
+					autoCrop: true,
 					original: false,
 					canMoveBox: false
 				},
 				downImg: '#'
 			}
 		},
-		mounted(){
-			console.log(this.$refs.cropper);
-			this.$refs.cropper.getCropData(data => {
-	        this.fileinfo.url = data
-	        this.isShowCropper = false
-
-	       //先将显示图片地址清空，防止重复显示
-	        this.option.img = ''
-
-	       //将剪裁后base64的图片转化为file格式
-	        let file = this.convertBase64UrlToBlob(data)
-	        file.name = this.fileUpload.name
-
-	        //将剪裁后的图片执行上传
-	        this.uploadFile(file).then(res => {
-	          this.form.content = res.file_id    //将上传的文件id赋值给表单from的content
-	        })
-
-	      })
-		},
-		components : {VueCropper},
-		methods : {
+		methods: {
 			changeImg () {
 				this.option.img = this.lists[~~(Math.random() * this.lists.length)].img
 			},
@@ -94,24 +128,19 @@
 			realTime (data) {
 				this.previews = data
 			},
-			imgLoad(){
-
-			},
-			create(){
-
-			},
 			finish (type) {
 				// 输出
-				var test = window.open('about:blank')
+				const test = window.open('about:blank')
 				test.document.body.innerHTML = '图片生成中..'
 				if (type === 'blob') {
 					this.$refs.cropper.getCropBlob((data) => {
-						var test = window.open('')
+						
 						test.location.href = window.URL.createObjectURL(data)
 					})
 				} else {
 					this.$refs.cropper.getCropData((data) => {
-						test.location.href = data
+						const blobData = this.convertBase64UrlToBlob(data);
+						test.location.href = window.URL.createObjectURL(blobData);
 					})
 				}
 			},
@@ -122,6 +151,7 @@
 				if (type === 'blob') {
 					this.$refs.cropper.getCropBlob((data) => {
 						this.downImg = window.URL.createObjectURL(data)
+						console.log(window.navigator.msSaveBlob);
                         if (window.navigator.msSaveBlob) {
                             var blobObject = new Blob([data]);
                             window.navigator.msSaveBlob(blobObject, 'demo.png');
@@ -173,14 +203,27 @@
 				// reader.readAsDataURL(file)
 				// 转化为blob
 				reader.readAsArrayBuffer(file)
-			}
+			},
+			convertBase64UrlToBlob(urlData) {
+		      let bytes = window.atob(urlData.split(',')[1]);//去掉url的头，并转换为byte
+		      //处理异常,将ascii码小于0的转换为大于0
+		      let ab = new ArrayBuffer(bytes.length);
+		      let ia = new Uint8Array(ab);
+		      for (var i = 0; i < bytes.length; i++) {
+		        ia[i] = bytes.charCodeAt(i);
+		      }
+		      return new Blob([ab], { type: 'image/png' });
+		    },
 		},
-		watch : {
-			
+		components: {
+			vueCropper
 		},
 	}
 </script>
 
-<style lang="stylus" rel="stylesheet/stylus">
-
+<style lang="stylus" rel="stylesheet/stylus" scoped>
+	.wrapper		
+		width:720px
+		height:468px
+		
 </style>
