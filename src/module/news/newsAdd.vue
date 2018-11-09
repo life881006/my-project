@@ -164,9 +164,22 @@
 				</el-form-item>
 			</el-col>			
 		</el-row>
+
+		<!--
+			普通附件上传
+		-->
 		<el-form-item label="上传附件">
 			<upload :configData="configData" :fileListData="fileListData" @getUploadedAnnex="getUploadedAnnex"></upload>
 		</el-form-item>
+		
+
+		<!--
+			图片裁切上传组件
+		
+		<el-form-item label="裁剪图片">
+			<cropper :configData="configData" :fileListData="fileListData" @getUploadedAnnex="getUploadedAnnex"></cropper>
+		</el-form-item>
+		-->
 		
 		<!--嵌套的dialog必须加append-to-body
 		<el-dialog title="3313" :visible.sync="see" width="60%" top="5vh" append-to-body>
@@ -184,6 +197,7 @@
 	import editor from "@/components/tinyMce/tinyMce"
 	import upload from "@/components/fileUpload/index"
 	import breadCom from "@/components/breadComponent/breadCom"
+	//import cropper from "@/components/cropper/index"
 	
 	export default{
 		name:"newsAdd",
@@ -236,7 +250,7 @@
 			}
 		},
 		props:['mainContentHeight'],
-		components:{editor,upload,breadCom},
+		components:{editor,upload,breadCom},//cropper
 		mounted:function(){
 			this.loadChannel();
 		},
@@ -258,7 +272,6 @@
 					}
 				}).catch((error)=>{
 					console.log(error);
-					
 				});
 			},
 			add(formName){//表单添加方法
@@ -331,11 +344,8 @@
 						}).then((result)=>{
 							const newsId = result.data.data;
 							this.addChannelNewsAssociate(newsId,this.newsAddform.checkedChannels);
-							
-							
 						}).catch((error)=>{
 							console.log(error);
-							
 						});
 					} else {//验证不通过
 						return false;
@@ -366,8 +376,6 @@
 		        this.isIndeterminate = false;
 		    },
 		    handleCheckedChannelChange(value){//单选频道
-		    	console.log(value);
-		    	console.log(this.newsAddform.checkedChannels);
 		        let checkedCount = value.length;
 		        this.checkAll = checkedCount === this.channels.length;
 		        this.isIndeterminate = checkedCount > 0 && checkedCount < this.channels.length;
@@ -416,7 +424,7 @@
 					annex.id= item.id;
 					annex.serialNumber = i+1;
 					annex.newsId = newsId;
-					annex.annexName = item.annexName;
+					annex.annexName = item.annexName+"."+item.fileType;
 					annex.content = "";
 					annex.isFirst = item.isFirst;
 					annex.status = item.status;

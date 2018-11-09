@@ -5,7 +5,6 @@
 		  :data="Data" 
 		  :action="Data.action" 
 		  :on-success="fileUploadSuccess" 
-		  :before-upload="test"
 		  :file-list="fileList"
 		  :show-file-list="ifShowList" 
 		  multiple>
@@ -64,8 +63,7 @@
 					</a>
 					
 					<a v-else :href="item.contextPath+item.saveUrl+item.newFileName" target="_blank">
-					<img 					
-						
+					<img
 						:src="'http://192.168.100.106:8082'+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"/>
 					</a>
 				</div>
@@ -117,6 +115,8 @@
 		methods : {
 			fileUploadSuccess(response, file, fileList){//upload上传成功后钩子
 				const p = response.data;
+				const fileName = p.annexName.substring(0,p.annexName.lastIndexOf("."));
+				p.annexName = fileName;
 				p.info = "";
 				p.hover = false;
 				p.edit = false;
@@ -133,8 +133,7 @@
 				p.fbPort = this.unitConfig.fbPort;
 				p.fbName = this.unitConfig.fbName;
 				p.fbRootPath = this.unitConfig.fbRootPath;
-				console.log(response);
-				//this.transferFile(p);
+				this.transferFile(p);
 			},
 			transferFile(p){//传文件
 				this.axios({
@@ -195,17 +194,7 @@
 				item.info="";
 				item.edit=!item.edit
 			},
-			test(file){
-				console.log(file);
-				return false;
-			}
 		},
-		watch : {
-			fileListData(val){
-				this.fileList = val;
-			}
-		}
-		
 	}
 
 </script>

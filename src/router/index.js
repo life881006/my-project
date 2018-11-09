@@ -98,12 +98,13 @@ const router = new Router({
 })
 
 router.beforeEach((to,from,next)=>{//全局导航守卫
-	if(to.path==="/login" || to.path==="/regist" || to.path==="/cropper/index"){
+	if(to.path==="/login" || to.path==="/regist"){
 //		sessionStorage.clear();
 //		localStorage.clear();
 		next();
 	}else{
 		let user = JSON.parse(sessionStorage.getItem("user"));
+        
 		if(user===null){
 			new Vue().$confirm('请登录账号后进入系统', '提示',{
                 confirmButtonText: '确定',
@@ -119,9 +120,15 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 			
 			if(!Vue.prototype.user){//Vue没有挂载时挂载user对象
 				Vue.prototype.user = user;
-				Vue.prototype.unitConfig = JSON.parse(sessionStorage.getItem("unitConfig"));
-                Vue.prototype.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
 			}
+
+            if(!Vue.prototype.unitConfig){//Vue没有挂载时挂载unitConfig对象
+                Vue.prototype.unitConfig = JSON.parse(sessionStorage.getItem("unitConfig"));
+            }
+
+            if(!Vue.prototype.userInfo){//Vue没有挂载时挂载userInfo对象
+                Vue.prototype.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+            }
 			//
 			next();
 		}
