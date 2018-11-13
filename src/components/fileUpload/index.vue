@@ -195,6 +195,11 @@
 				item.edit=!item.edit
 			},
 		},
+		watch:{
+			fileListData(val){
+				this.fileList = val;
+			}
+		}
 	}
 
 </script>

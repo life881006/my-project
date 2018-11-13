@@ -5,7 +5,7 @@
 		</el-col>
 		<el-col :xs="8" :sm="8" :md="8" :lg="8" class="pull-right">
 			<a @click="ddd">
-					<img :src="userInfo.photoPath" width="30px" height="30px"/>
+					<img class="photo" :src="userInfo.photoPath" width="30px" height="30px"/>
 			</a>
 			<el-dropdown class="functionalIcon headBtn" trigger="click">
 				<el-button type="text">
@@ -125,5 +125,8 @@
 		background-color: #f56c6c
 		border-radius: 15px
 		text-align: center
-		
+	
+	.photo
+		border-radius:50%
+		vertical-align:middle
 </style>

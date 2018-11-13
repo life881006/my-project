@@ -182,8 +182,8 @@
 		<!--弹框-->
 		<el-dialog :title="currentItem.title" :visible.sync="dialogVisible" width="80%" top="1vh">
 			<div class="signature">
-				作者:<span>{{currentItem.author}}</span>
-				发布时间:<span>{{moment(currentItem.appearDate).format("YYYY-MM-DD") }}</span>
+				<span>作者</span> {{currentItem.author}}
+				<span>发布时间</span> {{moment(currentItem.appearDate).format("YYYY-MM-DD") }}
 			</div>
 			<div class="dialogMain" v-html="currentItem.content">
 			</div>
@@ -364,7 +364,6 @@
 		span
 			color:#909399
 			margin:0px 4px
-			font-style:italic
 		
 		&:before
 			content:""

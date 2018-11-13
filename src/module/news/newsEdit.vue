@@ -105,7 +105,7 @@
 			<div class="operations">
 				<el-form-item label-width="0px" class="right">
 					<el-button type="primary" icon="el-icon-success" @click="update('newsEditform')" >提交</el-button>
-					<el-button @click="reset('newsEditform')" >重置</el-button>
+					<el-button @click="reloadData()" >重置</el-button>
 				</el-form-item>
 			</div>
 		</div>
@@ -375,16 +375,9 @@
 		        this.checkAll = checkedCount === this.channels.length;
 		        this.isIndeterminate = checkedCount > 0 && checkedCount < this.channels.length;
 		    },
-		    reset(formName){//重置表单
-				this.newsEditform.tinyMceInfo = "";
-				this.newsEditform.checkedChannels = [];
-				this.newsEditform.releaseTo = [];
-				this.checkAll = false;
-				this.isIndeterminate = false;
-				this.$refs.tinyMce.claerMce();
-				this.$refs[formName].resetFields();
-				this.fileListData = [];
-				this.$store.dispatch("dropTextarea",this.$router.history.current.path);
+		    reloadData(){//重置表单
+				this.laodNewsMsg();
+				this.loadNewsAnnexes();
 			},
 			getUploadedAnnex(p){//获取文件上传后返回的数据
 				const annex = new Object();

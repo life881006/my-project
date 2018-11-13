@@ -374,6 +374,11 @@
 		components: {
 			vueCropper
 		},
+		watch:{
+			fileListData(val){
+				this.fileList = val;
+			}
+		}
 	}
 </script>
 
