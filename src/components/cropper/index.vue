@@ -155,9 +155,9 @@
 					full: false,
 					outputType: 'png',
 					canMove: true,
-					fixedBox: false,
-					autoCropWidth: 360,
-					autoCropHeight: 248,
+					fixedBox: true,
+					autoCropWidth: this.cropperSize.width,
+					autoCropHeight: this.cropperSize.height,
 					autoCrop: true,
 					original: false,
 					canMoveBox: false
@@ -165,7 +165,7 @@
 				downImg: '#'
 			}
 		},
-		props:['configData','fileListData'],
+		props:['configData','fileListData','cropperSize'],
 		methods: {
 			changeScale(num){
 				this.$refs.cropper.changeScale(num);
@@ -289,10 +289,10 @@
 						filePathObj.edit = false;
 						filePathObj.editSerialNumber = false;
 						if(this.Data.isFirstButton){
-							p.isFirst = "0";
+							filePathObj.isFirst = "0";
 						}
 						if(this.Data.statusButton){
-							p.status = "1";
+							filePathObj.status = "1";
 						}
 						
 						this.uploadFile(filePathObj);

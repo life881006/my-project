@@ -166,7 +166,7 @@
 		</el-row>
 
 		<!--
-			普通附件上传
+			elementUi普通附件上传
 		-->
 		<el-form-item label="上传附件">
 			<upload :configData="configData" :fileListData="fileListData" @getUploadedAnnex="getUploadedAnnex"></upload>
@@ -174,10 +174,10 @@
 		
 
 		<!--
-			图片裁切上传组件
+			cropper图片裁切上传组件
 		
 		<el-form-item label="裁剪图片">
-			<cropper :configData="configData" :fileListData="fileListData" @getUploadedAnnex="getUploadedAnnex"></cropper>
+			<cropper :configData="configData" :fileListData="fileListData" :cropperSize="cropperSize" @getUploadedAnnex="getUploadedAnnex"></cropper>
 		</el-form-item>
 		-->
 		
@@ -194,26 +194,30 @@
 <script>
 	
 	//引入编辑器
-	import editor from "@/components/tinyMce/tinyMce"
-	import upload from "@/components/fileUpload/index"
+	import editor from "@/components/tinyMce/tinyMce"	
 	import breadCom from "@/components/breadComponent/breadCom"
-	//import cropper from "@/components/cropper/index"
+	import upload from "@/components/fileUpload/index"//任意格式图片上传
+	//import cropper from "@/components/cropper/index"//裁切图片
 	
 	export default{
 		name:"newsAdd",
 		data(){
 			return {
 				formHeight:this.mainContentHeight+50,
-				configData:{//附件上传参数
-					isFirstButton:true,
-					statusButton:true,
+				cropperSize:{//裁切框大小
+					width:700,
+					height:360
+				},
+				configData:{//附件上传参数（任意附件形式及裁切框公用）
+					isFirstButton:true,//首选图按钮
+					statusButton:true,//是否显示按钮
 					api:"HX_API",
 					action:this.baseConfig.url_base2,
 					rootPath : "/allWeb/huixue/news",
 					addAnnexHandle:"/https/newsAnnex/add.do",
 					deleteAnnexHandle:"/https/newsAnnex/delete.do"
 				},
-				fileListData:[],//附件列表
+				fileListData:[],//附件列表（任意附件形式及裁切框公用）
 				newsAddform:{
 					title:"",
 					checkedChannels:[],
@@ -250,7 +254,7 @@
 			}
 		},
 		props:['mainContentHeight'],
-		components:{editor,upload,breadCom},//cropper
+		components:{editor,breadCom,upload},//cropper
 		mounted:function(){
 			this.loadChannel();
 		},

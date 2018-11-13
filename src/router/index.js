@@ -50,19 +50,6 @@ const router = new Router({
     		}
     	]
     },{
-        path:'/cropper',
-        name:'cropper',
-        redirect: '/cropper/index',
-        component: home ,
-        children:[
-            {
-                path:'index',
-                name:'cropperIndex',
-                meta:{title:'图片裁切'},
-                component:() => import('@/components/cropper/index')
-            }
-        ]
-    },{
     	path:'/student',
     	redirect: 'studentList',
     	component: layout ,
@@ -89,11 +76,18 @@ const router = new Router({
     	component: () => import('@/module/login/login'),	
     },{
     	path:'*',
-    	name:'404',
-    	title:'未找到页面',
-    	component: () => import('@/components/404/index'),	
+        redirect: 'pageNotFoundIndex',
+        component: layout,
+    	title:'404页面',
+        children:[
+            {
+                path:'pageNotFoundIndex',
+                name:'404',
+                meta:{title:'未找到页面'},
+                component:() => import('@/components/404/index')
+            }
+        ]
     }
-    
     ]
 })
 

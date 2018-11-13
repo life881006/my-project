@@ -45,6 +45,9 @@ const visitTagsList = {
 	},
 	actions: {//用于异步变更state
 		addVistedTags({commit,state},visited){
+			if(visited.name==="404"){
+				return false;
+			}
 			commit("ADD_VISITED_TAGS",visited);
 		},
 		deleteSingleTag({commit,state},path){
