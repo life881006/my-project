@@ -2,113 +2,112 @@
 	<el-form ref="newsAddform" :model="newsAddform" label-width="100px" :style="{'height':formHeight+50+'px',overflow:'hidden'}">
 		
 		<!--基础设置栏-->
-		<div class="toolBar">
-			
-		    <el-dropdown trigger="click">
-		      <el-button class="el-dropdown-link" >
-		      	置顶<i class="el-icon-caret-bottom el-icon--right"></i>
-		      </el-button>
-		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
-		        <el-form-item label-width="0px" prop="isTop">
-					<el-radio v-model="newsAddform.isTop" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isTop" label="1">是</el-radio>
-				</el-form-item>
-		      </el-dropdown-menu>
-		    </el-dropdown>
-		    		    
-		    <el-dropdown trigger="click">
-		      <el-button class="el-dropdown-link" >
-		      	发布到<i class="el-icon-caret-bottom el-icon--right"></i>
-		      </el-button>
-		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
-		        <el-form-item label-width="0px" >
-					<el-checkbox-group v-model="newsAddform.releaseTo">
-						<el-checkbox label="releaseSite" key="releaseSite">
-							网站
-						</el-checkbox>
-						<el-checkbox label="releaseWx" key="releaseWx">
-							微信
-						</el-checkbox>
-						<el-checkbox label="releaseMicroblog" key="releaseMicroblog">
-							微博
-						</el-checkbox>
-						<el-checkbox label="releaseApp" key="releaseApp">
-							APP
-						</el-checkbox>						
-					</el-checkbox-group>
-				</el-form-item>
-		      </el-dropdown-menu>
-		    </el-dropdown>
+		<el-row class="toolBar">
+			<el-col :xs="18" :sm="18" :md="18" :lg="18">
+			    <el-dropdown trigger="click">
+			      <el-button class="el-dropdown-link" size="small">
+			      	置顶<i class="el-icon-caret-bottom el-icon--right"></i>
+			      </el-button>
+			      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+			        <el-form-item label-width="0px" prop="isTop">
+						<el-radio v-model="newsAddform.isTop" label="0">否</el-radio>
+						<el-radio v-model="newsAddform.isTop" label="1">是</el-radio>
+					</el-form-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			    		    
+			    <el-dropdown trigger="click">
+			      <el-button class="el-dropdown-link" size="small">
+			      	发布到<i class="el-icon-caret-bottom el-icon--right"></i>
+			      </el-button>
+			      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+			        <el-form-item label-width="0px" >
+						<el-checkbox-group v-model="newsAddform.releaseTo">
+							<el-checkbox label="releaseSite" key="releaseSite">
+								网站
+							</el-checkbox>
+							<el-checkbox label="releaseWx" key="releaseWx">
+								微信
+							</el-checkbox>
+							<el-checkbox label="releaseMicroblog" key="releaseMicroblog">
+								微博
+							</el-checkbox>
+							<el-checkbox label="releaseApp" key="releaseApp">
+								APP
+							</el-checkbox>						
+						</el-checkbox-group>
+					</el-form-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			    
+			    <el-dropdown trigger="click">
+			      <el-button class="el-dropdown-link" size="small">
+			      	自动发布<i class="el-icon-caret-bottom el-icon--right"></i>
+			      </el-button>
+			      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+			        <el-form-item label-width="0px" prop="isAutoAppear">
+						<el-radio v-model="newsAddform.isAutoAppear" label="0">否</el-radio>
+						<el-radio v-model="newsAddform.isAutoAppear" label="1">是</el-radio>
+					</el-form-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			    
+			    <el-dropdown trigger="click">
+			      <el-button class="el-dropdown-link" size="small">
+			      	允许评论<i class="el-icon-caret-bottom el-icon--right"></i>
+			      </el-button>
+			      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+			        <el-form-item label-width="0px" prop="isReview">
+						<el-radio v-model="newsAddform.isReview" label="0">否</el-radio>
+						<el-radio v-model="newsAddform.isReview" label="1">是</el-radio>
+					</el-form-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			    
+			    <el-dropdown trigger="click">
+			      <el-button class="el-dropdown-link" size="small">
+			      	大图稿件<i class="el-icon-caret-bottom el-icon--right"></i>
+			      </el-button>
+			      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+			        <el-form-item label-width="0px" prop="isBigImage">
+						<el-radio v-model="newsAddform.isBigImage" label="0">否</el-radio>
+						<el-radio v-model="newsAddform.isBigImage" label="1">是</el-radio>
+					</el-form-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			    
+			    
+			    <el-dropdown trigger="click">
+			      <el-button class="el-dropdown-link" size="small">
+			      	电视稿件<i class="el-icon-caret-bottom el-icon--right"></i>
+			      </el-button>
+			      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+			        <el-form-item label-width="0px" prop="isOriginal">
+						<el-radio v-model="newsAddform.isOriginal" label="0">否</el-radio>
+						<el-radio v-model="newsAddform.isOriginal" label="1">是</el-radio>
+					</el-form-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			    		    
+			    <el-dropdown trigger="click">
+			      <el-button class="el-dropdown-link" size="small">
+			      	外链<i class="el-icon-caret-bottom el-icon--right"></i>
+			      </el-button>
+			      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
+			        <el-form-item label-width="0px" prop="linkUrl">
+						<el-input style="width:400px" v-model="newsAddform.linkUrl" size="small" placeholder="填写外链地址">
+							<template slot="prepend">外链地址</template>
+						</el-input>
+					</el-form-item>
+			      </el-dropdown-menu>
+			    </el-dropdown>
+			</el-col>
 		    
-		    <el-dropdown trigger="click">
-		      <el-button class="el-dropdown-link" >
-		      	自动发布<i class="el-icon-caret-bottom el-icon--right"></i>
-		      </el-button>
-		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
-		        <el-form-item label-width="0px" prop="isAutoAppear">
-					<el-radio v-model="newsAddform.isAutoAppear" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isAutoAppear" label="1">是</el-radio>
-				</el-form-item>
-		      </el-dropdown-menu>
-		    </el-dropdown>
-		    
-		    <el-dropdown trigger="click">
-		      <el-button class="el-dropdown-link" >
-		      	允许评论<i class="el-icon-caret-bottom el-icon--right"></i>
-		      </el-button>
-		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
-		        <el-form-item label-width="0px" prop="isReview">
-					<el-radio v-model="newsAddform.isReview" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isReview" label="1">是</el-radio>
-				</el-form-item>
-		      </el-dropdown-menu>
-		    </el-dropdown>
-		    
-		    <el-dropdown trigger="click">
-		      <el-button class="el-dropdown-link" >
-		      	大图稿件<i class="el-icon-caret-bottom el-icon--right"></i>
-		      </el-button>
-		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
-		        <el-form-item label-width="0px" prop="isBigImage">
-					<el-radio v-model="newsAddform.isBigImage" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isBigImage" label="1">是</el-radio>
-				</el-form-item>
-		      </el-dropdown-menu>
-		    </el-dropdown>
-		    
-		    
-		    <el-dropdown trigger="click">
-		      <el-button class="el-dropdown-link" >
-		      	电视稿件<i class="el-icon-caret-bottom el-icon--right"></i>
-		      </el-button>
-		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
-		        <el-form-item label-width="0px" prop="isOriginal">
-					<el-radio v-model="newsAddform.isOriginal" label="0">否</el-radio>
-					<el-radio v-model="newsAddform.isOriginal" label="1">是</el-radio>
-				</el-form-item>
-		      </el-dropdown-menu>
-		    </el-dropdown>
-		    		    
-		    <el-dropdown trigger="click">
-		      <el-button class="el-dropdown-link" >
-		      	外链<i class="el-icon-caret-bottom el-icon--right"></i>
-		      </el-button>
-		      <el-dropdown-menu class="dropDownMenu" slot="dropdown">
-		        <el-form-item label-width="0px" prop="linkUrl">
-					<el-input style="width:400px" v-model="newsAddform.linkUrl" size="small" placeholder="填写外链地址">
-						<template slot="prepend">外链地址</template>
-					</el-input>
-				</el-form-item>
-		      </el-dropdown-menu>
-		    </el-dropdown>
-		    
-			<div class="operations">
-				<el-form-item label-width="0px" class="right">
-					<el-button type="primary" icon="el-icon-success" @click="add('newsAddform')" >提交</el-button>
-					<el-button @click="reset('newsAddform')" >重置</el-button>
-				</el-form-item>
-			</div>
-		</div>
+			<el-col :xs="6" :sm="6" :md="6" :lg="6" class="operations">
+				<el-button size="small" type="primary" icon="el-icon-success" @click="add('newsAddform')" >提交</el-button>
+				<el-button size="small" @click="reset('newsAddform')" >重置</el-button>
+			</el-col>
+		</el-row>
 		
 		<div :style="{'height':formHeight+'px','overflow':'hidden','padding-top':'10px'}">
 		<el-scrollbar class="mainScroll">
@@ -463,7 +462,7 @@
 	}
 </script>
 
-<style lang="stylus">
+<style lang="stylus" rel="stylesheet/stylus">
 	.mainScroll
 		height:100%
 		overflow-y:auto
@@ -484,17 +483,13 @@
 		overflow:auto
 	
 	.toolBar
-		height:50px
-		line-height:50px
 		width:auto
 		background-color: #ededed
-		padding:0px 10px
+		padding:5px 10px
 
 	.toolBar
 		.operations
-			display:inline-block
-			float:right
-			margin-top:5px
+			text-align:right
 			
 	.toolBar .el-form-item
 	.dropDownMenu .el-form-item

@@ -69,6 +69,20 @@ const router = new Router({
     			]
     		}
     	]
+    },
+    {
+        path:'/user',
+        redirect:'',
+        meta:{title:'用户中心'},
+        component:layout,
+        children:[
+            {
+                path:'modifyUserInfo',
+                name:'modifyUserInfo',
+                meta:{title:'用户信息修改'},
+                component:()=>import('@/module/user/modifyUserInfo')
+            }
+        ]
     },{
     	path:'/login',
     	name:'login',

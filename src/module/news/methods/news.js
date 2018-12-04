@@ -34,7 +34,7 @@
 			const transmitObj = {};
 			const p = {};
 			
-			let sql = "SELECT DISTINCT a.id,a.title,a.content,a.status,a.author,a.transfer,a.editor,a.editTime,a.appearDate,a.readTimes,a.releaseSite,a.releaseApp,a.releaseWx,a.releaseMicroblog,a.isTop FROM news AS a";
+			let sql = "SELECT DISTINCT a.* FROM news AS a";
 			sql += " left join channelNewsAssociate as b on a.id = b.newsId left join channel as c on b.channelId = c.id";
 									
 			p.sql = sql;

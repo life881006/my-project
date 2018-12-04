@@ -1,5 +1,5 @@
 <template>
-	<el-col :xs="8" :sm="8" :md="8" :lg="8">
+	<el-col :xs="7" :sm="7" :md="7" :lg="7">
 		<el-button-group>
 			<el-button type="danger" size="small" @click="deleteItems">删除</el-button>
 			
@@ -9,7 +9,7 @@
 
 <script>
 	export default {
-		name:"operations",
+		name:"operations",//批量操作区域
 		data(){
 			return {
 				selectedItem:this.selectedData

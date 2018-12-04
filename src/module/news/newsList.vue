@@ -163,7 +163,7 @@
 										<el-button type="text" size="mini">H5链接</el-button>
 									</el-dropdown-item>
 									
-									<el-dropdown-item @click.native="deleteThis(scope.$index,scope.row)">	
+									<el-dropdown-item @click.native="copyNews(scope.$index,scope.row)">	
 										<el-button type="text" size="mini">复制</el-button>
 									</el-dropdown-item>
 								</el-dropdown-menu>
@@ -342,7 +342,72 @@
 			 */
 			gotoEdit(newsId){
 				this.$router.push({name:"newsEdit",query:{id:newsId}});
+			},
+			openHtml5Link(index,item){
+				window.open("../../../allMobile/news/content.html?id="+item.id);
+			},
+			copyNews(index,item){
+				const p = item
+				p.title = item.title+"_副本"; 
+			    p.editor = ""; //这个地方
+				p.isOriginal = 0;
+				p.appearUserId = this.user.id;
+				p.editTime = this.moment(new Date().getTime()).format("YYYY-MM-DD HH:MM:SS");
+				p.appearDate = this.moment(new Date().getTime()).format("YYYY-MM-DD HH:MM:SS"); 
+				p.lastTime = this.moment(new Date().getTime()).format("YYYY-MM-DD HH:MM:SS");	
+				p.status = 0;
+
+				this.axios({
+		            method: 'post',
+		            url: this.baseConfig.url_base,
+		            data: this.getData("HX_API","/https/news/add.do",p),
+		            dataType: 'JSON',
+		            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+		        }).then((result)=>{
+					const newsId = result.data.data;
+			        this.queryNewsAnnex(item.id,newsId);
+		 			this.getNewsMainData();
+		        }).catch((error)=>{
+		        	console.log(error);
+		        })
+			},
+			queryNewsAnnex(sourceNewsId,destNewsId){
+				const p = {};
+				p.sql="select * from newsAnnex"; 
+				p.whereStr = "where newsId = '"+sourceNewsId+"'";
+				p.orderStr="";
+
+				this.axios({
+		            method: 'post',
+		            url: this.baseConfig.url_base,
+		            data: this.getData("HX_API","/https/newsAnnex/getNewsAnnexs.do",p),
+		            dataType: 'JSON',
+		        }).then((result)=>{
+					const resultData = result.data.data;
+			       	$.each(data,function(i, item) { 
+			     		this.addNewsAnnex(destNewsId,item);
+                    }); 
+		        }).catch((error)=>{
+		        	console.log(error);
+		        })
+			},
+			addNewsAnnex(destNewsId,newsAnnex){
+				const p = newsAnnex;
+				p.newsId = destNewsId;
+
+				this.axios({
+		            method: 'post',
+		            url: this.baseConfig.url_base,
+		            data: this.getData("HX_API","/https/newsAnnex/add.do",p),
+		            dataType: 'JSON',
+		        }).then((result)=>{
+					
+		        }).catch((error)=>{
+
+		        })
 			}
+
+
 
 		},
 		watch: {

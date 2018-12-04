@@ -1,7 +1,7 @@
 <template>
-	<el-col :xs="16" :sm="16" :md="16" :lg="16">
+	<el-col :xs="17" :sm="17" :md="17" :lg="17">
 		<div class="paginationComponent">
-			<span>总计 {{page.totalCount}} 条</span>
+			<span>共{{page.totalCount}}条</span>
 			<el-input id="everpageNumber" size="mini" onkeypress="return event.keyCode>=48&&event.keyCode<=57" :value="page.everyPage" maxlength="5" @blur="setEveryPage">
 				<template slot="prepend">每页/条</template>
 			</el-input>
@@ -9,6 +9,7 @@
 		      @current-change="handleCurrentChange"
 		      :current-page="page.currentPage"
 		      :page-size="page.everyPage"
+		      :pager-count="5"
 		      layout=" prev, pager, next, jumper"
 		      :total="page.totalCount">
 		   </el-pagination>

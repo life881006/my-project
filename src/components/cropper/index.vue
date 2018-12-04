@@ -50,13 +50,12 @@
 				</div>
 			</div>
 		</el-dialog>
-		<div class="test-button">
-			
+		<div>
 			<label class="upload-btn" for="uploads">
 				<i class="el-icon-upload"></i>
 				<span>上传图片</span>
 			</label>
-			<input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)">
+			<input type="file" id="uploads" style="position:absolute; clip:rect(0 0 0 0);" accept="image/png, image/jpeg, image/gif, image/jpg" @change="uploadImg($event, 1)" />
 		</div>
 
 		<div class="el-fileUpload-list">

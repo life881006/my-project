@@ -4,9 +4,8 @@
 			{{user.unitName}}
 		</el-col>
 		<el-col :xs="8" :sm="8" :md="8" :lg="8" class="pull-right">
-			<a @click="ddd">
-					<img class="photo" :src="userInfo.photoPath" width="30px" height="30px"/>
-			</a>
+			<img class="photo" :src="userInfo.photoPath" width="30px" height="30px"/>
+			
 			<el-dropdown class="functionalIcon headBtn" trigger="click">
 				<el-button type="text">
 				{{userInfo.realName}}
@@ -20,12 +19,12 @@
 						</el-badge>
 					</el-dropdown-item>
 			
-					<el-dropdown-item><a @click="modifyUserInfo()"><i class="el-icon-edit"></i>修改信息</a></el-dropdown-item>
-					<el-dropdown-item><a @click="gotoModifyPwd()"><i class="el-icon-edit"></i>修改密码</a></el-dropdown-item>
-					<el-dropdown-item><a @click="unitChange()"><i class="el-icon-edit"></i>单位设置</a></el-dropdown-item>
-					<el-dropdown-item><a @click="gotoBindSchoolClassSubject()"><i class="el-icon-edit"></i>我的任课</a></el-dropdown-item>
+					<el-dropdown-item @click.native="modifyUserInfo()"><i class="el-icon-edit"></i>修改信息</el-dropdown-item>
+					<el-dropdown-item @click.native="gotoModifyPwd()"><i class="el-icon-edit"></i>修改密码</el-dropdown-item>
+					<el-dropdown-item @click.native="unitChange()"><i class="el-icon-edit"></i>单位设置</el-dropdown-item>
+					<el-dropdown-item @click.native="gotoBindSchoolClassSubject()"><i class="el-icon-edit"></i>我的任课</el-dropdown-item>
 					<div class="clear"></div>
-					<el-dropdown-item><a @click="" content="下载文档"><i class="el-icon-document"></i>帮助文档</a></el-dropdown-item>
+					<el-dropdown-item @click.native=""><i class="el-icon-document"></i>帮助文档</el-dropdown-item>
 
 				</el-dropdown-menu>
 			</el-dropdown>
@@ -47,15 +46,31 @@
 <script>
 	
 	import screenfull from 'screenfull'
+	import cropper from "@/components/cropper/index"//裁切图片
 	
 	export default {
 		name:"navBar",
 		data (){
 			return {
-				noticeNumber:102,
-				isVisible:screenfull.enabled
+				noticeNumber:102,//消息数
+				isVisible:screenfull.enabled,
+				cropperSize:{//裁切框大小
+					width:450,
+					height:360
+				},
+				configData:{//附件上传参数（任意附件形式及裁切框公用）
+					isFirstButton:false,//首选图按钮
+					statusButton:false,//是否显示按钮
+					api:"HX_API",
+					action:this.baseConfig.url_base2,
+					rootPath : "/allWeb/huixue/user/photo",
+					addAnnexHandle:"/https/newsAnnex/add.do",
+					deleteAnnexHandle:"/https/newsAnnex/delete.do"
+				},
+				fileListData:[],//附件列表（任意附件形式及裁切框公用）
 			}
 		},
+		components:{cropper},
 		methods:{
 			exit:function(){
 				sessionStorage.clear();
@@ -67,8 +82,8 @@
 				screenfull.toggle();
 				
 			},
-			ddd:function(){
-				alert("aaa");
+			modifyUserInfo:function(){
+				this.$router.push("/user/modifyUserInfo");
 			}
 			
 		}
