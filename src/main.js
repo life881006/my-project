@@ -6,16 +6,14 @@ import store from './store/store'
 import ElementUI from 'element-ui'
 import axios from 'axios'
 import App from './App'
-import baseConfig from './util/config' //引入公共url参数
-import publicMethods from './util/methods' //引入axios数据打包函数
-import filter_inputs from './util/inputValidator' //引入表单输入信息校验模块
-
+import baseConfig from './util/config' /** 引入公共url参数 */
+import publicMethods from './util/methods' /** 引入axios数据打包函数 */
+import filter_inputs from './util/inputValidator' /** 引入表单输入信息校验模块 */
 
 import 'element-ui/lib/theme-chalk/index.css'
-import "./assets/iconfont/iconfont.css"
+import './assets/iconfont/iconfont.css'
 
-
-Vue.prototype.moment = require('moment');
+Vue.prototype.moment = require('moment')
 Vue.use(ElementUI)
 Vue.use(publicMethods)
 Vue.use(filter_inputs)
@@ -27,6 +25,8 @@ Vue.use(filter_inputs)
  * application/json：数据格式为json格式，有的服务器语言不支持（比如PHP，需要从php://input里获得原始输入流，再json_decode成对象。）
  * text/plain：纯文本传输，用得少
  */
+axios.defaults.baseURL = 'https://www.jshuixue.com'
+
 
 Vue.prototype.axios = axios
 Vue.prototype.baseConfig = baseConfig
@@ -37,6 +37,25 @@ new Vue({
   el: '#app',
   router,
   store,
-  components: {App},
-  template: '<App/>'
+  components: { App },
+  template: '<App/>',
+  mounted() {
+    this.addAxoisInterceptor()
+  },
+  methods: {
+    addAxoisInterceptor() {
+      axios.interceptors.response.use(function (response) { // 拦截请求后的状态
+        //通过！
+        let data = response;
+        if (data.status != undefined) {
+          let s = this.utf8to16(base64decode(data.data));
+          if (/(\{)|(\[)/.test(s)) {
+            data.data = JSON.parse(s);
+          } else {
+            data.data = s;
+          }
+        }
+      })
+    }
+  }
 })
