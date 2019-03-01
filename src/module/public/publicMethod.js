@@ -33,7 +33,7 @@ export default {//主表公共函数，mixins到module各组件中
 		            dataType: 'JSON',
 		            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 		        }).then((result)=> {
-		        	resolve(result.data.data);
+		        	resolve(result.data);
 		        }).catch((error)=> {
 		        	console.log(error);
 		        });

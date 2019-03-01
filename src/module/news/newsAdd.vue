@@ -269,7 +269,7 @@
 					method:"post",
 					data:this.getData("HX_API","/https/channel/queryForMap.do",p),
 				}).then((result)=>{
-					this.channels = result.data.data;
+					this.channels = result.data;
 					for(let item of this.channels){
 						this.channelsKeyArr.push(item.id);
 					}
@@ -345,7 +345,7 @@
 							dataType:"json",
 				            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 						}).then((result)=>{
-							const newsId = result.data.data;
+							const newsId = result.data;
 							this.addChannelNewsAssociate(newsId,this.newsAddform.checkedChannels);
 						}).catch((error)=>{
 							console.log(error);
@@ -413,7 +413,7 @@
 					dataType:"json",
 					headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 				}).then((result)=>{
-					const fileId = result.data.data;
+					const fileId = result.data;
 					p.id = fileId;
 					this.fileListData.push(p)
 				}).catch((error)=>{

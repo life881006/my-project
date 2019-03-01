@@ -39,22 +39,25 @@ new Vue({
   store,
   components: { App },
   template: '<App/>',
-  mounted() {
+  created() {
     this.addAxoisInterceptor()
   },
   methods: {
     addAxoisInterceptor() {
+      let _this = this;
       axios.interceptors.response.use(function (response) { // 拦截请求后的状态
         //通过！
-        let data = response;
-        if (data.status != undefined) {
-          let s = this.utf8to16(base64decode(data.data));
+        let data = {};
+        if (response.status != undefined) {
+          data= response.data;
+          let s = _this.utf8to16(_this.base64decode(data.data));
           if (/(\{)|(\[)/.test(s)) {
             data.data = JSON.parse(s);
           } else {
             data.data = s;
           }
         }
+        return data;
       })
     }
   }

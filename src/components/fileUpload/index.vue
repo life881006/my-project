@@ -138,7 +138,7 @@ export default {
         dataType: "json"
       })
         .then(result => {
-          const filePathObj = result.data.data;
+          const filePathObj = result.data;
           p.contextPath = filePathObj.contextPath;
           p.storageLocation = filePathObj.storageLocation;
 

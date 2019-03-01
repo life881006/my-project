@@ -279,7 +279,7 @@
 						data: formData,
 						dataType:"json",
 					}).then((result)=>{
-						const filePathObj = result.data.data;
+						const filePathObj = result.data;
 						//改写附件名称，以防改掉文件后缀
 						const fileName = filePathObj.annexName.substring(0,filePathObj.annexName.lastIndexOf("."));
 						filePathObj.annexName = fileName;
@@ -317,7 +317,7 @@
 					data: this.getData(this.Data.api,'',obj),
 					dataType:"json",
 				}).then((result)=>{
-					let resultData = result.data.data;
+					let resultData = result.data;
 			        obj.contextPath = resultData.contextPath;
 			        obj.storageLocation = resultData.storageLocation;
 			        this.visibleCropper = false;

@@ -3,9 +3,9 @@
  */
 
 const plugins = [
-		        "advlist autolink lists  print preview hr image",
-		        "searchreplace wordcount fullscreen insertdatetime ",
-		        "save table contextmenu directionality paste textcolor",
-		        "emoticons "
-		       	]
+	"advlist autolink lists  print preview hr ",
+	"searchreplace wordcount fullscreen insertdatetime ",
+	"save table contextmenu directionality paste textcolor",
+	"emoticons "
+]
 export default plugins;

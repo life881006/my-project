@@ -330,7 +330,7 @@
 		            data: this.getData("HX_API","/https/newsAnnex/queryForMap.do",p),
 		            dataType: 'JSON',
 		        }).then((result)=>{
-					this.currentViewAnnex = result.data.data;
+					this.currentViewAnnex = result.data;
 
 		        }).catch((error)=>{
 		        	console.log(error);
@@ -364,7 +364,7 @@
 		            dataType: 'JSON',
 		            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 		        }).then((result)=>{
-					const newsId = result.data.data;
+					const newsId = result.data;
 			        this.queryNewsAnnex(item.id,newsId);
 		 			this.getNewsMainData();
 		        }).catch((error)=>{
@@ -383,7 +383,7 @@
 		            data: this.getData("HX_API","/https/newsAnnex/getNewsAnnexs.do",p),
 		            dataType: 'JSON',
 		        }).then((result)=>{
-					const resultData = result.data.data;
+					const resultData = result.data;
 			       	$.each(data,function(i, item) { 
 			     		this.addNewsAnnex(destNewsId,item);
                     }); 

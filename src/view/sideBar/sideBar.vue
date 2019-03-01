@@ -12,21 +12,23 @@
 			    :router=true 
 				>
 				<el-submenu v-for="module in asideModules" :key="module.id" ref="module.id" :index="module.serialNumber+''">
-					<template slot="title">
+					<template v-if="module.name=='网站群'" slot="title">
+						<p @click="gotoWebSite">
+						<i :class="['el-icons','el-icon-erp-'+module.pcIcon]"></i>
+						<span slot="title">{{ module.name }}</span>
+						</p>
+					</template>
+					<template v-else slot="title">
 						<i :class="['el-icons','el-icon-erp-'+module.pcIcon]"></i>
 						<span slot="title">{{ module.name }}</span>
 					</template>
-					<el-menu-item-group>
+					<el-menu-item-group  v-if="module.name!='网站群'" >
 						<el-submenu v-for="modulePItem in module.children" :key="modulePItem.id" ref="modulePItem.id" :index="modulePItem.serialNumber+''">
 							<template slot="title">
 								<i :class="['el-icons','el-icon-erp-'+modulePItem.pcIcon]"></i>
 								<span slot="title" class="submenuTitle">{{ modulePItem.itemName }}</span>
 							</template>
 							<el-menu-item-group>
-								<!--
-                                	<span slot="title">{{modulePItem.itemName}}</span>
-                                -->
-								
 								<el-menu-item 
 									v-for="moduleItem in modulePItem.children" 
 									:key="moduleItem.id" 
@@ -62,7 +64,9 @@
 			document.getElementById('menu').style.height = this.sideBarHeight + "px";
 		},
 		methods:{
-			
+			gotoWebSite(){
+				window.open("https://www.baidu.com");
+			}
 		},
 		watch: {
 			sideBarHeight(val) {
@@ -99,7 +103,6 @@
 		#menu {
 			width: auto;
 			border-right: 0px;
-			//transition: width 1s;
 		}
 	}
 </style>

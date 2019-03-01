@@ -24,7 +24,7 @@
 					<el-dropdown-item @click.native="unitChange()"><i class="el-icon-edit"></i>单位设置</el-dropdown-item>
 					<el-dropdown-item @click.native="gotoBindSchoolClassSubject()"><i class="el-icon-edit"></i>我的任课</el-dropdown-item>
 					<div class="clear"></div>
-					<el-dropdown-item @click.native=""><i class="el-icon-document"></i>帮助文档</el-dropdown-item>
+					<el-dropdown-item @click.native="openHelpDocument()"><i class="el-icon-document"></i>帮助文档</el-dropdown-item>
 
 				</el-dropdown-menu>
 			</el-dropdown>
@@ -84,6 +84,9 @@
 			},
 			modifyUserInfo:function(){
 				this.$router.push("/user/modifyUserInfo");
+			},
+			openHelpDocument(){
+				console.log("aaa");
 			}
 			
 		}

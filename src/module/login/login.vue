@@ -109,9 +109,9 @@ export default {
             dataType: "JSON"
           })
             .then(result => {
-              let status = result.data.data.status;
-              let userObj = result.data.data.obj;
-              let userToken = result.data.data.userToken.access_token;
+              let status = result.data.status;
+              let userObj = result.data.obj;
+              let userToken = result.data.userToken.access_token;
               let userId = userObj.id;
               let unitId = userObj.unitId;
               sessionStorage.setItem("userId", userId);
@@ -166,7 +166,7 @@ export default {
         )
       })
         .then(result => {
-          let infoData = result.data.data;
+          let infoData = result.data;
           if (infoData.isValid == 0) {
             this.$message({
               type: "warning",
@@ -197,7 +197,7 @@ export default {
         dataType: "json"
       })
         .then(result => {
-          let userObj = result.data.data;
+          let userObj = result.data;
           //格式化模块、项目
           let userModules = formatModules(userObj.functionalModules);
           userObj.functionalModules = userModules;

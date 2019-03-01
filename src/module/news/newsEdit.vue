@@ -260,7 +260,7 @@
 					method:"post",
 					data:this.getData("HX_API","/https/channel/query.do",p),
 				}).then((result)=>{
-					this.channels = result.data.data;
+					this.channels = result.data;
 
 					for(const item of this.channels){
 						this.channelsKeyArr.push(item.id);
@@ -280,7 +280,7 @@
 					method:"post",
 					data:this.getData("HX_API","/https/news/getNews.do",p),
 				}).then((result)=>{
-					const data = result.data.data;
+					const data = result.data;
 					this.newsEditform.type=data.type;
 					this.newsEditform.linkUrl=data.linkUrl;
 					this.newsEditform.tinyMceInfo="";
@@ -328,7 +328,7 @@
 					data:this.getData("HX_API","/https/channelNewsAssociate/queryForMap.do",p),
 				}).then((result)=>{
 					let checkedChannels=[];
-					for(const item of result.data.data){
+					for(const item of result.data){
 						checkedChannels.push(item.channelId);
 					}
 					if(this.channels.length==checkedChannels.length){
@@ -350,7 +350,7 @@
 					method:"post",
 					data:this.getData("HX_API","/https/newsAnnex/query.do",p),
 				}).then((result)=>{
-					const resultData = result.data.data;
+					const resultData = result.data;
 					for(const i of resultData){
 						i.info = "";
 						i.isFirst = i.isFirst?"0":"1";
@@ -398,7 +398,7 @@
 					dataType:"json",
 					headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
 				}).then((result)=>{
-					const fileId = result.data.data;
+					const fileId = result.data;
 					p.id = fileId;
 					this.fileListData.push(p)
 				}).catch((error)=>{
