@@ -1,22 +1,23 @@
 <template>
-  
     <div class="treeInner">
-      <h4 class="title" @click="resetTable">频道管理</h4>
+      <h4 class="title" @click="resetTable">选择发布到的栏目</h4>
       <!--展示树-->
-      <el-scrollbar :sss="random">
+      <el-scrollbar class="treeScroll" >
         <el-tree
-          ref="elTree"
-          id="elTree"
-          lazy
-          :data="treeData"
+          ref="elCheckedTree"
+          id="elCheckedTree"
+          :default-expand-all="isExpandAll"
+          node-key="id"
+          show-checkbox
+          :data="checkedTreeData"
           :props="defaultProps"
-          :style="{height:tHeight}"
-          @node-click="handleNodeClick"
+          :style="{height:tHeight+'px'}"
+          @check-change="nodeChecked"
+          @node-click="nodeClick"
           :load="loadNode"
         ></el-tree>
       </el-scrollbar>
     </div>
-  
 </template>
 
 <script>
@@ -24,35 +25,35 @@ export default {
   name: "tree",
   data() {
     return {
-      treeData: [],
-      tHeight: this.treeHeight, //树高
+      checkedTreeData: this.treeData,
+      tHeight: this.treeHeight - 35, //树高
+      isExpandAll: true,
       defaultProps: {
         //树形结构默认设置
         children: "children",
-        label: "label"
+        label: "name"
       },
       currentNodeIndex: "0",
-      random: 0
     };
   },
   mounted() {
-    /*
-     * 获取树结构channels
-     * news.js
-     */
-    this.loadChannelTree().then(data => {
-      this.treeData = data;
-    });
+    
   },
-  props: ["treeHeight"],
+  props: ["treeHeight","treeData"],
   methods: {
     resetTable() {
-      this.currentNodeIndex = "0";
+      
       this.$emit("refreshTableByTreeNode", this.currentNodeIndex);
     },
-    handleNodeClick(data) {
+    nodeChecked(data,checked,indeterminate) {
       //data ：节点数据
-      this.$emit("refreshTableByTreeNode", data.index);
+      console.log(data);
+      console.log(checked);
+      console.log(indeterminate);
+      //this.$emit("refreshTableByTreeNode", data.index);
+    },
+    nodeClick(data){
+      console.log(data);
     },
     loadNode(node, resolve) {
       //动态加载树结构子节点
@@ -60,7 +61,7 @@ export default {
         return false;
       }
 
-      this.currentNodeIndex = this.$refs.elTree.getCurrentNode().index;
+      this.currentNodeIndex = this.$refs.elCheckedTree.getCurrentNode().index;
       this.loadChannelTree().then(data => {
         if (data.length === 0) {
           resolve([]);
@@ -109,7 +110,10 @@ export default {
   },
   watch: {
     treeHeight(val) {
-      document.getElementById("elTree").style.height = val + "px";
+      document.getElementById("elCheckedTree").style.height = val - 35 + "px";
+    },
+    treeData(val){
+      this.checkedTreeData = val;
     }
   }
 };
@@ -117,39 +121,31 @@ export default {
 
 <style scoped="scoped" lang="stylus">
 h4.title 
-  cursor: pointer;
+  cursor: pointer
 
+.treeScroll
+  .el-scrollbar__wrap 
+    overflow: auto
 
 .el-tree 
-  background-color: inherit;
-  padding: 5px;
-
+  background-color: inherit
+  padding: 5px
 
 >>>.el-tree-node__children 
-  overflow: inherit;
-
-
-.treeInner 
-  margin: 0px 25px 0px 0px;
-  background-color: #FAFAFA;
-
+  overflow: inherit
 
 .treeInner 
   .title 
-    font-size: 14px;
-    padding: 14px 0px 14px 20px;
-    margin: 0px;
-    color: #666;
-    font-weight: bolder;
-    border-bottom: 1px solid #ebeef5;
-  
-
+    font-size: 14px
+    padding: 14px 0px 14px 20px
+    margin: 0px
+    color: #666
+    font-weight: bolder
+    border-bottom: 1px solid #ebeef5
 
 .treeInner 
   .title 
     &:hover 
-      color: #409eff;
+      color: #409eff
     
-  
-
 </style>

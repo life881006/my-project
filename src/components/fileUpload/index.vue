@@ -50,17 +50,17 @@
         <div class="annexImg">
           <a
             v-if="item.dirName==='image'"
-            :href="'http://192.168.100.106:8082'+baseConfig.webName+item.saveUrl+item.newFileName"
+            :href="item.contextPath+baseConfig.webName+item.saveUrl+item.newFileName"
             target="_blank"
           >
             <img
-              :src="'http://192.168.100.106:8082'+baseConfig.webName+item.saveUrl+item.newFileName"
+              :src="item.contextPath+baseConfig.webName+item.saveUrl+item.newFileName"
             >
           </a>
           
           <a v-else :href="item.contextPath+item.saveUrl+item.newFileName" target="_blank">
             <img
-              :src="'http://192.168.100.106:8082'+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"
+              :src="item.contextPath+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"
             >
           </a>
         </div>

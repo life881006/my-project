@@ -14,7 +14,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './assets/iconfont/iconfont.css'
 
 Vue.prototype.moment = require('moment')
-Vue.use(ElementUI)
+// elementUi：size 组件尺寸，zIndex 弹框初始值
+Vue.use(ElementUI,{size:"small", zIndex: 2000})
 Vue.use(publicMethods)
 Vue.use(filter_inputs)
 
@@ -25,7 +26,7 @@ Vue.use(filter_inputs)
  * application/json：数据格式为json格式，有的服务器语言不支持（比如PHP，需要从php://input里获得原始输入流，再json_decode成对象。）
  * text/plain：纯文本传输，用得少
  */
-axios.defaults.baseURL = 'https://www.jshuixue.com'
+//axios.defaults.baseURL = 'https://www.jshuixue.com'
 
 
 Vue.prototype.axios = axios
@@ -54,6 +55,7 @@ new Vue({
           if (/(\{)|(\[)/.test(s)) {
             data.data = JSON.parse(s);
           } else {
+            //console.log(s);
             data.data = s;
           }
         }

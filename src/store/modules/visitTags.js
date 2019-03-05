@@ -37,7 +37,6 @@ const visitTagsList = {
 				}else{
 				}
 			}
-			console.log(state.visitedTags);
 			if(!flag){
 					state.visitedTags = [state.visitedTags[0]];
 			}

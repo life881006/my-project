@@ -82,16 +82,16 @@
 			this.getNewsMainData();
 		},
 		refreshTableBySearch(whereStr){//子查询组件刷新主表
-	    	this.loading = true;
+			this.loading = true;
 			this.whereStr = whereStr;
 			this.pageObj.currentPage = 1;
-	    	this.getNewsMainData();
-	    },
-	    refreshTableByTreeNode(nodeIndex){//子树组件刷新主表
-	    	this.loading = true;
+			this.getNewsMainData();
+		},
+		refreshTableByTreeNode(nodeIndex){//子树组件刷新主表
+			this.loading = true;
 			this.currentNode = nodeIndex;
 			this.pageObj.currentPage = 1;
-	    	this.getNewsMainData();
-	    },
+			this.getNewsMainData();
+		},
 	}
 }

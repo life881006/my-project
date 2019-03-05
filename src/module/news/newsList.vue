@@ -14,7 +14,9 @@
 		
 		<el-row>
 			<!--树组件-->
+			<el-col class="treeObj" :xs="5" :sm="5" :md="5" :lg="5">
 			<tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="treeHeight"></tree>
+			</el-col>
 			<el-col :xs="19" :sm="19" :md="19" :lg="19">		
 				<el-table
 					 v-loading="loading" 
@@ -39,7 +41,7 @@
 		
 					<el-table-column prop="title" align="center" label="发布平台" min-width="12%">
 						<template slot-scope="scope">
-
+							
 							<a class="releaseBtn webActive" v-if="scope.row.releaseSite==1" @click="exChangeRelease(scope.row,'releaseSite',0)"><i class="el-icon-erp-website"></i></a>
 							<a class="releaseBtn" v-else @click="exChangeRelease(scope.row,'releaseSite',1)"><i class="el-icon-erp-website"></i></a>
 														
@@ -384,9 +386,9 @@
 		            dataType: 'JSON',
 		        }).then((result)=>{
 					const resultData = result.data;
-			       	$.each(data,function(i, item) { 
+			       	for(const item of resultData){
 			     		this.addNewsAnnex(destNewsId,item);
-                    }); 
+                    } 
 		        }).catch((error)=>{
 		        	console.log(error);
 		        })
@@ -394,6 +396,7 @@
 			addNewsAnnex(destNewsId,newsAnnex){
 				const p = newsAnnex;
 				p.newsId = destNewsId;
+				p.createTime = this.moment(newsAnnex.createTime).format("YYYY-MM-DD HH:MM:SS");
 
 				this.axios({
 		            method: 'post',

@@ -7,6 +7,17 @@ var base64DecodeChars = new Array(-2, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
 	15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
 	41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1);
 
+function formatData(parentNode,eArr){
+	for(let i in parentNode){
+		if(parentNode[i].children){
+			let subEmptyArr = [];
+			parentNode[i].children = formatData(parentNode[i].children,subEmptyArr);
+		}
+		eArr.push(parentNode[i]);
+	}
+	return eArr;
+}
+
 export default{
   install(Vue,options)
   {
@@ -30,6 +41,36 @@ export default{
 			str = str.replace(/[ ]/g, "");
 			str = str.replace(/[\r\n]/g, "");
     	return str;
+	}
+	Vue.prototype.formatTreeData = function(list){
+		let temp = [];
+		let tree = [];
+		let trueTree = [];
+		for(let i in list){
+			temp[list[i].id] = list[i];
+		}
+		
+		for(let i in temp){
+			if(temp[i].pid && temp[i].pid!="0") {
+			if(!temp[temp[i].pid].children) {
+				temp[temp[i].pid].children = [];
+			}
+			temp[temp[i].pid].children[temp[i].id] = temp[i];
+			} else {
+			tree[temp[i].id] =  temp[i];
+			}
+		}
+
+		for(let i in tree){
+			
+			if(tree[i].children){
+				let emptyArr = [];
+				tree[i].children = formatData(tree[i].children,emptyArr);
+			}
+			trueTree.push(tree[i]);
+		}
+		
+		return trueTree;
 	}
 	Vue.prototype.base64encode = function (str) {
 		var out, i, len;
