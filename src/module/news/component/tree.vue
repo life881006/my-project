@@ -7,12 +7,10 @@
         <el-tree
           ref="elTree"
           id="elTree"
-          lazy
           :data="treeData"
           :props="defaultProps"
           :style="{height:tHeight}"
           @node-click="handleNodeClick"
-          :load="loadNode"
         ></el-tree>
       </el-scrollbar>
     </div>
@@ -25,11 +23,11 @@ export default {
   data() {
     return {
       treeData: [],
-      tHeight: this.treeHeight, //树高
+      tHeight: this.treeData, //树高
       defaultProps: {
         //树形结构默认设置
         children: "children",
-        label: "label"
+        label: "name"
       },
       currentNodeIndex: "0",
       random: 0
@@ -39,13 +37,38 @@ export default {
     /*
      * 获取树结构channels
      * news.js
+     * this.loadChannelTree().then(data => {
+     * this.treeData = data;
+     * });
      */
-    this.loadChannelTree().then(data => {
-      this.treeData = data;
-    });
+    this.loadChannel();
   },
-  props: ["treeHeight"],
+  props: ['treeHeight'],
   methods: {
+    loadChannel() {
+      const sql =
+        "SELECT id,name,pid FROM channel WHERE unitId = '" +
+        this.user.unitId +
+        "' order by serialNumber asc";
+      let p = {};
+      p.sql = sql;
+
+      this.axios({
+        url: this.baseConfig.url_base,
+        dataType: "JSON",
+        method: "post",
+        data: this.getData("HX_API", "/https/channel/queryForMap.do", p)
+      })
+        .then(result => {
+          this.treeData = this.formatTreeData(result.data);
+          // for (let item of result.data) {//频道全选模式key数组
+          //   this.channelsKeyArr.push(item.id);
+          // }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     resetTable() {
       this.currentNodeIndex = "0";
       this.$emit("refreshTableByTreeNode", this.currentNodeIndex);
@@ -54,8 +77,10 @@ export default {
       //data ：节点数据
       this.$emit("refreshTableByTreeNode", data.index);
     },
+    /**
+     * //动态加载树结构子节点
     loadNode(node, resolve) {
-      //动态加载树结构子节点
+      
       if (!this.$refs.elTree) {
         return false;
       }
@@ -70,10 +95,9 @@ export default {
         }
       });
     },
+    根据当前节点id获取树结构子节点
     loadChannelTree() {
-      /*
-       * 根据当前节点id获取树结构子节点
-       */
+     
       return new Promise((resolve, reject) => {
         let p = {};
         let unitId = this.user.unitId;
@@ -106,6 +130,7 @@ export default {
           });
       });
     }
+    */
   },
   watch: {
     treeHeight(val) {

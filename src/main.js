@@ -4,11 +4,12 @@ import Vue from 'vue'
 import router from './router/'
 import store from './store/store'
 import ElementUI from 'element-ui'
-import axios from 'axios'
+//import axios from 'axios'
 import App from './App'
 import baseConfig from './util/config' /** 引入公共url参数 */
 import publicMethods from './util/methods' /** 引入axios数据打包函数 */
 import filter_inputs from './util/inputValidator' /** 引入表单输入信息校验模块 */
+import serverApi from './api/serverApi' /** axios封装 */
 
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/iconfont/iconfont.css'
@@ -18,6 +19,7 @@ Vue.prototype.moment = require('moment')
 Vue.use(ElementUI,{size:"small", zIndex: 2000})
 Vue.use(publicMethods)
 Vue.use(filter_inputs)
+
 
 /*
  * axios headers常见设置
@@ -29,8 +31,9 @@ Vue.use(filter_inputs)
 //axios.defaults.baseURL = 'https://www.jshuixue.com'
 
 
-Vue.prototype.axios = axios
+//Vue.prototype.axios = axios
 Vue.prototype.baseConfig = baseConfig
+Vue.prototype.axios = serverApi
 
 
 /* eslint-disable no-new */
@@ -40,27 +43,4 @@ new Vue({
   store,
   components: { App },
   template: '<App/>',
-  created() {
-    this.addAxoisInterceptor()
-  },
-  methods: {
-    addAxoisInterceptor() {
-      let _this = this;
-      axios.interceptors.response.use(function (response) { // 拦截请求后的状态
-        //通过！
-        let data = {};
-        if (response.status != undefined) {
-          data= response.data;
-          let s = _this.utf8to16(_this.base64decode(data.data));
-          if (/(\{)|(\[)/.test(s)) {
-            data.data = JSON.parse(s);
-          } else {
-            //console.log(s);
-            data.data = s;
-          }
-        }
-        return data;
-      })
-    }
-  }
 })

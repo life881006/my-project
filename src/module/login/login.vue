@@ -2,16 +2,16 @@
   <el-form :model="ruleForm" ref="ruleForm">
     <!--prop必须与input的username一致，才能验证Input》username 中输入的值-->
     <el-form-item label="用户名" :rules="filter_inputs('required,space')" prop="username">
-      <el-input class="input" size="small" v-model="ruleForm.username"></el-input>
+      <el-input class="input" v-model="ruleForm.username"></el-input>
     </el-form-item>
     <el-form-item label="密码" :rules="filter_inputs('required,space')" prop="password">
-      <el-input class="input" size="small" v-model="ruleForm.password"></el-input>
+      <el-input class="input" v-model="ruleForm.password" show-password></el-input>
     </el-form-item>
     <div class="auditLine" id="auditLine">
       <span class="textBlock" id="textBlock">请拖动方块到最右侧</span>
       <span class="moveBlock" id="moveBlock" @mousedown="mouseDown"></span>
     </div>
-    <el-button type="primary" size="small" @click="submit">确定
+    <el-button type="primary" :disabled="isDisabled" @click="submit">确定
       <i v-show="iconLoading" class="el-icon-loading el-icon--right"></i>
     </el-button>
   </el-form>
@@ -28,8 +28,12 @@ export default {
         username: "",
         password: ""
       },
-      iconLoading: false
+      iconLoading: false,
+      isDisabled:false,
     };
+  },
+  mounted(){
+
   },
   methods: {
     mouseDown: event => {
@@ -80,6 +84,26 @@ export default {
       };
     },
     submit: function() {
+
+      this.axios._get({
+        name:'1231',
+        pwd:'123456'
+      },{
+        url:this.baseConfig.url_base,
+        type:'post',
+        api:'HX_EXT_API',
+        handle:'/https/user/loginByPwd.do'
+      }).then(data=>{
+        console.log(data);
+        
+      }).then(()=>{
+        console.log("bbb");
+      });
+
+
+
+      return false;
+      
       this.$refs.ruleForm.validate(valid => {
         //全表验证
         if (!valid) {
@@ -91,8 +115,7 @@ export default {
           let loginPwd = this.ruleForm.password;
 
           if (!flag || flag === null) {
-            document.getElementById("auditLine").style.backgroundColor =
-              "#FF0000";
+            document.getElementById("auditLine").style.backgroundColor = "#FF0000";
             return false;
           }
 
@@ -101,7 +124,8 @@ export default {
           p.name = this.ruleForm.username;
           p.pwd = this.ruleForm.password;
           this.iconLoading = true;
-
+          this.isDisabled = true;
+          
           this.axios({
             method: "post",
             url: this.baseConfig.url_base, //url_base为全局变量，调用时前面加global,参数在util->config.js中
@@ -109,42 +133,59 @@ export default {
             dataType: "JSON"
           })
             .then(result => {
+              
               let status = result.data.status;
               let userObj = result.data.obj;
-              let userToken = result.data.userToken.access_token;
               let userId = userObj.id;
               let unitId = userObj.unitId;
               sessionStorage.setItem("userId", userId);
               sessionStorage.setItem("unitId", unitId);
-              if (status == "0") {
+              
+              if (status == 0) {
                 if (userObj.status == 0) {
-                  alert("您的帐号还未审核通过，不能登录系统。");
+                  //alert("您的帐号还未审核通过，不能登录系统。");
+                  this.isDisabled = false;
+                  this.iconLoading = false;
                 } else if (userObj.status == 1) {
                   switch (userObj.roleId) {
                     case 1:
                     case 4:
                     case 5:
                     case 6:
+                      let userToken = result.data.userToken.access_token;
                       this.getUserInfoByToken(userToken);
-                      break;
+                    break;
                     case 2:
+                      this.isDisabled = false;
+                      this.iconLoading = false;
+                    break;
                     case 3:
                       //window.location.href="../parents/notice.html";
-                      break;
+                    break;
                     default:
-                      alert("该角色功能开发中");
+                      //alert("该角色功能开发中");
+                      this.isDisabled = false;
+                      this.iconLoading = false;
                   }
                 } else {
-                  alert("您的帐号已被停用，不能登录系统。");
+                  //alert("您的帐号已被停用，不能登录系统。");
+                  this.isDisabled = false;
+                  this.iconLoading = false;
                 }
-              } else if (status == "1") {
-                alert("登录密码不正确！");
-              } else if (status == "2") {
-                alert("帐号不存在！");
+              } else if (status == 1) {
+                //alert("登录密码不正确！");
+                this.isDisabled = false;
+                this.iconLoading = false;
+              } else if (status == 2) {
+                //alert("帐号不存在！");
+                this.isDisabled = false;
+                this.iconLoading = false;
               } else {
-                alert("操作失败");
+                //alert("操作失败");
+                this.isDisabled = false;
+                this.iconLoading = false;
               }
-              return false;
+              
             })
             .catch(error => {
               console.log(error);
@@ -203,6 +244,8 @@ export default {
           userObj.functionalModules = userModules;
           let userJson = JSON.stringify(userObj);
           sessionStorage.setItem("user", userJson);
+          this.iconLoading = false;
+          this.isDisabled = false;
           this.$router.push("/home");
         })
         .catch(error => {
@@ -271,11 +314,13 @@ function formatModules(modulesObj) {
 </script>
 
 <style scoped="scoped" lang="stylus">
-.input {
-  width: 100px;
-}
+.input 
+  width: 100px
 
-.auditLine {
+.password
+  width: 100px
+
+.auditLine 
   width: 300px;
   border: 1px solid #dcdfe6;
   background-color: #C0CCDA;
@@ -285,9 +330,8 @@ function formatModules(modulesObj) {
   position: relative;
   user-select: none;
   transition: background-color 0.5s;
-}
 
-.textBlock {
+.textBlock 
   position: relative;
   float: left;
   z-index: 200;
@@ -297,9 +341,8 @@ function formatModules(modulesObj) {
   text-align: left;
   color: #fff;
   font-size: 14px;
-}
 
-.moveBlock {
+.moveBlock 
   width: 50px;
   height: 50px;
   display: inline-block;
@@ -309,5 +352,5 @@ function formatModules(modulesObj) {
   top: 0px;
   left: 0px;
   transition: left 0.5s;
-}
+
 </style>

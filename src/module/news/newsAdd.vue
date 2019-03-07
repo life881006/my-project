@@ -9,7 +9,8 @@
     <el-row class="toolBar">
       <el-col :xs="18" :sm="18" :md="18" :lg="18">
         <el-dropdown trigger="click">
-          <el-button class="el-dropdown-link">置顶
+          <el-button class="el-dropdown-link">
+            置顶
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-button>
           <el-dropdown-menu class="dropDownMenu" slot="dropdown">
@@ -21,7 +22,8 @@
         </el-dropdown>
 
         <el-dropdown trigger="click">
-          <el-button class="el-dropdown-link">发布到
+          <el-button class="el-dropdown-link">
+            发布到
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-button>
           <el-dropdown-menu class="dropDownMenu" slot="dropdown">
@@ -37,7 +39,8 @@
         </el-dropdown>
 
         <el-dropdown trigger="click">
-          <el-button class="el-dropdown-link">自动发布
+          <el-button class="el-dropdown-link">
+            自动发布
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-button>
           <el-dropdown-menu class="dropDownMenu" slot="dropdown">
@@ -49,7 +52,8 @@
         </el-dropdown>
 
         <el-dropdown trigger="click">
-          <el-button class="el-dropdown-link">允许评论
+          <el-button class="el-dropdown-link">
+            允许评论
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-button>
           <el-dropdown-menu class="dropDownMenu" slot="dropdown">
@@ -61,7 +65,8 @@
         </el-dropdown>
 
         <el-dropdown trigger="click">
-          <el-button class="el-dropdown-link">大图稿件
+          <el-button class="el-dropdown-link">
+            大图稿件
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-button>
           <el-dropdown-menu class="dropDownMenu" slot="dropdown">
@@ -73,7 +78,8 @@
         </el-dropdown>
 
         <el-dropdown trigger="click">
-          <el-button class="el-dropdown-link">电视稿件
+          <el-button class="el-dropdown-link">
+            电视稿件
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-button>
           <el-dropdown-menu class="dropDownMenu" slot="dropdown">
@@ -85,17 +91,13 @@
         </el-dropdown>
 
         <el-dropdown trigger="click">
-          <el-button class="el-dropdown-link">外链
+          <el-button class="el-dropdown-link">
+            外链
             <i class="el-icon-caret-bottom el-icon--right"></i>
           </el-button>
           <el-dropdown-menu class="dropDownMenu" slot="dropdown">
             <el-form-item label-width="0px" prop="linkUrl">
-              <el-input
-                style="width:400px"
-                v-model="newsAddform.linkUrl"
-               
-                placeholder="填写外链地址"
-              >
+              <el-input style="width:400px" v-model="newsAddform.linkUrl" placeholder="填写外链地址">
                 <template slot="prepend">外链地址</template>
               </el-input>
             </el-form-item>
@@ -110,15 +112,20 @@
     </el-row>
 
     <breadCom></breadCom>
-				<el-row>
-				<el-col :xs="5" :sm="5" :md="5" :lg="5">
-					<tree :treeData="channels" :treeHeight="treeHeight"></tree>
-				</el-col>
-      
-				<el-col :xs="19" :sm="19" :md="19" :lg="19" :style="{'height':formHeight+10+'px','overflow':'hidden'}">
-          <el-scrollbar class="mainScroll">
+    <el-row>
+      <el-col :xs="5" :sm="5" :md="5" :lg="5">
+        <tree :treeHeight="treeHeight"></tree>
+      </el-col>
 
-				<!--         
+      <el-col
+        :xs="19"
+        :sm="19"
+        :md="19"
+        :lg="19"
+        :style="{'height':formHeight+10+'px','overflow':'hidden'}"
+      >
+        <el-scrollbar class="mainScroll">
+          <!--         
 				<el-form-item label="文章分类" :rules="filter_inputs('required')" prop="checkedChannels">
           <el-checkbox
             :indeterminate="isIndeterminate"
@@ -137,87 +144,84 @@
             >{{channel.name}}</el-checkbox>
           </el-checkbox-group>
         </el-form-item> 
-				-->
+          -->
+          <el-form-item label="标题" :rules="filter_inputs('required')" prop="title">
+            <el-input v-model="newsAddform.title" placeholder="请输入内容"></el-input>
+          </el-form-item>
 
-        <el-form-item label="标题" :rules="filter_inputs('required')" prop="title">
-          <el-input v-model="newsAddform.title" placeholder="请输入内容"></el-input>
-        </el-form-item>
+          <el-form-item label="正文">
+            <editor ref="tinyMce" :tinyMce="tinyMceParams"></editor>
+            <transition name="el-zoom-in-top">
+              <span class="tinyMeceInfo">{{newsAddform.tinyMceInfo}}</span>
+            </transition>
+          </el-form-item>
 
-        <el-form-item label="正文">
-          <editor ref="tinyMce" :tinyMce="tinyMceParams"></editor>
-          <transition name="el-zoom-in-top">
-            <span class="tinyMeceInfo">{{newsAddform.tinyMceInfo}}</span>
-          </transition>
-        </el-form-item>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="作者" :rules="filter_inputs('required')" prop="author">
+                <el-input v-model="newsAddform.author"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="来源" prop="transfer">
+                <el-input v-model="newsAddform.transfer"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="编辑" prop="editor">
+                <el-input v-model="newsAddform.editor"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="作者" :rules="filter_inputs('required')" prop="author">
-              <el-input v-model="newsAddform.author"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="来源" prop="transfer">
-              <el-input v-model="newsAddform.transfer"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="编辑" prop="editor">
-              <el-input v-model="newsAddform.editor"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="发布时间" :rules="filter_inputs('required')" prop="appearDate">
+                <el-date-picker
+                  v-model="newsAddform.appearDate"
+                  type="datetime"
+                  placeholder="请选择发布时间"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="编辑时间" :rules="filter_inputs('required')" prop="editTime">
+                <el-date-picker
+                  v-model="newsAddform.editTime"
+                  type="datetime"
+                  placeholder="请选择发布时间"
+                  value-format="yyyy-MM-dd HH:mm:ss"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="发布时间" :rules="filter_inputs('required')" prop="appearDate">
-              <el-date-picker
-                v-model="newsAddform.appearDate"
-                type="datetime"
-                placeholder="请选择发布时间"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="编辑时间" :rules="filter_inputs('required')" prop="editTime">
-              <el-date-picker
-                v-model="newsAddform.editTime"
-                type="datetime"
-                placeholder="请选择发布时间"
-                value-format="yyyy-MM-dd HH:mm:ss"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <!--
+          <!--
 			elementUi普通附件上传
-        -->
-        <el-form-item label="上传附件">
-          <upload
-            :configData="configData"
-            :fileListData="fileListData"
-            @getUploadedAnnex="getUploadedAnnex"
-          ></upload>
-        </el-form-item>
-        
+          -->
+          <el-form-item label="上传附件">
+            <upload
+              :configData="configData"
+              :fileListData="fileListData"
+              @getUploadedAnnex="getUploadedAnnex"
+            ></upload>
+          </el-form-item>
         </el-scrollbar>
-				</el-col>
-				</el-row>
-        <!--
+      </el-col>
+    </el-row>
+    <!--
 			cropper图片裁切上传组件
 		
 		<el-form-item label="裁剪图片">
 			<cropper :configData="configData" :fileListData="fileListData" :cropperSize="cropperSize" @getUploadedAnnex="getUploadedAnnex"></cropper>
 		</el-form-item>
-        -->
-        <!--嵌套的dialog必须加append-to-body
+    -->
+    <!--嵌套的dialog必须加append-to-body
 		<el-dialog title="3313" :visible.sync="see" width="60%" top="5vh" append-to-body>
 			
 		</el-dialog>
-        -->
-      
+    -->
   </el-form>
 </template>
 
@@ -226,7 +230,7 @@
 import editor from "@/components/tinyMce/tinyMce";
 import breadCom from "@/components/breadComponent/breadCom";
 import upload from "@/components/fileUpload/index"; //任意格式图片上传
-import tree from '@/module/news/component/checkedTree'
+import tree from "@/module/news/component/checkedTree";
 //import cropper from "@/components/cropper/index"//裁切图片
 
 export default {
@@ -294,33 +298,10 @@ export default {
   props: ["mainContentHeight"],
   components: { editor, breadCom, upload, tree }, //cropper
   mounted: function() {
-    this.loadChannel();
+    //this.loadChannel();
   },
   methods: {
-    loadChannel() {
-      const sql =
-        "SELECT id,name,pid FROM channel WHERE unitId = '" +
-        this.user.unitId +
-        "' order by serialNumber asc";
-      let p = {};
-      p.sql = sql;
-
-      this.axios({
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        method: "post",
-        data: this.getData("HX_API", "/https/channel/queryForMap.do", p)
-      })
-        .then(result => {
-          this.channels = this.formatTreeData(result.data);
-          // for (let item of result.data) {//频道全选模式key数组
-          //   this.channelsKeyArr.push(item.id);
-          // }
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
+    
     add(formName) {
       //表单添加方法
       this.editorText = this.$refs.tinyMce.getMceContent(); //获取文本编辑器内容
@@ -542,44 +523,52 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>
-.mainScroll 
-  height: 100%
-  overflow-y: auto
-  overflow-x: hidden
+.mainScroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
-.controll 
-  text-align: center
+.controll {
+  text-align: center;
+}
 
-.tinyMeceInfo 
-  font-size: 12px
-  color: #f56c6c
-  transition: height 0.5s
+.tinyMeceInfo {
+  font-size: 12px;
+  color: #f56c6c;
+  transition: height 0.5s;
+}
 
-.mainScroll
-  .el-scrollbar__wrap 
-    overflow: auto
+.mainScroll {
+  .el-scrollbar__wrap {
+    overflow: auto;
+  }
+}
 
-.toolBar
-  height:50px
-  line-height:50px
-  width:auto
-  background-color: #ededed
-  padding:0px 10px
+.toolBar {
+  height: 50px;
+  line-height: 50px;
+  width: auto;
+  background-color: #ededed;
+  padding: 0px 10px;
+}
 
-.toolBar 
-  .operations 
-    text-align: right
-  
-.toolBar .el-form-item, .dropDownMenu .el-form-item 
-  margin-bottom: 0px
+.toolBar {
+  .operations {
+    text-align: right;
+  }
+}
 
+.toolBar .el-form-item, .dropDownMenu .el-form-item {
+  margin-bottom: 0px;
+}
 
-.dropDownMenu 
-  padding: 5px 20px
-  margin-top: 0px
+.dropDownMenu {
+  padding: 5px 20px;
+  margin-top: 0px;
+}
 
-
-.releaseToIcon 
-  font-size: 20px
-
+.releaseToIcon {
+  font-size: 20px;
+}
 </style>

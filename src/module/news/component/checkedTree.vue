@@ -14,7 +14,6 @@
           :style="{height:tHeight+'px'}"
           @check-change="nodeChecked"
           @node-click="nodeClick"
-          :load="loadNode"
         ></el-tree>
       </el-scrollbar>
     </div>
@@ -25,7 +24,7 @@ export default {
   name: "tree",
   data() {
     return {
-      checkedTreeData: this.treeData,
+      checkedTreeData: [],
       tHeight: this.treeHeight - 35, //树高
       isExpandAll: true,
       defaultProps: {
@@ -37,12 +36,35 @@ export default {
     };
   },
   mounted() {
-    
+    this.loadChannel();
   },
-  props: ["treeHeight","treeData"],
+  props: ["treeHeight"],
   methods: {
+    loadChannel() {
+      const sql =
+        "SELECT id,name,pid FROM channel WHERE unitId = '" +
+        this.user.unitId +
+        "' order by serialNumber asc";
+      let p = {};
+      p.sql = sql;
+
+      this.axios({
+        url: this.baseConfig.url_base,
+        dataType: "JSON",
+        method: "post",
+        data: this.getData("HX_API", "/https/channel/queryForMap.do", p)
+      })
+        .then(result => {
+          this.checkedTreeData = this.formatTreeData(result.data);
+          // for (let item of result.data) {//频道全选模式key数组
+          //   this.channelsKeyArr.push(item.id);
+          // }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
     resetTable() {
-      
       this.$emit("refreshTableByTreeNode", this.currentNodeIndex);
     },
     nodeChecked(data,checked,indeterminate) {
@@ -55,58 +77,6 @@ export default {
     nodeClick(data){
       console.log(data);
     },
-    loadNode(node, resolve) {
-      //动态加载树结构子节点
-      if (!this.$refs.elTree) {
-        return false;
-      }
-
-      this.currentNodeIndex = this.$refs.elCheckedTree.getCurrentNode().index;
-      this.loadChannelTree().then(data => {
-        if (data.length === 0) {
-          resolve([]);
-        } else {
-          resolve(data);
-          this.random = Math.random(0, 1);
-        }
-      });
-    },
-    loadChannelTree() {
-      /*
-       * 根据当前节点id获取树结构子节点
-       */
-      return new Promise((resolve, reject) => {
-        let p = {};
-        let unitId = this.user.unitId;
-        p.sql =
-          "SELECT a.id,a.name,a.pid,b.id AS childId FROM channel AS a LEFT JOIN channel AS b ON a.id = b.pid WHERE a.unitId = '" +
-          unitId +
-          "' AND a.pid = '" +
-          this.currentNodeIndex +
-          "' group by a.id ORDER BY a.serialNumber asc";
-
-        this.axios({
-          method: "post",
-          url: this.baseConfig.url_base,
-          data: this.getData("HX_API", "/https/channel/queryForMap.do", p),
-          dataType: "JSON"
-        })
-          .then(result => {
-            let resultData = result.data;
-            let temporaryTree = [];
-            for (let item of resultData) {
-              let temporaryTreeItem = {};
-              temporaryTreeItem.index = item.id;
-              temporaryTreeItem.label = item.name;
-              temporaryTree.push(temporaryTreeItem);
-            }
-            resolve(temporaryTree);
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      });
-    }
   },
   watch: {
     treeHeight(val) {

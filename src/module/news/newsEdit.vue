@@ -119,7 +119,7 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <tree :treeData="channels" :treeHeight="treeHeight"></tree>
+        <tree :treeHeight="treeHeight"></tree>
       </el-col>
       <el-col
         :xs="19"
@@ -259,7 +259,6 @@ export default {
     };
   },
   mounted() {
-    this.loadChannel();
     this.laodNewsMsg();
     this.loadNewsAnnexes();
   },
@@ -267,31 +266,7 @@ export default {
   mixins: [],
   components: { editor, upload, breadCom, tree },
   methods: {
-    loadChannel() {
-      const sql =
-        "SELECT id,name,pid FROM channel WHERE unitId = '" +
-        this.user.unitId +
-        "' order by serialNumber asc";
-      let p = {};
-      p.sql = sql;
-
-      this.axios({
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        method: "post",
-        data: this.getData("HX_API", "/https/channel/query.do", p)
-      })
-        .then(result => {
-          this.channels = this.formatTreeData(result.data);
-
-          // for (const item of this.channels) {
-          //   this.channelsKeyArr.push(item.id);
-          // }
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
+    
     laodNewsMsg() {
       const p = {};
       p.id = this.newsId;
@@ -479,7 +454,6 @@ export default {
             type: "success",
             message: "更新成功"
           });
-          this.loadChannel();
           this.laodNewsMsg();
           this.loadNewsAnnexes();
         })
