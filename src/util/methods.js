@@ -1,4 +1,5 @@
 import qs from 'qs'
+import moment from 'moment'
 //定义变量
 
 export default{
@@ -23,31 +24,62 @@ export default{
     	str = str.replace(/\ +/g, "");
 			str = str.replace(/[ ]/g, "");
 			str = str.replace(/[\r\n]/g, "");
-    	return str;
-	}
-	Vue.prototype.formatTreeData = function(list){
-		let temp = [];
-		let tree = [];
-		let trueTree = [];
-		for(let i in list){
-			temp[list[i].id] = list[i];
+				return str;
 		}
-		
-		for(let i in temp){
-			if(temp[i].pid && temp[i].pid!="0") {
-			if(!temp[temp[i].pid].children) {
-				temp[temp[i].pid].children = [];
+		Vue.prototype.formatTreeData = function(list){
+			let temp = [];
+			let tree = [];
+			let trueTree = [];
+			for(let i in list){
+				temp[list[i].id] = list[i];
 			}
-			temp[temp[i].pid].children[temp[i].id] = temp[i];
-			} else {
-			tree[temp[i].id] =  temp[i];
+			
+			for(let i in temp){
+				if(temp[i].pid && temp[i].pid!="0") {
+				if(!temp[temp[i].pid].children) {
+					temp[temp[i].pid].children = [];
+				}
+				temp[temp[i].pid].children[temp[i].id] = temp[i];
+				} else {
+				tree[temp[i].id] =  temp[i];
+				}
 			}
+
+			formatData(tree,trueTree);
+
+			return trueTree;
+		}
+	
+    Vue.prototype.log = function(item){
+			console.log(item);
 		}
 
-		formatData(tree,trueTree);
+		Date.prototype.Format = function(fmt){
+			//调用案例
+			//new Date(1552294515381).Format("YYYY年MM月DD日 HH:mm:SS");
+			return moment(this).format(fmt);
+		}
 
-		return trueTree;
-	}
+		Date.prototype.farFromNow = function(){
+			//调用案例
+			//new Date(1552294515381).farFromNow();
+			let fromNowString =  moment(this).fromNow();
+
+			let resultString = "";
+			if(fromNowString.indexOf("years")>=0){
+				resultString = fromNowString.replace(" years","年");
+			}else if(fromNowString.indexOf("days")>=0){
+				resultString = fromNowString.replace(" days","天");
+			}else if(fromNowString.indexOf("hours")>=0){
+				resultString = fromNowString.replace(" hours","小时");
+			}else if(fromNowString.indexOf("minutes")>=0){
+				resultString = fromNowString.replace(" minutes","分钟");
+			}else if(fromNowString.indexOf("seconds")>=0){
+				resultString = "刚刚";
+			}
+			resultString = resultString.replace(" ago","前");
+			return resultString;
+		}
   }
 }
 

@@ -196,6 +196,7 @@ $axios.interceptors.request.use(config => {
         
         pending.push({ jsonStr: jsonString, f: c });
     })
+    console.log(config);
     return config;
 }, error => {
     console.log(error);
@@ -243,8 +244,6 @@ $axios.interceptors.response.use(response => { // 拦截请求后的状态
 /**
  * 请求服务器API
  */
-
-
 const $api = {
     /**
      * @param {*} dataObj 数据对象
@@ -287,19 +286,20 @@ const $api = {
             });
         });
     },
-    _put : function(dataObj, interactionObj){
+    _put : function(dataObj, interactionObj){//服务器是否支持？
         return new Promise((resolve, reject) => {
-            $axios.post(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handle, dataObj))
-            ).then(result => {
+            $axios.put(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handle, dataObj)),{
+                headers:{}
+            }).then(result => {
                 resolve(result.data);
             }).catch(error => {
                 console.log(error);
             });
         });
     },
-    _patch : function(dataObj, interactionObj){
+    _patch : function(dataObj, interactionObj){//服务器是否支持？
         return new Promise((resolve, reject) => {
-            $axios.post(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handle, dataObj))
+            $axios.patch(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handle, dataObj))
             ).then(result => {
                 resolve(result.data);
             }).catch(error => {

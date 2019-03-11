@@ -1,3 +1,5 @@
+
+
 export default {// 表单提交信息验证模块
 
   install (Vue, options) {

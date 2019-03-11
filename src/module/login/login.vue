@@ -49,7 +49,7 @@ export default {
       if (event.button > 0) {
         return false;
       }
-
+      
       window.onmousemove = function(event) {
         let l = event.clientX - disX;
         let objOffsetLeft = moveBlock.offsetLeft;
@@ -85,12 +85,11 @@ export default {
     },
     submit: function() {
 
-      this.axios._get({
+      this.axios._post({
         name:'1231',
         pwd:'123456'
       },{
         url:this.baseConfig.url_base,
-        type:'post',
         api:'HX_EXT_API',
         handle:'/https/user/loginByPwd.do'
       }).then(data=>{
@@ -100,9 +99,10 @@ export default {
         console.log("bbb");
       });
 
-
-
       return false;
+
+
+
       
       this.$refs.ruleForm.validate(valid => {
         //全表验证
@@ -125,10 +125,11 @@ export default {
           p.pwd = this.ruleForm.password;
           this.iconLoading = true;
           this.isDisabled = true;
+
           
           this.axios({
             method: "post",
-            url: this.baseConfig.url_base, //url_base为全局变量，调用时前面加global,参数在util->config.js中
+           url: this.baseConfig.url_base, //url_base为全局变量，调用时前面加global,参数在util->config.js中
             data: this.getData("HX_EXT_API", "/https/user/loginByPwd.do", p), //getData为全局方法，方法加入到vue中，调用前需加this，方法在util->methods.js中
             dataType: "JSON"
           })
