@@ -7,6 +7,7 @@
 			let whereStr = this.whereStr;
 			let unitId = this.user.unitId;
 			let currentChannelId = this.currentNode;
+			console.log(currentChannelId);
 
 
 			if (unitId != '') {

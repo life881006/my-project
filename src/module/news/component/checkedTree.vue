@@ -45,24 +45,17 @@ export default {
         "SELECT id,name,pid FROM channel WHERE unitId = '" +
         this.user.unitId +
         "' order by serialNumber asc";
-      let p = {};
+      const p = {};
+      const c = {};
       p.sql = sql;
 
-      this.axios({
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        method: "post",
-        data: this.getData("HX_API", "/https/channel/queryForMap.do", p)
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/channel/queryForMap.do";
+
+      this.axios._get(c,p).then(data => {
+        this.checkedTreeData = this.formatTreeData(data);//按树状结构格式化结果集
       })
-        .then(result => {
-          this.checkedTreeData = this.formatTreeData(result.data);
-          // for (let item of result.data) {//频道全选模式key数组
-          //   this.channelsKeyArr.push(item.id);
-          // }
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     resetTable() {
       this.$emit("refreshTableByTreeNode", this.currentNodeIndex);

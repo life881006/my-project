@@ -84,26 +84,6 @@ export default {
       };
     },
     submit: function() {
-
-      this.axios._post({
-        name:'1231',
-        pwd:'123456'
-      },{
-        url:this.baseConfig.url_base,
-        api:'HX_EXT_API',
-        handle:'/https/user/loginByPwd.do'
-      }).then(data=>{
-        console.log(data);
-        
-      }).then(()=>{
-        console.log("bbb");
-      });
-
-      return false;
-
-
-
-      
       this.$refs.ruleForm.validate(valid => {
         //全表验证
         if (!valid) {
@@ -119,30 +99,26 @@ export default {
             return false;
           }
 
-          let p = {};
+          const p = {};
           //let _this = this;
           p.name = this.ruleForm.username;
           p.pwd = this.ruleForm.password;
           this.iconLoading = true;
           this.isDisabled = true;
+          const c = {};
+          c.url = this.baseConfig.url_base;
+          c.api = 'HX_EXT_API';
+          c.handler = '/https/user/loginByPwd.do'
 
-          
-          this.axios({
-            method: "post",
-           url: this.baseConfig.url_base, //url_base为全局变量，调用时前面加global,参数在util->config.js中
-            data: this.getData("HX_EXT_API", "/https/user/loginByPwd.do", p), //getData为全局方法，方法加入到vue中，调用前需加this，方法在util->methods.js中
-            dataType: "JSON"
-          })
-            .then(result => {
-              
-              let status = result.data.status;
-              let userObj = result.data.obj;
-              let userId = userObj.id;
-              let unitId = userObj.unitId;
-              sessionStorage.setItem("userId", userId);
-              sessionStorage.setItem("unitId", unitId);
-              
-              if (status == 0) {
+          this.axios._post(c,p).then(data=>{
+            let status = data.status;
+            let userObj = data.obj;
+            let userId = userObj.id;
+            let unitId = userObj.unitId;
+            sessionStorage.setItem("userId", userId);//sessonStorage保存userId
+            sessionStorage.setItem("unitId", unitId);//sessonStorage保存unitId
+
+            if (status == 0) {
                 if (userObj.status == 0) {
                   //alert("您的帐号还未审核通过，不能登录系统。");
                   this.isDisabled = false;
@@ -153,7 +129,7 @@ export default {
                     case 4:
                     case 5:
                     case 6:
-                      let userToken = result.data.userToken.access_token;
+                      let userToken = data.userToken.access_token;
                       this.getUserInfoByToken(userToken);
                     break;
                     case 2:
@@ -169,77 +145,91 @@ export default {
                       this.iconLoading = false;
                   }
                 } else {
+                  this.$message({
+                    title:"提示",
+                    message:"您的账号已被停用，不能登录系统"
+                  })
                   //alert("您的帐号已被停用，不能登录系统。");
-                  this.isDisabled = false;
-                  this.iconLoading = false;
                 }
               } else if (status == 1) {
                 //alert("登录密码不正确！");
-                this.isDisabled = false;
-                this.iconLoading = false;
+                this.$message({
+                  title:"提示",
+                  type:"error",
+                  message:"登录密码不正确"
+                })
               } else if (status == 2) {
-                //alert("帐号不存在！");
-                this.isDisabled = false;
-                this.iconLoading = false;
+                this.$message({
+                  title:"提示",
+                  type:"error",
+                  message:"账号不存在"
+                })
+                
+                
               } else {
                 //alert("操作失败");
+                this.$message({
+                  title:"提示",
+                  type:"error",
+                  message:"操作失败"
+                })
+              }
+
+              if(status!=0){
+                let auditLine = document.getElementById("auditLine");
+                let textBlock = document.getElementById("textBlock");
+                let moveBlock = document.getElementById("moveBlock");
+                textBlock.innerHTML = "请拖动方块到最右侧";
+                moveBlock.style.left = 0 + "px";
+                auditLine.style.backgroundColor = "#C0CCDA";
+                flag = null;
                 this.isDisabled = false;
                 this.iconLoading = false;
               }
-              
-            })
-            .catch(error => {
-              console.log(error);
-            });
+          })
         }
       });
     },
     getUserInfoByToken(userToken) {
-      let p = {};
+      const p = {};
+      const c = {};
       p.access_token = userToken;
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        data: this.getData(
-          "HX_EXT_API",
-          "/https/userToken/getLoginInfoByToken.do",
-          p
-        )
-      })
-        .then(result => {
-          let infoData = result.data;
-          if (infoData.isValid == 0) {
-            this.$message({
-              type: "warning",
-              message: "已在其他地方登录，请重新登录"
-            });
-            this.$router.push("../login");
-          } else {
-            var userToken = infoData[0];
-            sessionStorage.setItem(
-              "unitConfig",
-              JSON.stringify(infoData.unitConfig)
-            );
-            sessionStorage.setItem("userInfo", JSON.stringify(infoData.user));
-            this.getUser(infoData.userId);
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      c.url = this.baseConfig.url_base;
+      c.api = 'HX_EXT_API';
+      c.handler = '/https/userToken/getLoginInfoByToken.do';
+
+
+      this.axios._get(c,p).then(data=>{
+        let infoData = data;
+        if (infoData.isValid == 0) {
+          this.$message({
+            type: "warning",
+            message: "已在其他地方登录，请重新登录"
+          });
+          this.$router.push("../login");
+        } else {
+          var userToken = infoData[0];
+          sessionStorage.setItem(
+            "unitConfig",
+            JSON.stringify(infoData.unitConfig)
+          );
+          sessionStorage.setItem("userInfo", JSON.stringify(infoData.user));
+          this.getUser(infoData.userId);
+        }
+      });
     },
     getUser: function(userId) {
-      let p = {};
+      const p = {};
+      const c = {};
+      
       p.id = userId;
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_EXT_API", "/https/user/queryUserInfo.do", p),
-        dataType: "json"
-      })
-        .then(result => {
-          let userObj = result.data;
+
+      c.url = this.baseConfig.url_base;
+      c.api = 'HX_EXT_API';
+      c.handler = '/https/user/queryUserInfo.do';
+
+      this.axios._get(c,p).then(data=>{
+          let userObj = data;
           //格式化模块、项目
           let userModules = formatModules(userObj.functionalModules);
           userObj.functionalModules = userModules;
@@ -248,10 +238,7 @@ export default {
           this.iconLoading = false;
           this.isDisabled = false;
           this.$router.push("/home");
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      })
     }
   },
   watch: {

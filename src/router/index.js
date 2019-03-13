@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import layout from '@/view/layout'
-import home from '@/module/home'
 import {Notification} from 'element-ui'
 
 Vue.use(Router);

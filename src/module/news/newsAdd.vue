@@ -263,12 +263,8 @@ export default {
         tinyMceInfo: "",
         author: this.user.realName,
         transfer: this.user.realName,
-        appearDate: this.moment(new Date().getTime()).format(
-          "YYYY-MM-DD HH:MM:SS"
-        ),
-        editTime: this.moment(new Date().getTime()).format(
-          "YYYY-MM-DD HH:MM:SS"
-        ),
+        appearDate: new Date().format("YYYY-MM-DD HH:mm:ss"),
+        editTime: new Date().format("YYYY-MM-DD HH:mm:ss"),
         editor: this.user.realName,
         isAutoAppear: "0",
         isReview: "0",
@@ -316,7 +312,8 @@ export default {
         //验证
         if (valid) {
           //验证通过后操作
-          var p = {};
+          const p = {};
+          const c = {};
 
           p.releaseSite = 0;
           p.releaseApp = 0;
@@ -364,29 +361,21 @@ export default {
           p.isReview = this.newsAddform.isReview;
           p.isAutoAppear = this.newsAddform.isAutoAppear;
           p.isOriginal = this.newsAddform.isOriginal;
-          p.lastTime = this.moment(new Date().getTime()).format(
-            "YYYY-MM-DD HH:MM:SS"
-          );
+          p.lastTime = new Date().getTime().format("YYYY-MM-DD HH:mm:ss");
 
-          this.axios({
-            method: "post",
-            url: this.baseConfig.url_base,
-            data: this.getData("HX_API", "/https/news/add.do", p),
-            dataType: "json",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-            }
+          c.url = this.baseConfig.url_base;
+          c.api = "HX_API";
+          c.handler = "/https/news/add.do";
+
+
+
+          this.axios._post(c,p).then(data => {
+            const newsId = data;
+            this.addChannelNewsAssociate(
+              newsId,
+              this.newsAddform.checkedChannels
+            );
           })
-            .then(result => {
-              const newsId = result.data;
-              this.addChannelNewsAssociate(
-                newsId,
-                this.newsAddform.checkedChannels
-              );
-            })
-            .catch(error => {
-              console.log(error);
-            });
         } else {
           //验证不通过
           return false;
@@ -394,20 +383,16 @@ export default {
       });
     },
     addChannelNewsAssociate(newsId, checked_channelId) {
+      const c = {};
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/channelNewsAssociate/add.do";
+
       for (const channelId of checked_channelId) {
-        var p = {};
+        const p = {};
         p.newsId = newsId;
         p.channelId = channelId;
-        this.axios({
-          method: "post",
-          url: this.baseConfig.url_base,
-          data: this.getData("HX_API", "/https/channelNewsAssociate/add.do", p),
-          dataType: "json"
-        })
-          .then(result => {})
-          .catch(error => {
-            console.log(error);
-          });
+        this.axios._post(c,p).then(result => {});
       }
 
       this.updateAnnexMsg(newsId);
@@ -439,6 +424,7 @@ export default {
     getUploadedAnnex(p) {
       //获取文件上传后返回的数据
       const annex = new Object();
+      const c = {}
       annex.newsId = "";
       annex.annexName = p.fileName;
       annex.fileType = p.fileType;
@@ -449,27 +435,21 @@ export default {
       annex.newFileName = p.newFileName;
       annex.originalFileName = p.newFileName;
 
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", this.configData.addAnnexHandle, annex),
-        dataType: "json",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        }
+      c.url = this.baseConfig.url_base,
+      c.api = "HX_API";
+      c.handler = this.configData.addAnnexHandle
+
+      this.axios._post(c,annex).then(data => {
+        const fileId = data;
+        p.id = fileId;
+        this.fileListData.push(p);
+        
       })
-        .then(result => {
-          const fileId = result.data;
-          p.id = fileId;
-          this.fileListData.push(p);
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     updateAnnexMsg(newsId) {
       //更新附件上传后的newsId
       let annexes = {};
+      const c = {};
       for (const [i, item] of this.fileListData.entries()) {
         const annex = {};
         annex.id = item.id;
@@ -482,29 +462,17 @@ export default {
         annexes[i] = annex;
       }
 
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        data: this.getData(
-          "HX_EXT_API",
-          "/https/newsAnnex/updateAnnex.do",
-          annexes
-        ),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        }
-      })
-        .then(data => {
-          this.$message({
-            type: "success",
-            message: "添加成功"
-          });
-          this.reset("newsAddform");
-        })
-        .catch(error => {
-          console.log(error);
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_EXT_API";
+      c.handler = "/https/newsAnnex/updateAnnex.do";
+
+      this.axios._post(c,annexes).then(data => {
+        this.$message({
+          type: "success",
+          message: "添加成功"
         });
+        this.reset("newsAddform");
+      })
     },
     deleteAnnex(annexList) {
       //删除附件后更新附件列表

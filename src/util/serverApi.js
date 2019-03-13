@@ -172,10 +172,10 @@ let pending = [];
 let axiosCancel = axios.CancelToken;
 let removePending = function (config) {
     for (let i in pending) {
-        const params = config.data==undefined?config.params:config.data;
-        let str = typeof(params)=="string"?params:qs.stringify(params);
+        const params = config.data == undefined ? config.params : config.data;
+        let str = typeof (params) == "string" ? params : qs.stringify(params);
         const jsonString = str.substring(str.indexOf("json="), str.length);
-        
+
         //从数组中比较本次请求参数
         if (pending[i].jsonStr === jsonString) {
             pending[i].f();
@@ -190,13 +190,12 @@ let removePending = function (config) {
 $axios.interceptors.request.use(config => {
     removePending(config);//清除一次数组中已有的
     config.cancelToken = new axiosCancel((c) => {
-        const params = config.data==undefined?config.params:config.data;
-        let str = typeof(params)=="string"?params:qs.stringify(params);
+        const params = config.data == undefined ? config.params : config.data;
+        let str = typeof (params) == "string" ? params : qs.stringify(params);
         const jsonString = str.substring(str.indexOf("json="), str.length);//截取请求参数放入请求数组
-        
+
         pending.push({ jsonStr: jsonString, f: c });
     })
-    console.log(config);
     return config;
 }, error => {
     console.log(error);
@@ -247,17 +246,17 @@ $axios.interceptors.response.use(response => { // 拦截请求后的状态
 const $api = {
     /**
      * @param {*} dataObj 数据对象
-     * @param {url,api,handle} interactionObj 配置参数对象
+     * @param {url,api,handler} interactionObj 配置参数对象
      * _get：一般用于获取数据
      * _post: 新建记录
      * _delete: 删除数据
      * _put: 更新
      * _patch: 更新，通常为部分更新
      */
-    _get : function(dataObj, interactionObj){
+    _get: function (interactionObj, dataObj) {
         return new Promise((resolve, reject) => {
             $axios.get(interactionObj.url, {
-                params: getData(interactionObj.api, interactionObj.handle, dataObj)
+                params: getData(interactionObj.api, interactionObj.handler, dataObj)
             }).then(result => {
                 resolve(result.data);
             }).catch(error => {
@@ -265,9 +264,9 @@ const $api = {
             });
         });
     },
-    _post : function(dataObj, interactionObj){
+    _post: function (interactionObj, dataObj) {
         return new Promise((resolve, reject) => {
-            $axios.post(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handle, dataObj))
+            $axios.post(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
             ).then(result => {
                 resolve(result.data);
             }).catch(error => {
@@ -275,10 +274,10 @@ const $api = {
             });
         });
     },
-    _delete : function(dataObj, interactionObj){
+    _delete: function (interactionObj, dataObj) {
         return new Promise((resolve, reject) => {
             $axios.delete(interactionObj.url, {
-                params: getData(interactionObj.api, interactionObj.handle, dataObj)
+                params: getData(interactionObj.api, interactionObj.handler, dataObj)
             }).then(result => {
                 resolve(result.data);
             }).catch(error => {
@@ -286,10 +285,10 @@ const $api = {
             });
         });
     },
-    _put : function(dataObj, interactionObj){//服务器是否支持？
+    _put: function (interactionObj, dataObj) {//服务器是否支持？
         return new Promise((resolve, reject) => {
-            $axios.put(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handle, dataObj)),{
-                headers:{}
+            $axios.put(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj)), {
+                headers: {}
             }).then(result => {
                 resolve(result.data);
             }).catch(error => {
@@ -297,9 +296,9 @@ const $api = {
             });
         });
     },
-    _patch : function(dataObj, interactionObj){//服务器是否支持？
+    _patch: function (interactionObj, dataObj) {//服务器是否支持？
         return new Promise((resolve, reject) => {
-            $axios.patch(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handle, dataObj))
+            $axios.patch(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
             ).then(result => {
                 resolve(result.data);
             }).catch(error => {
@@ -307,7 +306,7 @@ const $api = {
             });
         });
     },
-    _prototype : $axios
+    _prototype: $axios
 
 }
 

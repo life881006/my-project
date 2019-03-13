@@ -130,23 +130,18 @@ export default {
       this.transferFile(p);
     },
     transferFile(p) {
+      const c = {};
+      c.url = this.baseConfig.url_transferFile;
+      c.api = this.Data.api;
+      c.handler = this.Data.addAnnexHandle;
       //传文件
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_transferFile,
-        data: this.getData(this.Data.api, this.Data.addAnnexHandle, p),
-        dataType: "json"
-      })
-        .then(result => {
-          const filePathObj = result.data;
-          p.contextPath = filePathObj.contextPath;
-          p.storageLocation = filePathObj.storageLocation;
+      this.axios._post(c,p).then(data => {
+        const filePathObj = data;
+        p.contextPath = filePathObj.contextPath;
+        p.storageLocation = filePathObj.storageLocation;
 
-          this.$emit("getUploadedAnnex", p);
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        this.$emit("getUploadedAnnex", p);
+      })
     },
     removeAnnexItem(index, annexId) {
       //删除某个附件
@@ -154,34 +149,29 @@ export default {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      })
-        .then(() => {
-          const p = {};
-          p.id = annexId;
-          this.axios({
-            url: this.baseConfig.url_base,
-            dataType: "JSON",
-            data: this.getData(this.Data.api, this.Data.deleteAnnexHandle, p),
-            method: "post"
-          })
-            .then(data => {
-              this.fileList.splice(index, 1);
-              this.$emit("deleteAnnex", this.fileList);
-              this.$message({
-                type: "success",
-                message: "删除成功!"
-              });
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        })
-        .catch(error => {
+      }).then(() => {
+        const p = {};
+        const c = {};
+        console.log(annexId);
+        p.id = annexId;
+        c.url = this.baseConfig.url_base;
+        c.api = this.Data.api;
+        c.handler = this.Data.deleteAnnexHandle;
+
+        this.axios._delete(c,p).then(data => {
+          this.fileList.splice(index, 1);
+          this.$emit("deleteAnnex", this.fileList);
           this.$message({
-            type: "info",
-            message: "已取消删除"
+            type: "success",
+            message: "删除成功!"
           });
+        })
+      }).catch(error => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
         });
+      });
     },
     editName(item, name) {
       //编辑文件名

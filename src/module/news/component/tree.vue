@@ -3,11 +3,12 @@
     <div class="treeInner">
       <h4 class="title" @click="resetTable">频道管理</h4>
       <!--展示树-->
-      <el-scrollbar :sss="random">
+      <el-scrollbar class="treeScroll">
         <el-tree
           ref="elTree"
           id="elTree"
           :data="treeData"
+          default-expand-all
           :props="defaultProps"
           :style="{height:tHeight}"
           @node-click="handleNodeClick"
@@ -30,7 +31,6 @@ export default {
         label: "name"
       },
       currentNodeIndex: "0",
-      random: 0
     };
   },
   mounted() {
@@ -50,24 +50,20 @@ export default {
         "SELECT id,name,pid FROM channel WHERE unitId = '" +
         this.user.unitId +
         "' order by serialNumber asc";
-      let p = {};
+      const p = {};
+      const c = {};
       p.sql = sql;
 
-      this.axios({
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        method: "post",
-        data: this.getData("HX_API", "/https/channel/queryForMap.do", p)
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/channel/queryForMap.do";
+
+      this.axios._get(c,p).then(data => {
+        this.treeData = this.formatTreeData(data);//按树状结构格式化结果集
+        // for (let item of result.data) {//频道全选模式key数组
+        //   this.channelsKeyArr.push(item.id);
+        // }
       })
-        .then(result => {
-          this.treeData = this.formatTreeData(result.data);
-          // for (let item of result.data) {//频道全选模式key数组
-          //   this.channelsKeyArr.push(item.id);
-          // }
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     resetTable() {
       this.currentNodeIndex = "0";
@@ -75,7 +71,7 @@ export default {
     },
     handleNodeClick(data) {
       //data ：节点数据
-      this.$emit("refreshTableByTreeNode", data.index);
+      this.$emit("refreshTableByTreeNode", data.id);
     },
     /**
      * //动态加载树结构子节点
@@ -157,7 +153,10 @@ h4.title
 .treeInner 
   margin: 0px 25px 0px 0px;
   background-color: #FAFAFA;
-
+  
+.treeScroll
+  .el-scrollbar__wrap 
+    overflow: auto
 
 .treeInner 
   .title 

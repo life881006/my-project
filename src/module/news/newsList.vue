@@ -206,13 +206,14 @@
           <el-table-column align="center" label="作者" prop="author" min-width="10%"></el-table-column>
 
           <el-table-column sortable align="center" label="编辑时间" prop="appearDate" min-width="12%">
-            <template slot-scope="scope">{{ moment(scope.row.appearDate).format("YYYY-MM-DD") }}</template>
+            <template slot-scope="scope">{{ new Date(scope.row.appearDate).format("YYYY-MM-DD") }}</template>
           </el-table-column>
 
           <el-table-column align="center" label="操作" min-width="12%">
             <template slot-scope="scope">
               <el-dropdown trigger="click">
-                <el-button type="text" size="small" class="el-dropdow-link">操作
+                <el-button type="text" size="small" class="el-dropdow-link">
+                  操作
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </el-button>
                 <el-dropdown-menu slot="dropdown">
@@ -261,7 +262,7 @@
         <span>作者</span>
         {{currentItem.author}}
         <span>发布时间</span>
-        {{moment(currentItem.appearDate).format("YYYY-MM-DD") }}
+        {{new Date(currentItem.appearDate).format("YYYY-MM-DD") }}
       </div>
       <div class="dialogMain" v-html="currentItem.content"></div>
     </el-dialog>
@@ -324,73 +325,70 @@ export default {
         }
         this.getNewsMainData();
       });
-	});
+    });
   },
   methods: {
-   
-    exChangeRelease(row, column, status) {
+    /**
+     * 发布到
+     */
+    exChangeRelease(row, releaseTo, status) {
       const p = {};
+      const c = {};
       p.sql =
         "update news set " +
-        column +
+        releaseTo +
         " = '" +
         status +
         "' where id = '" +
         row.id +
         "'";
 
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/news/exec.do", p),
-        dataType: "JSON"
-      })
+      c.api = "HX_API";
+      c.handler = "/https/news/exec.do";
+      c.url = this.baseConfig.url_base;
+
+
+      this.axios._post(c,p)
         .then(data => {
-          row[column] = status;
+          row[releaseTo] = status;
         })
-        .catch(error => {
-          console.log(error);
-        });
     },
-    /*
-			审核新闻
-			 */
+    /**
+     * 审核新闻
+     */
     auditNews(row, status) {
-      var p = {};
+      const p = {};
+      const c = {};
+      
       p.sql =
         "update news set status='" + status + "' where id = '" + row.id + "'";
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/news/exec.do", p),
-        dataType: "JSON"
-      })
-        .then(result => {
+      
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/news/exec.do";
+      
+      this.axios._post(c,p)
+        .then(data => {
           row.status = status;
         })
-        .catch(error => {
-          console.log(error);
-        });
     },
-    /*
-			置顶
-			 */
 
+    /**
+     * 新闻置顶
+     */
+			
     setTop(row, status) {
-      var p = {};
+      const p = {};
+      const c = {};
+
       p.sql =
         "update news set isTop='" + status + "' where id in (" + row.id + ")";
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/news/exec.do", p),
-        dataType: "JSON"
-      })
-        .then(result => {
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/news/exec.do";
+      this.axios._post(c,p)
+        .then(data => {
           row.isTop = status;
-        })
-        .catch(error => {
-          console.log(error);
         });
     },
     /*
@@ -406,104 +404,81 @@ export default {
 			 */
     getAnnex(newsId) {
       const p = {};
+      const c = {};
       p.sql =
         "select id,serialNumber,annexName,fileType,dirName,content,contextPath,saveUrl,newFileName from newsAnnex where newsId = '" +
         newsId +
         "' and status = 1 order by serialNumber asc";
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/newsAnnex/queryForMap.do", p),
-        dataType: "JSON"
+      
+      c.url = this.baseConfig.url_base,
+      c.api = "HX_API",
+      c.handler = "/https/newsAnnex/queryForMap.do";
+
+
+      this.axios._get(c,p).then(data => {
+        this.currentViewAnnex = data;
       })
-        .then(result => {
-          this.currentViewAnnex = result.data;
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     /*
 			修改
 			 */
     gotoEdit(newsId) {
-      this.$router.push({ name: "newsEdit", query: { id: newsId } });
+      this.$router.push({ name: "newsEdit", query: { id: newsId } });//请求模块
     },
     openHtml5Link(index, item) {
       window.open("../../../allMobile/news/content.html?id=" + item.id);
     },
     copyNews(index, item) {
       const p = item;
+      const c = {};
       p.title = item.title + "_副本";
       p.editor = ""; //这个地方
       p.isOriginal = 0;
       p.appearUserId = this.user.id;
-      p.editTime = this.moment(new Date().getTime()).format(
-        "YYYY-MM-DD HH:MM:SS"
-      );
-      p.appearDate = this.moment(new Date().getTime()).format(
-        "YYYY-MM-DD HH:MM:SS"
-      );
-      p.lastTime = this.moment(new Date().getTime()).format(
-        "YYYY-MM-DD HH:MM:SS"
-      );
+      p.editTime = new Date().format("YYYY-MM-DD HH:mm:ss");
+      p.appearDate = new Date().format("YYYY-MM-DD HH:mm:ss");
+      p.lastTime = new Date().format("YYYY-MM-DD HH:mm:ss");
       p.status = 0;
 
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/news/add.do", p),
-        dataType: "JSON",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        }
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/news/add.do";
+
+      this.axios._post(c,p).then(data => {
+        const newsId = data;
+        this.queryNewsAnnex(item.id, newsId);
+        this.getNewsMainData();
       })
-        .then(result => {
-          const newsId = result.data;
-          this.queryNewsAnnex(item.id, newsId);
-          this.getNewsMainData();
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     queryNewsAnnex(sourceNewsId, destNewsId) {
       const p = {};
+      const c = {};
       p.sql = "select * from newsAnnex";
       p.whereStr = "where newsId = '" + sourceNewsId + "'";
       p.orderStr = "";
+      
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/newsAnnex/getNewsAnnexs.do";
 
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/newsAnnex/getNewsAnnexs.do", p),
-        dataType: "JSON"
+      this.axios._get(c,p).then(data => {
+        const resultData = data;
+        for (const item of resultData) {
+          this.addNewsAnnex(destNewsId, item);
+        }
       })
-        .then(result => {
-          const resultData = result.data;
-          for (const item of resultData) {
-            this.addNewsAnnex(destNewsId, item);
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
     },
     addNewsAnnex(destNewsId, newsAnnex) {
       const p = newsAnnex;
+      const c = {};
       p.newsId = destNewsId;
-      p.createTime = this.moment(newsAnnex.createTime).format(
-        "YYYY-MM-DD HH:MM:SS"
-      );
+      p.createTime = new Date(newsAnnex.createTime).format("YYYY-MM-DD HH:mm:ss");
 
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/newsAnnex/add.do", p),
-        dataType: "JSON"
-      })
-        .then(result => {})
-        .catch(error => {});
+      c.url = this.baseConfig.url_base;
+      c.api = "HX_API";
+      c.handler = "/https/newsAnnex/add.do";
+
+      this.axios._post(c,p).then(result => {});
     }
   },
   watch: {
