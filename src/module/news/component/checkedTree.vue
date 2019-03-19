@@ -1,6 +1,9 @@
 <template>
     <div class="treeInner">
-      <h4 class="title" @click="resetTable">选择发布到的栏目</h4>
+      <h4 class="title">
+          选择发布到的栏目
+          <span class="reset" @click="resetTable">重置</span>
+      </h4>
       <!--展示树-->
       <el-scrollbar class="treeScroll" >
         <el-tree
@@ -58,7 +61,7 @@ export default {
       })
     },
     resetTable() {
-      this.$emit("refreshTableByTreeNode", this.currentNodeIndex);
+      this.$refs.elCheckedTree.setCheckedKeys([]);
     },
     nodeChecked(data,checked,indeterminate) {
       //data ：节点数据
@@ -83,8 +86,6 @@ export default {
 </script>
 
 <style scoped="scoped" lang="stylus">
-h4.title 
-  cursor: pointer
 
 .treeScroll
   .el-scrollbar__wrap 
@@ -97,6 +98,9 @@ h4.title
 >>>.el-tree-node__children 
   overflow: inherit
 
+.treeInner
+  margin: 0px 25px 0px 0px
+
 .treeInner 
   .title 
     font-size: 14px
@@ -106,9 +110,19 @@ h4.title
     font-weight: bolder
     border-bottom: 1px solid #ebeef5
 
+    &:before
+      content:'*'
+      color:#F56C6C
+      margin-right:2px
+
 .treeInner 
   .title 
-    &:hover 
-      color: #409eff
+    .reset
+      float:right
+      margin-right:10px
+
+      &:hover 
+        color: #409eff
+        cursor: pointer
     
 </style>

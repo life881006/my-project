@@ -10,7 +10,7 @@
           :data="treeData"
           default-expand-all
           :props="defaultProps"
-          :style="{height:tHeight}"
+          :style="{height:tHeight+'px'}"
           @node-click="handleNodeClick"
         ></el-tree>
       </el-scrollbar>
@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       treeData: [],
-      tHeight: this.treeData, //树高
+      tHeight: this.treeHeight, //树高
       defaultProps: {
         //树形结构默认设置
         children: "children",
@@ -41,6 +41,7 @@ export default {
      * this.treeData = data;
      * });
      */
+    this.log(this.treeHeight);
     this.loadChannel();
   },
   props: ['treeHeight'],

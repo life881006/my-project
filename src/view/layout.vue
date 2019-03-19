@@ -33,7 +33,7 @@
 				screenHeight:defaultClientHeight,
 				sideBarWidth:defaultClientWidth,
 				sideBarHeight:defaultClientHeight,
-				mainContentHeight:defaultClientHeight-210,
+				mainContentHeight:defaultClientHeight-200,
 				keepAliveMenu:"newsAdd",
 			}
 		},

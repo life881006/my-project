@@ -10,6 +10,7 @@ import publicMethods from './util/methods' /** 引入axios数据打包函数 */
 import filter_inputs from './util/inputValidator' /** 引入表单输入信息校验模块 */
 import serverApi from './util/serverApi' /** axios封装 */
 
+import './style/public.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/iconfont/iconfont.css'
 

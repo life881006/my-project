@@ -237,7 +237,7 @@ export default {
   name: "newsAdd",
   data() {
     return {
-      formHeight: this.mainContentHeight + 50,
+      formHeight: this.mainContentHeight + 40,
       treeHeight: this.mainContentHeight,
       cropperSize: {
         //裁切框大小

@@ -13,14 +13,14 @@
 
     <el-row>
       <!--树组件-->
-      <el-col class="treeObj" :xs="5" :sm="5" :md="5" :lg="5">
+      <el-col :xs="5" :sm="5" :md="5" :lg="5">
         <tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="treeHeight"></tree>
       </el-col>
       <el-col :xs="19" :sm="19" :md="19" :lg="19">
         <el-table
           v-loading="loading"
           ref="multipleTable"
-          :height="mainTableHeight"
+          :height="mainTableHeight+'px'"
           :data="tableData"
           tooltip-effect="dark"
           style="width: 100%"
@@ -284,8 +284,8 @@ let sortType = "desc";
 export default {
   data() {
     return {
-      mainTableHeight: this.mainContentHeight + "px", //主表高度
-      treeHeight: this.mainContentHeight + "px", //树高度
+      mainTableHeight: this.mainContentHeight , //主表高度
+      treeHeight: this.mainContentHeight , //树高度
       loading: true,
       tableData: [], //主表数据
       pageObj: {
@@ -490,8 +490,7 @@ export default {
 };
 </script>
 
-<style type="text/css" lang="stylus">
-@import url('../../style/mainList.css');
+<style type="text/css" lang="stylus" scoped>
 
 .signature {
   text-align: right;
