@@ -44,21 +44,14 @@ export default {
   props: ["treeHeight"],
   methods: {
     loadChannel() {
-      const sql =
-        "SELECT id,name,pid FROM channel WHERE unitId = '" +
-        this.user.unitId +
-        "' order by serialNumber asc";
+      const sql = `SELECT id,name,pid FROM channel WHERE unitId = '${this.user.unitId}' order by serialNumber asc`;
       const p = {};
-      const c = {};
       p.sql = sql;
 
-      c.url = this.baseConfig.url_base;
-      c.api = "HX_API";
-      c.handler = "/https/channel/queryForMap.do";
-
-      this.axios._get(c,p).then(data => {
+      this.axios.getObjs(p).then(data=>{
         this.checkedTreeData = this.formatTreeData(data);//按树状结构格式化结果集
       })
+
     },
     resetTable() {
       this.$refs.elCheckedTree.setCheckedKeys([]);
@@ -66,12 +59,10 @@ export default {
     nodeChecked(data,checked,indeterminate) {
       //data ：节点数据
       console.log(data);
-      console.log(checked);
-      console.log(indeterminate);
       //this.$emit("refreshTableByTreeNode", data.index);
     },
     nodeClick(data){
-      console.log(data);
+      
     },
   },
   watch: {

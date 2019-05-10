@@ -26,7 +26,7 @@
           class="delete"
           type="text"
           icon="el-icon-close"
-          @click="removeAnnexItem(index,item.id)"
+          @click="removeAnnexItem(index)"
         ></el-button>
 
         <el-dropdown class="setting" trigger="click">
@@ -34,12 +34,12 @@
             <i class="el-icon-setting"/>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <div v-if="Data.isFirstButton" class="menuItem">
+            <div v-if="isFirstButton" class="menuItem">
               <span class="label">首选图片</span>
               <el-radio v-model="item.isFirst" label="0">否</el-radio>
               <el-radio v-model="item.isFirst" label="1">是</el-radio>
             </div>
-            <div v-if="Data.statusButton" class="menuItem">
+            <div v-if="statusButton" class="menuItem">
               <span class="label">是否显示</span>
               <el-radio v-model="item.status" label="1">是</el-radio>
               <el-radio v-model="item.status" label="0">否</el-radio>
@@ -50,17 +50,17 @@
         <div class="annexImg">
           <a
             v-if="item.dirName==='image'"
-            :href="item.contextPath+baseConfig.webName+item.saveUrl+item.newFileName"
+            :href="item.contextPath+item.saveUrl+item.newFileName"
             target="_blank"
           >
             <img
-              :src="item.contextPath+baseConfig.webName+item.saveUrl+item.newFileName"
+              :src="item.contextPath+item.saveUrl+item.newFileName"
             >
           </a>
           
           <a v-else :href="item.contextPath+item.saveUrl+item.newFileName" target="_blank">
             <img
-              :src="item.contextPath+baseConfig.webName+'/web2/layout/images/file/'+item.fileType+'.png'"
+              :src="item.contextPath+'/web2/layout/images/file/'+item.fileType+'.png'"
             >
           </a>
         </div>
@@ -96,13 +96,18 @@ export default {
   name: "upload",
   data() {
     return {
-      Data: this.configData,
+      Data: {
+        rootPath: this.rootPath,
+        action: this.axios.fileUploadAction,//上传接口地址
+      },
+      isFirstButton: true,
+      statusButton: true,
       ifShowList: false,
       fileList: this.fileListData, //附件集合
       originalName: ""
     };
   },
-  props: ["configData", "fileListData"],
+  props: ["rootPath", "fileListData"],
   mixins: [],
   components: {},
   methods: {
@@ -115,10 +120,10 @@ export default {
       p.hover = false;
       p.edit = false;
       p.editSerialNumber = false;
-      if (this.Data.isFirstButton) {
+      if (this.isFirstButton) {
         p.isFirst = "0";
       }
-      if (this.Data.statusButton) {
+      if (this.statusButton) {
         p.status = "1";
       }
 
@@ -127,15 +132,9 @@ export default {
       p.fbPort = this.unitConfig.fbPort;
       p.fbName = this.unitConfig.fbName;
       p.fbRootPath = this.unitConfig.fbRootPath;
-      this.transferFile(p);
-    },
-    transferFile(p) {
-      const c = {};
-      c.url = this.baseConfig.url_transferFile;
-      c.api = this.Data.api;
-      c.handler = this.Data.addAnnexHandle;
-      //传文件
-      this.axios._post(c,p).then(data => {
+
+      //传输文件
+      this.axios.transferFile(p).then(data => {
         const filePathObj = data;
         p.contextPath = filePathObj.contextPath;
         p.storageLocation = filePathObj.storageLocation;
@@ -143,35 +142,8 @@ export default {
         this.$emit("getUploadedAnnex", p);
       })
     },
-    removeAnnexItem(index, annexId) {
-      //删除某个附件
-      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        const p = {};
-        const c = {};
-        console.log(annexId);
-        p.id = annexId;
-        c.url = this.baseConfig.url_base;
-        c.api = this.Data.api;
-        c.handler = this.Data.deleteAnnexHandle;
-
-        this.axios._delete(c,p).then(data => {
-          this.fileList.splice(index, 1);
-          this.$emit("deleteAnnex", this.fileList);
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        })
-      }).catch(error => {
-        this.$message({
-          type: "info",
-          message: "已取消删除"
-        });
-      });
+    removeAnnexItem(index) {
+      this.$emit("removeAnnexItem", index);
     },
     editName(item, name) {
       //编辑文件名

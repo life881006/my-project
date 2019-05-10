@@ -41,30 +41,24 @@ export default {
      * this.treeData = data;
      * });
      */
-    this.log(this.treeHeight);
     this.loadChannel();
   },
   props: ['treeHeight'],
   methods: {
     loadChannel() {
-      const sql =
-        "SELECT id,name,pid FROM channel WHERE unitId = '" +
-        this.user.unitId +
-        "' order by serialNumber asc";
+      // const sql =
+      //   "SELECT id,name,pid FROM channel WHERE unitId = '" +
+      //   this.user.unitId +
+      //   "' order by serialNumber asc";
+
+      const sql = `SELECT id,name,pid FROM channel WHERE unitId = '${this.user.unitId}' order by serialNumber asc`;
+      
       const p = {};
-      const c = {};
       p.sql = sql;
-
-      c.url = this.baseConfig.url_base;
-      c.api = "HX_API";
-      c.handler = "/https/channel/queryForMap.do";
-
-      this.axios._get(c,p).then(data => {
+      
+      this.axios.getObjs(p).then(data=>{
         this.treeData = this.formatTreeData(data);//按树状结构格式化结果集
-        // for (let item of result.data) {//频道全选模式key数组
-        //   this.channelsKeyArr.push(item.id);
-        // }
-      })
+      });
     },
     resetTable() {
       this.currentNodeIndex = "0";

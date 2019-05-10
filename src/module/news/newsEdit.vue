@@ -196,10 +196,10 @@
 </template>
 
 <script>
-import editor from "@/components/tinyMce/tinyMce";
-import upload from "@/components/fileUpload/index";
-import breadCom from "@/components/breadComponent/breadCom";
-import tree from "@/module/news/component/checkedTree";
+import editor from "@/components/util/tinyMce/tinyMce";
+import breadCom from "@/components/service/Breadcrumbs";
+import upload from "@/components/service/file-upload/index"; //任意格式图片上传
+import tree from "./components/checkedTree";
 
 export default {
   name: "",

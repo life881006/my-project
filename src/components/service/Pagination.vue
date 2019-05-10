@@ -3,19 +3,17 @@
     <div class="paginationComponent">
       <span>共{{page.totalCount}}条</span>
       <el-input
-        id="everpageNumber"
+        class="setEveryPage"
         size="mini"
-        onkeypress="return event.keyCode>=48&&event.keyCode<=57"
-        :value="page.everyPage"
-        maxlength="5"
+        v-model="everyPage"
         @blur="setEveryPage"
       >
         <template slot="prepend">每页/条</template>
       </el-input>
       <el-pagination
         @current-change="handleCurrentChange"
-        :current-page="page.currentPage"
-        :page-size="page.everyPage"
+        :current-page="Number(page.currentPage)"
+        :page-size="Number(page.everyPage)"
         :pager-count="5"
         layout=" prev, pager, next, jumper"
         :total="page.totalCount"
@@ -30,10 +28,13 @@ export default {
   data() {
     return {
       page: this.pageObj,
-      currentPath: this.$router.history.current.path //当前路由
+      currentPath: this.$router.history.current.path, //当前路由
+      everyPage: Number(this.pageObj.everyPage),
     };
   },
-  created() {},
+  created() {
+    
+  },
   props: ["pageObj"],
   methods: {
     handleCurrentChange(val) {
@@ -47,35 +48,17 @@ export default {
       this.$emit("setCurrentPage", this.page); //子组件给父组件传值
     },
     setEveryPage() {
-      let inputEveryPage = Number(
-        document.getElementById("everpageNumber").value
-      );
-
-      if (inputEveryPage === 0 || isNaN(inputEveryPage)) {
+      if(this.page.everyPage == this.everyPage){
         return false;
       }
-
-      this.page.everyPage = inputEveryPage;
-
-      let totalCount = this.page.totalCount;
-      if (inputEveryPage > totalCount) {
-        this.$message({
-          //h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
-          message: "您输入每页条数超过总条数,请重新输入",
-          type: "error"
-        });
-        document.getElementById("everpageNumber").value = "";
-        return false;
-      }
-      this.page.everyPage = inputEveryPage;
+      this.$set(this.page,"everyPage",this.everyPage);
       for (let item of this.$store.state.pagination.paginationList) {
         if (item.path === this.currentPath) {
           item.everyPage = inputEveryPage;
           break;
         }
       }
-
-      let maxPage = Math.ceil(totalCount / inputEveryPage);
+      let maxPage = Math.ceil(this.page.totalCount / this.everyPage);
       if (this.page.currentPage > maxPage) {
         //设置每页条数后，如果当前页超过总页数，则设为最大总页数
         this.page.currentPage = maxPage;
@@ -89,6 +72,23 @@ export default {
         this.page = newValue;
       },
       deep: true
+    },
+    everyPage(newValue,oldValue){
+      if(newValue === oldValue){
+        return false;
+      }else if(newValue === 0 || isNaN(newValue)){
+        this.everyPage = oldValue;
+      }else if(this.page.totalCount<newValue){
+        this.$message({
+          //h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
+          message: "您输入每页条数超过总条数,请重新输入",
+          type: "error"
+        });
+        this.everyPage = oldValue;
+      }else{
+        this.everyPage = newValue;
+        
+      }
     }
   }
 };
@@ -114,9 +114,10 @@ export default {
   }
 }
 
-.el-input {
-  width: 90px;
+.setEveryPage {
+  width: 100px;
   float: left;
+  text-align: center;
 }
 
 .paginationComponent {

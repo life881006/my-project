@@ -1,6 +1,6 @@
 //暴露给store.js
 const getters = {
-	visitTages : state => state.visitTagsList.visitedTags,
+	visitTags : state => state.visitTagsList.visitedTags,
 	pagination : state => state.pagination.paginationList,
 	currentPagination : state => state.pagination.currentPagination,
 	search : state => state.search.searchList,

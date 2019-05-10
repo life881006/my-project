@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import breadCom from "@/components/breadComponent/breadCom";
+import breadCom from "@/components/service/Breadcrumbs";
 
 export default {
   name: "modifyUserInfo",

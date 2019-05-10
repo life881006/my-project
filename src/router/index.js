@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import layout from '@/view/layout'
+import layout from '@/view/main'
 import {Notification} from 'element-ui'
 
 Vue.use(Router);
@@ -97,7 +97,7 @@ const router = new Router({
                 path:'pageNotFoundIndex',
                 name:'404',
                 meta:{title:'未找到页面'},
-                component:() => import('@/components/404/index')
+                component:() => import('@/components/service/404/index')
             }
         ]
     }

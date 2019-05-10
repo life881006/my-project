@@ -13,8 +13,8 @@
 </template>
 
 <script>
-	import sideBar from './sideBar/sideBar'
-	import navBar from './navBar/navBar'
+	import sideBar from '@/components/view/Sidebar'
+	import navBar from '@/components/view/Navbar'
 	
 	const defaultClientWidth = document.documentElement.clientWidth;
 	const defaultClientHeight = document.documentElement.clientHeight;

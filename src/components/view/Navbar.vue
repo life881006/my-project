@@ -46,7 +46,7 @@
 <script>
 	
 	import screenfull from 'screenfull'
-	import cropper from "@/components/cropper/index"//裁切图片
+	import cropper from "@/components/util/cropper/index"//裁切图片
 	
 	export default {
 		name:"navBar",

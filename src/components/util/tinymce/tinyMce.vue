@@ -92,8 +92,8 @@ export default {
           let xhr, formData;
           xhr = new XMLHttpRequest();
           xhr.withCredentials = false;
-          xhr.open("POST", this.baseConfig.url_base2);
-          const _this = this;
+          xhr.open("POST", _this.baseConfig.url_base2);
+          //const _this = this;
           xhr.onload = function() {
             let json;
             if (xhr.status != 200) {

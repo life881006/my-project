@@ -7,14 +7,14 @@
       </el-col>
 
       <el-col :xs="1" :sm="1" :md="1" :lg="1">
-        <el-button size="small" type="primary" icon="el-icon-plus" @click="addPanel()"></el-button>
+        <el-button size="small" type="primary" icon="el-icon-plus" @click="gotoAdd"></el-button>
       </el-col>
     </el-row>
 
     <el-row>
       <!--树组件-->
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="treeHeight"></tree>
+        <tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="mainTableHeight"></tree>
       </el-col>
       <el-col :xs="19" :sm="19" :md="19" :lg="19">
         <el-table
@@ -206,7 +206,7 @@
           <el-table-column align="center" label="作者" prop="author" min-width="10%"></el-table-column>
 
           <el-table-column sortable align="center" label="编辑时间" prop="appearDate" min-width="12%">
-            <template slot-scope="scope">{{ new Date(scope.row.appearDate).format("YYYY-MM-DD") }}</template>
+            <template slot-scope="scope">{{ new Date(scope.row.appearDate).Format("YYYY-MM-DD") }}</template>
           </el-table-column>
 
           <el-table-column align="center" label="操作" min-width="12%">
@@ -248,8 +248,8 @@
         <div class="paginationArea">
           <operations @refreshTableOperation="refreshTable" :selectedData="dataSelections"></operations>
           <pagination
-            @setPageSize="getPageSize"
-            @setCurrentPage="getCurrentPage"
+            @setPageSize="setPageSize"
+            @setCurrentPage="setCurrentPage"
             :pageObj="pageObj"
           ></pagination>
         </div>
@@ -262,7 +262,7 @@
         <span>作者</span>
         {{currentItem.author}}
         <span>发布时间</span>
-        {{new Date(currentItem.appearDate).format("YYYY-MM-DD") }}
+        {{new Date(currentItem.appearDate).Format("YYYY-MM-DD") }}
       </div>
       <div class="dialogMain" v-html="currentItem.content"></div>
     </el-dialog>
@@ -270,26 +270,25 @@
 </template>
 
 <script>
-import publicMethod from "@/module/public/publicMethod"; //公共方法
-import pagination from "@/module/public/pagination"; //分页组件
+import publicMethod from "@/components/service/methods"; //公共方法
+import pagination from "@/components/service/Pagination"; //分页组件
 
-import newsMethods from "@/module/news/methods/news"; //公共方法
+import searchBar from "./components/search"; //公共组件
+import tree from "./components/tree"; //公共组件
+import operations from "./components/operations"; //公共组件
 
-import searchBar from "@/module/news/component/search"; //公共组件
-import tree from "@/module/news/component/tree"; //公共组件
-import operations from "@/module/news/component/operations"; //公共组件
+import newsMethods from "@/module/news/methods/news"; //news方法
 
 let sortType = "desc";
 
 export default {
   data() {
     return {
-      mainTableHeight: this.mainContentHeight , //主表高度
-      treeHeight: this.mainContentHeight , //树高度
+      mainTableHeight: this.mainContentHeight , //主表、树高度
       loading: true,
       tableData: [], //主表数据
       pageObj: {
-        //请求分页信息
+        //请求分页信息，每个业务组件的分页信息保存在store中，方便来回切换时保存记录
         path: this.$router.history.current.path,
         everyPage: this.baseConfig.everyPage, //每页记录数
         currentPage: 1,
@@ -299,11 +298,11 @@ export default {
       dialogVisible: false, //对话框是否显示
       currentNode: "0", //接收tree中点击的nodeIndex
       whereStr: "", //whereStr
-      currentItem: {},
+      currentItem: {},//当前浏览的文章
       currentViewAnnex: [] //当前浏览的文章附件
     };
   },
-  props: ["mainContentHeight"],
+  props: ["mainContentHeight"],//主表高度
   mixins: [publicMethod, newsMethods],
   components: { pagination, operations, tree, searchBar },
   created() {},
@@ -323,7 +322,7 @@ export default {
           this.whereStr =
             " where " + data.normalSelect + " like '%" + data.searchText + "%'";
         }
-        this.getNewsMainData();
+        this.getMainData();
       });
     });
   },
@@ -435,9 +434,9 @@ export default {
       p.editor = ""; //这个地方
       p.isOriginal = 0;
       p.appearUserId = this.user.id;
-      p.editTime = new Date().format("YYYY-MM-DD HH:mm:ss");
-      p.appearDate = new Date().format("YYYY-MM-DD HH:mm:ss");
-      p.lastTime = new Date().format("YYYY-MM-DD HH:mm:ss");
+      p.editTime = new Date().Format("YYYY-MM-DD HH:mm:ss");
+      p.appearDate = new Date().Format("YYYY-MM-DD HH:mm:ss");
+      p.lastTime = new Date().Format("YYYY-MM-DD HH:mm:ss");
       p.status = 0;
 
       c.url = this.baseConfig.url_base;
@@ -447,7 +446,7 @@ export default {
       this.axios._post(c,p).then(data => {
         const newsId = data;
         this.queryNewsAnnex(item.id, newsId);
-        this.getNewsMainData();
+        this.getMainData();
       })
     },
     queryNewsAnnex(sourceNewsId, destNewsId) {
@@ -472,7 +471,7 @@ export default {
       const p = newsAnnex;
       const c = {};
       p.newsId = destNewsId;
-      p.createTime = new Date(newsAnnex.createTime).format("YYYY-MM-DD HH:mm:ss");
+      p.createTime = new Date(newsAnnex.createTime).Format("YYYY-MM-DD HH:mm:ss");
 
       c.url = this.baseConfig.url_base;
       c.api = "HX_API";
@@ -484,7 +483,6 @@ export default {
   watch: {
     mainContentHeight(val) {
       this.mainTableHeight = val;
-      this.treeHeight = val;
     }
   }
 };

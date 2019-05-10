@@ -20,7 +20,7 @@
 
 <script>
 	
-	import editor from "@/components/tinyMce/tinyMce"
+	import editor from "@/components/util/tinyMce/tinyMce"
 	
 	export default{
 		data(){

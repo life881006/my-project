@@ -1,0 +1,16 @@
+{
+    "data":{
+        "webName":"",
+        "serverApiName":"DB_API",
+        "serverName":"HX",
+        "req_path":"/net/requestHandleEncode.do",
+        "req_agent_hanlder": "/net/requestAgent.do",
+        
+        "url_base2":"/net/updateFile3.do",
+        "url_transferFile":"/net/transferFile.do",
+        "url_baseDownload":"/net/downloadFile.do",
+        "url_baseDelete":"/net/deleteFile.do",
+        "url_import":"/net/readXls.do",
+        "url_export":"/net/writeXls.do"
+    }
+}

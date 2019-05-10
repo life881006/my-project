@@ -5,7 +5,7 @@ import router from './router/'
 import store from './store/store'
 import ElementUI from 'element-ui'
 import App from './App'
-import baseConfig from './util/config' /** 引入公共url参数 */
+import config from './util/config' /** 引入公共url参数 */
 import publicMethods from './util/methods' /** 引入axios数据打包函数 */
 import filter_inputs from './util/inputValidator' /** 引入表单输入信息校验模块 */
 import serverApi from './util/serverApi' /** axios封装 */
@@ -21,9 +21,10 @@ Vue.use(publicMethods)
 Vue.use(filter_inputs)
 
 //Vue.prototype.axios = axios
-Vue.prototype.baseConfig = baseConfig
+Vue.prototype.baseConfig = config
 Vue.prototype.axios = serverApi
 
+console.log(serverApi.fileUploadAction);
 
 /* eslint-disable no-new */
 new Vue({
@@ -31,5 +32,5 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>',
+  template: '<App/>',  
 })

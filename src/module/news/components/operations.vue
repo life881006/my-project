@@ -25,25 +25,14 @@
 					})
 					return false
 				}
-				let ids = "";
-				for(const item of this.selectedItem){
-					ids += item.id+",";
-				}
-				ids=ids.substr(0,ids.length-1);
-				const p={};
-				p.ids = ids;
-				this.axios({
-		            method: 'post',
-		            url: this.baseConfig.url_base,
-		            data: this.getData("HX_API","/https/news/deleteByIds.do",p),
-		            dataType: 'JSON',
-		        }).then((result)=>{
-		        	this.$emit("refreshTableOperation");
+				
+				const p = {};
+				p.array = this.selectedItem;
+				p.tableName = "news";
 
-		        }).catch((error)=>{
-		        	console.log(error);
-
-		        })
+				this.axios.deletes(p).then(data=>{
+					this.$emit("refreshTableOperation");
+				});
 			},
 		},
 		

@@ -136,9 +136,8 @@
 </template>
 
 <script>
-import publicMethod from "@/module/public/publicMethod"; //主表相关公有方法
-import pagination from "@/module/public/pagination"; //分页组件
-import searchLine from "@/module/news/component/search";
+import publicMethod from "@/components/service/methods"; //公共方法
+import pagination from "@/components/service/Pagination"; //分页组件
 
 const pageInfo = {
   hasPrePage: false,

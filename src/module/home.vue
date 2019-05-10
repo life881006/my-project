@@ -9,9 +9,9 @@
 </template>
 
 <script>
-import barChart from "@/components/echarts/barChart";
-import lineChart from "@/components/echarts/lineChart";
-import pieChart from "@/components/echarts/pieChart";
+import barChart from "@/components/util/echarts/barChart";
+import lineChart from "@/components/util/echarts/lineChart";
+import pieChart from "@/components/util/echarts/pieChart";
 
 export default {
   name: "homePage",

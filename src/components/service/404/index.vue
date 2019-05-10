@@ -1,7 +1,7 @@
 <template>
   <div class="notFoundPage">
     <div class="img">
-      <img src="@/components/404/images/404.png">
+      <img src="@/components/service/404/images/404.png">
     </div>
     <div class="textArea">
       <el-button size="small" class="backToHome" icon="el-icon-back" @click="backToHome">返回首页</el-button>

@@ -49,11 +49,7 @@ export default {
       return trueTree
     }
 
-    Vue.prototype.log = function (item) {
-      console.log(item)
-    }
-
-    Date.prototype.format = function (fmt) {
+    Date.prototype.Format = function (fmt) {
       // 调用案例
       // new Date(1552294515381).Format("YYYY年MM月DD日 HH:mm:SS");
       return moment(this).format(fmt)

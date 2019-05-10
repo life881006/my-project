@@ -18,9 +18,9 @@
 </template>
 
 <script>
-	import sideBar from './sideBar/sideBar'
-	import navBar from './navBar/navBar'
-	import visitTags from './visitTags/visitTags'
+	import sideBar from '@/components/view/Sidebar'
+	import navBar from '@/components/view/Navbar'
+	import visitTags from '@/components/view/Tagsnav'
 	
 	const defaultClientWidth = document.documentElement.clientWidth;
 	const defaultClientHeight = document.documentElement.clientHeight;

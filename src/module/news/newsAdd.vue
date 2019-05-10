@@ -114,7 +114,7 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <tree :treeHeight="treeHeight"></tree>
+        <checkedTree :treeHeight="treeHeight"></checkedTree>
       </el-col>
 
       <el-col
@@ -202,9 +202,10 @@
           -->
           <el-form-item label="上传附件">
             <upload
-              :configData="configData"
+              :rootPath="annexRootPath"
               :fileListData="fileListData"
               @getUploadedAnnex="getUploadedAnnex"
+              @removeAnnexItem="removeAnnexItem"
             ></upload>
           </el-form-item>
         </el-scrollbar>
@@ -227,10 +228,10 @@
 
 <script>
 //引入编辑器
-import editor from "@/components/tinyMce/tinyMce";
-import breadCom from "@/components/breadComponent/breadCom";
-import upload from "@/components/fileUpload/index"; //任意格式图片上传
-import tree from "@/module/news/component/checkedTree";
+import editor from "@/components/util/tinyMce/tinyMce";
+import breadCom from "@/components/service/Breadcrumbs";
+import upload from "@/components/service/file-upload/index"; //任意格式图片上传
+import checkedTree from "./components/checkedTree";
 //import cropper from "@/components/cropper/index"//裁切图片
 
 export default {
@@ -243,28 +244,18 @@ export default {
         //裁切框大小
         width: 700,
         height: 360
-      },
-      configData: {
-        //附件上传参数（任意附件形式及裁切框公用）
-        isFirstButton: true, //首选图按钮
-        statusButton: true, //是否显示按钮
-        api: "HX_API",
-        action: this.baseConfig.url_base2,
-        rootPath: "/allWeb/huixue/news",
-        addAnnexHandle: "/https/newsAnnex/add.do",
-        deleteAnnexHandle: "/https/newsAnnex/delete.do"
-      },
-      fileListData: [], //附件列表（任意附件形式及裁切框公用）
+      },      
+      annexRootPath:"/allWeb/huixue/news",
+      fileListData: [], //附件列表（任意附件形式及裁切框公  用）
       newsAddform: {
         title: "",
-        checkedChannels: [],
         type: "0",
         linkUrl: "",
         tinyMceInfo: "",
         author: this.user.realName,
         transfer: this.user.realName,
-        appearDate: new Date().format("YYYY-MM-DD HH:mm:ss"),
-        editTime: new Date().format("YYYY-MM-DD HH:mm:ss"),
+        appearDate: new Date().Format("YYYY-MM-DD HH:mm:ss"),
+        editTime: new Date().Format("YYYY-MM-DD HH:mm:ss"),
         editor: this.user.realName,
         isAutoAppear: "0",
         isReview: "0",
@@ -288,11 +279,11 @@ export default {
       //channelsKeyArr: [],//全选数组
       checkAll: false,
       isIndeterminate: false,
-      annexesList: []
+      annexesList: [],
     };
   },
   props: ["mainContentHeight"],
-  components: { editor, breadCom, upload, tree }, //cropper
+  components: { editor, breadCom, upload, checkedTree }, //cropper
   mounted: function() {
     //this.loadChannel();
   },
@@ -301,7 +292,7 @@ export default {
     add(formName) {
       //表单添加方法
       this.editorText = this.$refs.tinyMce.getMceContent(); //获取文本编辑器内容
-      if (this.editorText.text === "") {
+      if (this.editorText.html === "") {
         //文本编辑器纯文本内容验证
         this.newsAddform.tinyMceInfo = "请填写文章正文";
         return false;
@@ -312,70 +303,64 @@ export default {
         //验证
         if (valid) {
           //验证通过后操作
-          const p = {};
-          const c = {};
+          const json = {};
 
-          p.releaseSite = 0;
-          p.releaseApp = 0;
-          p.releaseWx = 0;
-          p.releaseMicroblog = 0;
+          json.releaseSite = 0;
+          json.releaseApp = 0;
+          json.releaseWx = 0;
+          json.releaseMicroblog = 0;
 
           const releaseToArr = this.newsAddform.releaseTo;
           for (const item of releaseToArr) {
             switch (item) {
               case "releaseSite":
-                p.releaseSite = 1;
+                json.releaseSite = 1;
                 break;
 
               case "releaseApp":
-                p.releaseApp = 1;
+                json.releaseApp = 1;
                 break;
 
               case "releaseWx":
-                p.releaseWx = 1;
+                json.releaseWx = 1;
                 break;
 
               case "releaseMicroblog":
-                p.releaseMicroblog = 1;
+                json.releaseMicroblog = 1;
                 break;
             }
           }
 
-          p.unitId = this.user.unitId;
-          p.title = this.newsAddform.title;
-          p.content = this.editorText.html;
-          p.status = 0;
-          p.author = this.newsAddform.author;
-          p.transfer = this.newsAddform.transfer;
-          p.editor = this.newsAddform.editor;
-          p.editTime = this.newsAddform.editTime;
-          p.appearDate = this.newsAddform.appearDate;
-          p.readTimes = 0;
-          p.appearUserId = this.user.id;
+          json.unitId = this.user.unitId;
+          json.title = this.newsAddform.title;
+          json.content = this.editorText.html;
+          json.status = 0;
+          json.author = this.newsAddform.author;
+          json.transfer = this.newsAddform.transfer;
+          json.editor = this.newsAddform.editor;
+          json.editTime = this.newsAddform.editTime;
+          json.appearDate = this.newsAddform.appearDate;
+          json.readTimes = 0;
+          json.appearUserId = this.user.id;
 
-          p.isTop = this.newsAddform.isTop;
-          p.type = this.newsAddform.linkUrl == "" ? 0 : 1;
+          json.isTop = this.newsAddform.isTop;
+          json.type = this.newsAddform.linkUrl == "" ? 0 : 1;
 
-          p.linkUrl = this.newsAddform.linkUrl;
-          p.isBigImage = this.newsAddform.isBigImage;
-          p.isReview = this.newsAddform.isReview;
-          p.isAutoAppear = this.newsAddform.isAutoAppear;
-          p.isOriginal = this.newsAddform.isOriginal;
-          p.lastTime = new Date().getTime().format("YYYY-MM-DD HH:mm:ss");
+          json.linkUrl = this.newsAddform.linkUrl;
+          json.isBigImage = this.newsAddform.isBigImage;
+          json.isReview = this.newsAddform.isReview;
+          json.isAutoAppear = this.newsAddform.isAutoAppear;
+          json.isOriginal = this.newsAddform.isOriginal;
+          json.lastTime = new Date().Format("YYYY-MM-DD HH:mm:ss");
 
-          c.url = this.baseConfig.url_base;
-          c.api = "HX_API";
-          c.handler = "/https/news/add.do";
+          const p = {};
+          p.json = json;
+          p.tableName = "news";
 
-
-
-          this.axios._post(c,p).then(data => {
+          this.axios.add(p).then(data=>{
             const newsId = data;
-            this.addChannelNewsAssociate(
-              newsId,
-              this.newsAddform.checkedChannels
-            );
-          })
+            //this.addChannelNewsAssociate(newsId,this.checkedChannels);
+          });
         } else {
           //验证不通过
           return false;
@@ -424,7 +409,6 @@ export default {
     getUploadedAnnex(p) {
       //获取文件上传后返回的数据
       const annex = new Object();
-      const c = {}
       annex.newsId = "";
       annex.annexName = p.fileName;
       annex.fileType = p.fileType;
@@ -435,16 +419,15 @@ export default {
       annex.newFileName = p.newFileName;
       annex.originalFileName = p.newFileName;
 
-      c.url = this.baseConfig.url_base,
-      c.api = "HX_API";
-      c.handler = this.configData.addAnnexHandle
+      const obj = {};
+      obj.json = annex;
+      obj.tableName = "newsAnnex";
 
-      this.axios._post(c,annex).then(data => {
+      this.axios.add(obj).then(data=>{
         const fileId = data;
         p.id = fileId;
         this.fileListData.push(p);
-        
-      })
+      });
     },
     updateAnnexMsg(newsId) {
       //更新附件上传后的newsId
@@ -462,6 +445,10 @@ export default {
         annexes[i] = annex;
       }
 
+
+
+      return false;
+
       c.url = this.baseConfig.url_base;
       c.api = "HX_EXT_API";
       c.handler = "/https/newsAnnex/updateAnnex.do";
@@ -474,9 +461,32 @@ export default {
         this.reset("newsAddform");
       })
     },
-    deleteAnnex(annexList) {
+    removeAnnexItem(index) {
       //删除附件后更新附件列表
-      this.fileListData = annexList;
+      console.log(index);
+      this.$confirm("此操作将永久删除该附件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        const annexItem = this.fileListData[index];
+        const p = {};
+        p.id = annexItem.id;
+        p.tableName = "newsAnnex";
+
+        this.axios.delete(p).then(data=>{
+          this.fileListData.splice(index, 1);
+          this.$message({
+            type: "success",
+            message: "删除成功!"
+          });
+        });      
+      }).catch(error => {
+        this.$message({
+          type: "info",
+          message: "已取消删除"
+        });
+      });
     },
     resTree() {
       console.log("aaa");
