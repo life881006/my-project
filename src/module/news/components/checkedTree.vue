@@ -12,11 +12,11 @@
           :default-expand-all="isExpandAll"
           node-key="id"
           show-checkbox
-          :data="checkedTreeData"
+          :data="treeData"
           :props="defaultProps"
+          :default-checked-keys="selectedNodes"
           :style="{height:tHeight+'px'}"
-          @check-change="nodeChecked"
-          @node-click="nodeClick"
+          @check-change="getCheckedNodes"
         ></el-tree>
       </el-scrollbar>
     </div>
@@ -24,24 +24,35 @@
 
 <script>
 export default {
-  name: "tree",
+  name: "checkedTree",
   data() {
     return {
-      checkedTreeData: [],
+      treeData: [],
+      checkedNodes: new Set(),
       tHeight: this.treeHeight - 35, //树高
       isExpandAll: true,
       defaultProps: {
         //树形结构默认设置
+        id:"id",
         children: "children",
         label: "name"
       },
       currentNodeIndex: "0",
     };
   },
+  computed:{
+    selectedNodes:function(){
+      var arr = [];
+      for(const item of this.selectedNode){
+        arr.push(item.id);
+      }
+      return arr;
+    }
+  },
   mounted() {
     this.loadChannel();
   },
-  props: ["treeHeight"],
+  props: ["treeHeight","selectedNode"],
   methods: {
     loadChannel() {
       const sql = `SELECT id,name,pid FROM channel WHERE unitId = '${this.user.unitId}' order by serialNumber asc`;
@@ -49,16 +60,18 @@ export default {
       p.sql = sql;
 
       this.axios.getObjs(p).then(data=>{
-        this.checkedTreeData = this.formatTreeData(data);//按树状结构格式化结果集
+        this.treeData = this.formatTreeData(data);//按树状结构格式化结果集
       })
 
     },
     resetTable() {
       this.$refs.elCheckedTree.setCheckedKeys([]);
     },
-    nodeChecked(data,checked,indeterminate) {
-      //data ：节点数据
-      console.log(data);
+    getCheckedNodes(data,ischecked,isChildrenChecked) {
+      if(ischecked && !data.children){
+        this.checkedNodes.add(data);
+      }
+      this.$emit("getCheckedNodes",this.checkedNodes);
       //this.$emit("refreshTableByTreeNode", data.index);
     },
     nodeClick(data){
@@ -71,6 +84,13 @@ export default {
     },
     treeData(val){
       this.checkedTreeData = val;
+    },
+    selectedNodes(val){
+      var arr = [];
+      for(const item of val){
+        arr.push(item.id);
+      }
+      this.selectedNodes = arr;
     }
   }
 };

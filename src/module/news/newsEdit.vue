@@ -3,7 +3,7 @@
     ref="newsEditform"
     :model="newsEditform"
     label-width="100px"
-    :style="{'height':formHeight+65+'px',overflow:'hidden'}"
+    :style="{'height':mainContentHeight+115+'px',overflow:'hidden'}"
   >
     <!--基础设置栏-->
     <div class="toolBar">
@@ -119,14 +119,14 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <tree :treeHeight="treeHeight"></tree>
+        <checkedTree :selectedNode="selectedChannels" :treeHeight="mainContentHeight+10" @getCheckedNodes="getCheckedNodes"></checkedTree>
       </el-col>
       <el-col
         :xs="19"
         :sm="19"
         :md="19"
         :lg="19"
-        :style="{'height':formHeight+10+'px','overflow':'hidden'}"
+        :style="{'height':mainContentHeight+50+'px','overflow':'hidden'}"
       >
         <el-scrollbar class="mainScroll">
           <el-form-item label="标题" :rules="filter_inputs('required')" prop="title">
@@ -182,10 +182,11 @@
           </el-row>
 
           <el-form-item label="上传附件">
-            <upload
-              :configData="configData"
+             <upload
+              :rootPath="annexRootPath"
               :fileListData="fileListData"
               @getUploadedAnnex="getUploadedAnnex"
+              @removeAnnexItem="removeAnnexItem"
             ></upload>
           </el-form-item>
 
@@ -199,25 +200,16 @@
 import editor from "@/components/util/tinyMce/tinyMce";
 import breadCom from "@/components/service/Breadcrumbs";
 import upload from "@/components/service/file-upload/index"; //任意格式图片上传
-import tree from "./components/checkedTree";
+import checkedTree from "./components/checkedTree";
+
+import newsMethods from "./methods/news"; //news公用方法
 
 export default {
   name: "",
   data() {
     return {
-      formHeight: this.mainContentHeight + 50,
-      treeHeight: this.mainContentHeight,
       newsId: this.$route.query.id,
-      configData: {
-        //附件上传参数
-        isFirstButton: true,
-        statusButton: true,
-        api: "HX_API",
-        action: this.baseConfig.url_base2,
-        rootPath: "/allWeb/huixue/news",
-        addAnnexHandle: "/https/newsAnnex/add.do",
-        deleteAnnexHandle: "/https/newsAnnex/delete.do"
-      },
+      annexRootPath: "/allWeb/huixue/"+this.unitConfig.siteGroupAccountNumber+"/news",//上传文件存放路径
       tinyMceParams: {
         //编辑器参数设置
         name: "newsTinyMce",
@@ -230,6 +222,7 @@ export default {
       },
       fileListData: [], //附件列表
       newsEditform: {
+        id: "",
         title: "",
         checkedChannels: [],
         type: "0",
@@ -247,11 +240,11 @@ export default {
         isTop: "0",
         isOriginal: "0"
       },
-      editorText: {
+      editorText: {//保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
         path: this.$route.path,
         content: ""
       },
-      channels: [],
+      selectedChannels: new Set(),
       channelsKeyArr: [],
       checkAll: false,
       isIndeterminate: false,
@@ -263,21 +256,16 @@ export default {
     this.loadNewsAnnexes();
   },
   props: ["mainContentHeight"],
-  mixins: [],
-  components: { editor, upload, breadCom, tree },
+  mixins: [newsMethods],
+  components: { editor, upload, breadCom, checkedTree },
   methods: {
     
     laodNewsMsg() {
       const p = {};
+
       p.id = this.newsId;
-      this.axios({
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        method: "post",
-        data: this.getData("HX_API", "/https/news/getNews.do", p)
-      })
-        .then(result => {
-          const data = result.data;
+      p.tableName = "news";
+      this.axios.getObjWithId(p).then(data=>{ 
           this.newsEditform.type = data.type;
           this.newsEditform.linkUrl = data.linkUrl;
           this.newsEditform.tinyMceInfo = "";
@@ -304,166 +292,50 @@ export default {
             (this.newsEditform.isOriginal = data.isOriginal + ""),
             (this.newsEditform.title = data.title);
 
-          this.newsEditform.appearDate = this.moment(data.appearDate).format(
-            "YYYY-MM-DD HH:mm:ss"
-          );
-          this.newsEditform.editTime = this.moment(data.editTime).format(
-            "YYYY-MM-DD HH:mm:ss"
-          );
+          this.newsEditform.appearDate = new Date(data.appearDate).Format("YYYY-MM-DD HH:mm:ss");
+          this.newsEditform.editTime = new Date(data.editTime).Format("YYYY-MM-DD HH:mm:ss");
           this.editorText.content = data.content;
           this.$refs.tinyMce.setContent(data.content);
 
           this.getNewsChannelAssociate();
-        })
-        .catch(error => {});
+
+      });
     },
     getNewsChannelAssociate() {
+      
       const p = {};
-      p.sql =
-        "select channelId from channelNewsAssociate where newsId = '" +
-        this.newsId +
-        "'";
-      this.axios({
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        method: "post",
-        data: this.getData(
-          "HX_API",
-          "/https/channelNewsAssociate/queryForMap.do",
-          p
-        )
-      })
-        .then(result => {
-          let checkedChannels = [];
-          for (const item of result.data) {
-            checkedChannels.push(item.channelId);
-          }
-          if (this.channels.length == checkedChannels.length) {
-            this.isIndeterminate = false;
-          } else if (checkedChannels.length > 0) {
-            this.isIndeterminate = true;
-          }
-          this.newsEditform.checkedChannels = checkedChannels;
-        })
-        .catch(error => {});
+      p.sql = `select channelId as id from channelNewsAssociate where newsId = '${this.newsId}'`;
+      
+      this.axios.getObjs(p).then(data=>{
+        data.forEach(element => {
+          this.selectedChannels.add(element);
+        });
+      });
     },
     loadNewsAnnexes() {
       var p = {};
-      p.sql =
-        "select id,serialNumber,annexName,fileType,fileSize,dirName,content,isFirst,status,contextPath,saveUrl,newFileName,originalFileName,smallPicture from newsAnnex where newsId ='" +
-        this.newsId +
-        "' order by serialNumber asc";
-      this.axios({
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        method: "post",
-        data: this.getData("HX_API", "/https/newsAnnex/query.do", p)
-      })
-        .then(result => {
-          const resultData = result.data;
-          for (const i of resultData) {
-            i.info = "";
-            i.isFirst = i.isFirst ? "0" : "1";
-            i.status = i.status ? "1" : "0";
-            i.hover = false;
-            i.edit = false;
-            i.editSerialNumber = false;
-          }
-          this.fileListData = resultData;
-        })
-        .catch(error => {});
-    },
-    handleCheckAllChange(val) {
-      //全选频道
-      this.newsEditform.checkedChannels = val ? this.channelsKeyArr : [];
-      this.isIndeterminate = false;
-    },
-    handleCheckedChannelChange(value) {
-      //单选频道
-      let checkedCount = value.length;
-      this.checkAll = checkedCount === this.channels.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.channels.length;
+      p.sql = `select 
+      id,serialNumber,annexName,fileType,fileSize,dirName,content,isFirst,
+      status,contextPath,saveUrl,newFileName,originalFileName,smallPicture 
+      from newsAnnex where newsId ='${this.newsId}' order by serialNumber asc`;
+
+      this.axios.getObjs(p).then(data=>{
+        for (const item of data) {
+          item.info = "";
+          item.isFirst = item.isFirst ? "0" : "1";
+          item.status = item.status ? "1" : "0";
+          item.hover = false;
+          item.edit = false;
+          item.editSerialNumber = false;
+        }
+        this.fileListData = data;
+      });
+
     },
     reloadData() {
       //重置表单
       this.laodNewsMsg();
       this.loadNewsAnnexes();
-    },
-    getUploadedAnnex(p) {
-      //获取文件上传后返回的数据
-      const annex = new Object();
-      annex.newsId = "";
-      annex.annexName = p.fileName;
-      annex.fileType = p.fileType;
-      annex.fileSize = p.fileSize;
-      annex.dirName = p.dirName;
-      annex.contextPath = p.contextPath;
-      annex.saveUrl = p.saveUrl;
-      annex.newFileName = p.newFileName;
-      annex.originalFileName = p.newFileName;
-
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", this.configData.addAnnexHandle, annex),
-        dataType: "json",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        }
-      })
-        .then(result => {
-          const fileId = result.data;
-          p.id = fileId;
-          this.fileListData.push(p);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    updateAnnexMsg() {
-      //更新附件上传后的newsId
-      let annexes = {};
-      for (const [i, item] of this.fileListData.entries()) {
-        const annex = {};
-        annex.id = item.id;
-        annex.serialNumber = i + 1;
-        annex.newsId = this.newsId;
-        annex.annexName = item.annexName;
-        annex.content = "";
-        annex.isFirst = item.isFirst;
-        annex.status = item.status;
-        annexes[i] = annex;
-      }
-
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        dataType: "JSON",
-        data: this.getData(
-          "HX_EXT_API",
-          "/https/newsAnnex/updateAnnex.do",
-          annexes
-        ),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-        }
-      })
-        .then(data => {
-          this.$message({
-            type: "success",
-            message: "更新成功"
-          });
-          this.laodNewsMsg();
-          this.loadNewsAnnexes();
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    deleteAnnex(annexList) {
-      //删除附件后更新附件列表
-      this.fileListData = annexList;
     },
     update(formName) {
       //表单更新方法
@@ -527,9 +399,7 @@ export default {
           p.isReview = this.newsEditform.isReview;
           p.isAutoAppear = this.newsEditform.isAutoAppear;
           p.isOriginal = this.newsEditform.isOriginal;
-          p.lastTime = this.moment(new Date().getTime()).format(
-            "YYYY-MM-DD HH:MM:SS"
-          );
+          p.lastTime = new Date().Format("YYYY-MM-DD HH:MM:SS");
 
           this.axios({
             method: "post",
@@ -590,13 +460,11 @@ export default {
             console.log(error);
           });
       }
-    }
+    },
+    getCheckedNodes(checkedNodesSet){
+      this.selectedChannels=checkedNodesSet;
+    },
   },
-  watch: {
-    mainContentHeight(val) {
-      this.formHeight = val + 50;
-    }
-  }
 };
 </script>
 

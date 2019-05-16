@@ -99,14 +99,14 @@ export default {
             return false;
           }
 
-          const p = {};
-          //let _this = this;
-          p.name = this.ruleForm.username;
-          p.pwd = this.ruleForm.password;
           this.iconLoading = true;
           this.isDisabled = true;
+          
+          const p = {};
+          p.name = this.ruleForm.username;
+          p.pwd = this.ruleForm.password;
+          
           const c = {};
-          c.url = this.baseConfig.url_base;
           c.api = 'HX_EXT_API';
           c.handler = '/https/user/loginByPwd.do'
 

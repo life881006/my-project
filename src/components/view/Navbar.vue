@@ -78,9 +78,8 @@
 				this.$router.push("/login");
 				window.location.reload();
 			},
-			fullScreen:function(){
+			fullScreen:function(e){
 				screenfull.toggle();
-				
 			},
 			modifyUserInfo:function(){
 				this.$router.push("/user/modifyUserInfo");

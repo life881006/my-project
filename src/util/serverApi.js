@@ -3,6 +3,7 @@ import qs from 'qs'
 
 let serverApiName = "";
 let serverName = "";
+let url_base = "";
 let agent = "";
 let fileUploadUrl = "";
 let transferFile = "";
@@ -12,6 +13,7 @@ axios.get("/api/getUrlConfig").then(result=>{
     const webName = result.data.data.webName;
     serverApiName = result.data.data.serverApiName;
     serverName = result.data.data.serverName;
+    url_base = baseUrl + webName + result.data.data.req_path;
     agent = baseUrl + webName + result.data.data.req_agent_hanlder;
     fileUploadUrl = baseUrl + webName + result.data.data.url_base2;
     $api.fileUploadAction = fileUploadUrl;//更新属性
@@ -516,7 +518,7 @@ const $api = {
      */
     _get: function (interactionObj, dataObj) {
         return new Promise((resolve, reject) => {
-            $axios.get(interactionObj.url, {
+            $axios.get(url_base, {
                 params: getData(interactionObj.api, interactionObj.handler, dataObj)
             }).then(result => {
                 resolve(result.data);
@@ -527,7 +529,7 @@ const $api = {
     },
     _post: function (interactionObj, dataObj) {
         return new Promise((resolve, reject) => {
-            $axios.post(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
+            $axios.post(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
             ).then(result => {
                 resolve(result.data);
             }).catch(error => {
@@ -537,7 +539,7 @@ const $api = {
     },
     _delete: function (interactionObj, dataObj) {
         return new Promise((resolve, reject) => {
-            $axios.delete(interactionObj.url, {
+            $axios.delete(url_base, {
                 params: getData(interactionObj.api, interactionObj.handler, dataObj)
             }).then(result => {
                 resolve(result.data);
@@ -548,7 +550,7 @@ const $api = {
     },
     _put: function (interactionObj, dataObj) {//服务器是否支持？
         return new Promise((resolve, reject) => {
-            $axios.put(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj)), {
+            $axios.put(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj)), {
                 headers: {}
             }).then(result => {
                 resolve(result.data);
@@ -559,7 +561,7 @@ const $api = {
     },
     _patch: function (interactionObj, dataObj) {//服务器是否支持？
         return new Promise((resolve, reject) => {
-            $axios.patch(interactionObj.url, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
+            $axios.patch(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
             ).then(result => {
                 resolve(result.data);
             }).catch(error => {

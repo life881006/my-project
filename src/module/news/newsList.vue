@@ -277,7 +277,7 @@ import searchBar from "./components/search"; //公共组件
 import tree from "./components/tree"; //公共组件
 import operations from "./components/operations"; //公共组件
 
-import newsMethods from "@/module/news/methods/news"; //news方法
+import newsMethods from "@/module/news/methods/news"; //news公用方法
 
 let sortType = "desc";
 

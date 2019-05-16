@@ -3,7 +3,7 @@
     ref="newsAddform"
     :model="newsAddform"
     label-width="100px"
-    :style="{'height':formHeight+65+'px',overflow:'hidden'}"
+    :style="{'height':mainContentHeight+115+'px',overflow:'hidden'}"
   >
     <!--基础设置栏-->
     <el-row class="toolBar">
@@ -114,7 +114,7 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <checkedTree :treeHeight="treeHeight"></checkedTree>
+        <checkedTree :treeHeight="mainContentHeight+10" @getCheckedNodes="getCheckedNodes"></checkedTree>
       </el-col>
 
       <el-col
@@ -122,7 +122,7 @@
         :sm="19"
         :md="19"
         :lg="19"
-        :style="{'height':formHeight+10+'px','overflow':'hidden'}"
+        :style="{'height':mainContentHeight+50+'px','overflow':'hidden'}"
       >
         <el-scrollbar class="mainScroll">
           <!--         
@@ -214,14 +214,14 @@
     <!--
 			cropper图片裁切上传组件
 		
-		<el-form-item label="裁剪图片">
-			<cropper :configData="configData" :fileListData="fileListData" :cropperSize="cropperSize" @getUploadedAnnex="getUploadedAnnex"></cropper>
-		</el-form-item>
-    -->
-    <!--嵌套的dialog必须加append-to-body
-		<el-dialog title="3313" :visible.sync="see" width="60%" top="5vh" append-to-body>
-			
-		</el-dialog>
+      <el-form-item label="裁剪图片">
+        <cropper :configData="configData" :fileListData="fileListData" :cropperSize="cropperSize" @getUploadedAnnex="getUploadedAnnex"></cropper>
+      </el-form-item>
+      -->
+      <!--嵌套的dialog必须加append-to-body
+      <el-dialog title="3313" :visible.sync="see" width="60%" top="5vh" append-to-body>
+        
+      </el-dialog>
     -->
   </el-form>
 </template>
@@ -234,18 +234,18 @@ import upload from "@/components/service/file-upload/index"; //任意格式图�
 import checkedTree from "./components/checkedTree";
 //import cropper from "@/components/cropper/index"//裁切图片
 
+import newsMethods from "./methods/news"; //news公用方法
+
 export default {
   name: "newsAdd",
   data() {
     return {
-      formHeight: this.mainContentHeight + 40,
-      treeHeight: this.mainContentHeight,
       cropperSize: {
         //裁切框大小
         width: 700,
         height: 360
       },      
-      annexRootPath:"/allWeb/huixue/news",
+      annexRootPath: "/allWeb/huixue/"+this.unitConfig.siteGroupAccountNumber+"/news",
       fileListData: [], //附件列表（任意附件形式及裁切框公  用）
       newsAddform: {
         title: "",
@@ -274,8 +274,8 @@ export default {
         styleFormats: [], //文本编辑器中内容样式
         isShowMenuBar: true //是否显示菜单栏
       },
-      editorText: {},
-      channels: [],
+      editorText: {},//保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
+      selectedChannels: new Set(),
       //channelsKeyArr: [],//全选数组
       checkAll: false,
       isIndeterminate: false,
@@ -287,6 +287,7 @@ export default {
   mounted: function() {
     //this.loadChannel();
   },
+  mixins:[newsMethods],
   methods: {
     
     add(formName) {
@@ -298,6 +299,13 @@ export default {
         return false;
       } else {
         this.newsAddform.tinyMceInfo = "";
+      }
+      if(this.selectedChannels.size==0){
+        this.$message({
+          type: "error",
+          message: "请选择发布到的栏目",
+        });
+        return false;
       }
       this.$refs[formName].validate(valid => {
         //验证
@@ -359,7 +367,7 @@ export default {
 
           this.axios.add(p).then(data=>{
             const newsId = data;
-            //this.addChannelNewsAssociate(newsId,this.checkedChannels);
+            this.addChannelNewsAssociate(newsId);
           });
         } else {
           //验证不通过
@@ -367,37 +375,32 @@ export default {
         }
       });
     },
-    addChannelNewsAssociate(newsId, checked_channelId) {
-      const c = {};
-      c.url = this.baseConfig.url_base;
-      c.api = "HX_API";
-      c.handler = "/https/channelNewsAssociate/add.do";
 
-      for (const channelId of checked_channelId) {
-        const p = {};
-        p.newsId = newsId;
-        p.channelId = channelId;
-        this.axios._post(c,p).then(result => {});
+    getCheckedNodes(checkedNodesSet){
+      this.selectedChannels=checkedNodesSet;
+    },
+    addChannelNewsAssociate(newsId) {
+      const p = {};
+      let arr = [];
+
+      for (const channelItem of this.selectedChannels) {
+        const json = {};
+        json.newsId = newsId;
+        json.channelId = channelItem.id;
+        arr.push(json);
       }
 
-      this.updateAnnexMsg(newsId);
+      p.array = arr;
+      p.tableName = "channelNewsAssociate";
+
+      this.axios.adds(p).then(data=>{
+        this.updateAnnexMsg(newsId);
+      });
     },
-    // handleCheckAllChange(val) {
-    //   //全选频道
-    //   this.newsAddform.checkedChannels = val ? this.channelsKeyArr : [];
-    //   this.isIndeterminate = false;
-    // },
-    // handleCheckedChannelChange(value) {
-    //   //单选频道
-    //   let checkedCount = value.length;
-    //   this.checkAll = checkedCount === this.channels.length;
-    //   this.isIndeterminate =
-    //     checkedCount > 0 && checkedCount < this.channels.length;
-    // },
     reset(formName) {
       //重置表单
       this.newsAddform.tinyMceInfo = "";
-      this.newsAddform.checkedChannels = [];
+      this.selectedChannels = new Set();
       this.newsAddform.releaseTo = [];
       this.checkAll = false;
       this.isIndeterminate = false;
@@ -406,96 +409,14 @@ export default {
       this.fileListData = [];
       this.$store.dispatch("dropTextarea", this.$router.history.current.path);
     },
-    getUploadedAnnex(p) {
-      //获取文件上传后返回的数据
-      const annex = new Object();
-      annex.newsId = "";
-      annex.annexName = p.fileName;
-      annex.fileType = p.fileType;
-      annex.fileSize = p.fileSize;
-      annex.dirName = p.dirName;
-      annex.contextPath = p.contextPath;
-      annex.saveUrl = p.saveUrl;
-      annex.newFileName = p.newFileName;
-      annex.originalFileName = p.newFileName;
-
-      const obj = {};
-      obj.json = annex;
-      obj.tableName = "newsAnnex";
-
-      this.axios.add(obj).then(data=>{
-        const fileId = data;
-        p.id = fileId;
-        this.fileListData.push(p);
-      });
-    },
-    updateAnnexMsg(newsId) {
-      //更新附件上传后的newsId
-      let annexes = {};
-      const c = {};
-      for (const [i, item] of this.fileListData.entries()) {
-        const annex = {};
-        annex.id = item.id;
-        annex.serialNumber = i + 1;
-        annex.newsId = newsId;
-        annex.annexName = item.annexName + "." + item.fileType;
-        annex.content = "";
-        annex.isFirst = item.isFirst;
-        annex.status = item.status;
-        annexes[i] = annex;
-      }
-
-
-
-      return false;
-
-      c.url = this.baseConfig.url_base;
-      c.api = "HX_EXT_API";
-      c.handler = "/https/newsAnnex/updateAnnex.do";
-
-      this.axios._post(c,annexes).then(data => {
-        this.$message({
-          type: "success",
-          message: "添加成功"
-        });
-        this.reset("newsAddform");
-      })
-    },
-    removeAnnexItem(index) {
-      //删除附件后更新附件列表
-      console.log(index);
-      this.$confirm("此操作将永久删除该附件, 是否继续?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        const annexItem = this.fileListData[index];
-        const p = {};
-        p.id = annexItem.id;
-        p.tableName = "newsAnnex";
-
-        this.axios.delete(p).then(data=>{
-          this.fileListData.splice(index, 1);
-          this.$message({
-            type: "success",
-            message: "删除成功!"
-          });
-        });      
-      }).catch(error => {
-        this.$message({
-          type: "info",
-          message: "已取消删除"
-        });
-      });
-    },
     resTree() {
       console.log("aaa");
     }
   },
   watch: {
-    mainContentHeight(val) {
-      this.formHeight = val + 50;
-    }
+    // mainContentHeight(val) {
+    //   this.formHeight = val + 50;
+    // }
   }
 };
 </script>

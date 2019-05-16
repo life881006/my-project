@@ -86,7 +86,7 @@ const router = new Router({
     	path:'/login',
     	name:'login',
     	title:'登录',
-    	component: () => import('@/module/login/login'),	
+    	component: () => import('@/module/login'),	
     },{
     	path:'*',
         redirect: 'pageNotFoundIndex',

@@ -88,5 +88,98 @@
 			this.pageObj.currentPage = 1;
 			this.getMainData();
 		},
+
+		/** 
+		 * 附件相关：
+		 * getUploadedAnnex：附件上传完毕后显示
+		 * updateAnnexMsg：表单提交后更新附件
+		 * removeAnnexItem：删除单个附件
+		 */
+		getUploadedAnnex(p) {
+			//获取文件上传后返回的数据
+			const annex = new Object();
+			annex.newsId = "";
+			annex.annexName = p.fileName;
+			annex.fileType = p.fileType;
+			annex.fileSize = p.fileSize;
+			annex.dirName = p.dirName;
+			annex.contextPath = p.contextPath;
+			annex.saveUrl = p.saveUrl;
+			annex.newFileName = p.newFileName;
+			annex.originalFileName = p.newFileName;
+	  
+			const obj = {};
+			obj.json = annex;
+			obj.tableName = "newsAnnex";
+	  
+			this.axios.add(obj).then(data=>{
+			  const fileId = data;
+			  p.id = fileId;
+			  this.fileListData.push(p);
+			});
+		},
+		updateAnnexMsg(newsId) {
+			//更新附件上传后的newsId
+			let annexes = [];
+			const c = {};
+			for (const [i, item] of this.fileListData.entries()) {
+				const annex = {};
+				annex.id = item.id;
+				annex.serialNumber = i + 1;
+				annex.newsId = newsId;
+				annex.annexName = item.annexName + "." + item.fileType;
+				annex.content = "";
+				annex.isFirst = item.isFirst;
+				annex.status = item.status;
+				annex.fileType = item.fileType;
+				annex.fileSize = item.fileSize;
+				annex.dirName = item.dirName;
+				annex.contextPath = item.contextPath;
+				annex.saveUrl = item.saveUrl;
+				annex.newFileName = item.newFileName;
+				annex.smallPicture = item.smallPicture;
+				annex.createTime = new Date().Format("YYYY-MM-DD HH:mm:ss");
+				annexes[i] = annex;
+			}
+		
+			const p = {};
+			p.array = annexes;
+			p.tableName = "newsAnnex";
+		
+			this.axios.updates(p).then(data=>{
+				this.$message({
+				type: "success",
+				message: "添加成功"
+				});
+				this.reset("newsAddform");
+		
+			});
+		},
+		removeAnnexItem(index) {
+			//删除附件后更新附件列表
+			this.$confirm("此操作将永久删除该附件, 是否继续?", "提示", {
+				confirmButtonText: "确定",
+				cancelButtonText: "取消",
+				type: "warning"
+			}).then(() => {
+				const annexItem = this.fileListData[index];
+				const p = {};
+				p.id = annexItem.id;
+				p.tableName = "newsAnnex";
+		
+				this.axios.delete(p).then(data=>{
+				this.fileListData.splice(index, 1);
+				this.$message({
+					type: "success",
+					message: "删除成功!"
+				});
+				});      
+			}).catch(error => {
+				this.$message({
+				type: "info",
+				message: "已取消删除"
+				});
+			});
+		},
 	}
 }

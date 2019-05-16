@@ -24,7 +24,6 @@ Vue.use(filter_inputs)
 Vue.prototype.baseConfig = config
 Vue.prototype.axios = serverApi
 
-console.log(serverApi.fileUploadAction);
 
 /* eslint-disable no-new */
 new Vue({
