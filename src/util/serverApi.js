@@ -276,14 +276,7 @@ const $api = {
      * @param primaryKey:设置主键（可不设）
      */
     add: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/add.do", dataObj,serverName))
-            ).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/add.do", dataObj,serverName)))
     },
     /**
      * 2.通用接口-批量添加
@@ -295,14 +288,7 @@ const $api = {
      * @param primaryKey:设置主键（可不设）
      */
     adds: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/adds.do", dataObj,serverName))
-            ).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/adds.do", dataObj,serverName)))
     },
     /**
      * 3.通用接口-修改-全字段更新
@@ -313,14 +299,7 @@ const $api = {
      * @param primaryKey:设置主键（可不设）
      */
     update: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/update.do", dataObj,serverName))
-            ).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/update.do", dataObj,serverName)))
     },
     /**
      * 4.通用接口-修改-根据sql修改
@@ -329,14 +308,7 @@ const $api = {
      * @param sql:数据库查询语句（string）
      */
     updateWithSql: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/updateWithSql.do", dataObj,serverName))
-            ).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/updateWithSql.do", dataObj,serverName)))
     },
     /**
      * 5.通用接口-修改-批量更新对象合集
@@ -347,14 +319,7 @@ const $api = {
      * @param primaryKey（可不设置）
      */
     updates: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/updates.do", dataObj,serverName))
-            ).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.post(agent, qs.stringify(getData(serverApiName, "/https/db/updates.do", dataObj,serverName)))
     },
     /**
      * 6.通用接口-查询-根据主键id获取数据
@@ -365,15 +330,9 @@ const $api = {
      * @param primaryKey（可不设置）
      */
     getObjWithId: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.get(agent, {
-                params: getData(serverApiName, "/https/db/getObjWithId.do", dataObj,serverName)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.get(agent, {
+            params: getData(serverApiName, "/https/db/getObjWithId.do", dataObj,serverName)
+        })
     },
     /**
      * 7.通用接口-查询-根据sql单表查询（只返回一个对象，返回一组对象用getObjs）
@@ -382,15 +341,9 @@ const $api = {
      * @param sql:查询语句（string）
      */
     getObj: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.get(agent, {
-                params: getData(serverApiName, "/https/db/getObj.do", dataObj,serverName)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.get(agent, {
+            params: getData(serverApiName, "/https/db/getObj.do", dataObj,serverName)
+        })
     },
     /**
      * 8.通用接口-分页-根据sql关联查询，获取一组对象
@@ -399,15 +352,9 @@ const $api = {
      * @param sql:查询语句（string）
      */
     getObjs: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.get(agent, {
-                params: getData(serverApiName, "/https/db/getObjs.do", dataObj,serverName)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.get(agent, {
+            params: getData(serverApiName, "/https/db/getObjs.do", dataObj,serverName)
+        })
     },
     /**
      * 9.通用接口-查询分页
@@ -427,15 +374,9 @@ const $api = {
      * 
      */
     getPageObjs: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.get(agent, {
-                params: getData(serverApiName, "/https/db/getPageObjs.do", dataObj, serverName)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.get(agent, {
+            params: getData(serverApiName, "/https/db/getPageObjs.do", dataObj, serverName)
+        })
     },
     /**
      * 9.通用接口-删除-根据主键删除
@@ -446,15 +387,9 @@ const $api = {
      * @param primaryKey（可不设置，默认ID）
      */
     delete: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.delete(agent, {
-                params: getData(serverApiName, "/https/db/delete.do", dataObj,serverName)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.delete(agent, {
+            params: getData(serverApiName, "/https/db/delete.do", dataObj,serverName)
+        })
     },
     /**
      * 10.通用接口-批量删除-根据sql批量删除
@@ -463,15 +398,9 @@ const $api = {
      * @param sql:删除语句
      */
     deleteWithSql: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.delete(agent, {
-                params: getData(serverApiName, "/https/db/deleteWithSql.do", dataObj,serverName)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.delete(agent, {
+            params: getData(serverApiName, "/https/db/deleteWithSql.do", dataObj,serverName)
+        })
     },
 
     /** 
@@ -482,15 +411,9 @@ const $api = {
      * @param tableName 表名
      */
     deletes: function(dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.delete(agent, {
-                params: getData(serverApiName, "/https/db/deletes.do", dataObj,serverName)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.delete(agent, {
+            params: getData(serverApiName, "/https/db/deletes.do", dataObj,serverName)
+        })
     },
 
     /** 
@@ -498,13 +421,7 @@ const $api = {
      */
 
     transferFile: function (dataObj){
-        return new Promise((resolve, reject) => {
-            $axios.post(transferFile, qs.stringify(getData(serverApiName, "", dataObj,serverName))).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.post(transferFile, qs.stringify(getData(serverApiName, "", dataObj,serverName)))
     },
 
     /**
@@ -517,57 +434,25 @@ const $api = {
      * _patch: 更新，通常为部分更新
      */
     _get: function (interactionObj, dataObj) {
-        return new Promise((resolve, reject) => {
-            $axios.get(url_base, {
-                params: getData(interactionObj.api, interactionObj.handler, dataObj)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.get(url_base, {
+            params: getData(interactionObj.api, interactionObj.handler, dataObj)
+        })
     },
     _post: function (interactionObj, dataObj) {
-        return new Promise((resolve, reject) => {
-            $axios.post(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
-            ).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.post(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj)))
     },
     _delete: function (interactionObj, dataObj) {
-        return new Promise((resolve, reject) => {
-            $axios.delete(url_base, {
-                params: getData(interactionObj.api, interactionObj.handler, dataObj)
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.delete(url_base, {
+            params: getData(interactionObj.api, interactionObj.handler, dataObj)
+        })
     },
     _put: function (interactionObj, dataObj) {//服务器是否支持？
-        return new Promise((resolve, reject) => {
-            $axios.put(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj)), {
-                headers: {}
-            }).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.put(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj)), {
+            headers: {}
+        })
     },
     _patch: function (interactionObj, dataObj) {//服务器是否支持？
-        return new Promise((resolve, reject) => {
-            $axios.patch(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj))
-            ).then(result => {
-                resolve(result.data);
-            }).catch(error => {
-                reject(error);
-            });
-        });
+        return $axios.patch(url_base, qs.stringify(getData(interactionObj.api, interactionObj.handler, dataObj)))
     },
     fileUploadAction: fileUploadUrl,
     _prototype: $axios
