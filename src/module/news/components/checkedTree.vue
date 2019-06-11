@@ -28,7 +28,7 @@ export default {
   data() {
     return {
       treeData: [],
-      checkedNodes: new Set(),
+      checkedNodes: [],
       tHeight: this.treeHeight - 35, //树高
       isExpandAll: true,
       defaultProps: {
@@ -42,7 +42,8 @@ export default {
   },
   computed:{
     selectedNodes:function(){
-      var arr = [];
+      let arr = [];
+      
       for(const item of this.selectedNode){
         arr.push(item.id);
       }
@@ -69,7 +70,7 @@ export default {
     },
     getCheckedNodes(data,ischecked,isChildrenChecked) {
       if(ischecked && !data.children){
-        this.checkedNodes.add(data);
+        this.checkedNodes.push(data);
       }
       this.$emit("getCheckedNodes",this.checkedNodes);
       //this.$emit("refreshTableByTreeNode", data.index);
@@ -85,13 +86,6 @@ export default {
     treeData(val){
       this.checkedTreeData = val;
     },
-    selectedNodes(val){
-      var arr = [];
-      for(const item of val){
-        arr.push(item.id);
-      }
-      this.selectedNodes = arr;
-    }
   }
 };
 </script>

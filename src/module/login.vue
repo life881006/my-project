@@ -110,9 +110,9 @@ export default {
           c.api = 'HX_EXT_API';
           c.handler = '/https/user/loginByPwd.do';
           
-          this.axios._post(c,p).then(result=>{
-            let status = result.data.status;
-            let userObj = result.data.obj;
+          this.axios._post(c,p).then(data=>{
+            let status = data.status;
+            let userObj = data.obj;
             let userId = userObj.id;
             let unitId = userObj.unitId;
             sessionStorage.setItem("userId", userId);//sessonStorage保存userId

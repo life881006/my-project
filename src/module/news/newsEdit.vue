@@ -119,7 +119,11 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <checkedTree :selectedNode="selectedChannels" :treeHeight="mainContentHeight+10" @getCheckedNodes="getCheckedNodes"></checkedTree>
+        <checkedTree
+          :selectedNode="selectedChannels"
+          :treeHeight="mainContentHeight+10"
+          @getCheckedNodes="getCheckedNodes"
+        ></checkedTree>
       </el-col>
       <el-col
         :xs="19"
@@ -182,14 +186,13 @@
           </el-row>
 
           <el-form-item label="上传附件">
-             <upload
+            <upload
               :rootPath="annexRootPath"
               :fileListData="fileListData"
               @getUploadedAnnex="getUploadedAnnex"
               @removeAnnexItem="removeAnnexItem"
             ></upload>
           </el-form-item>
-
         </el-scrollbar>
       </el-col>
     </el-row>
@@ -209,7 +212,8 @@ export default {
   data() {
     return {
       newsId: this.$route.query.id,
-      annexRootPath: "/allWeb/huixue/"+this.unitConfig.siteGroupAccountNumber+"/news",//上传文件存放路径
+      annexRootPath:
+        "/allWeb/huixue/" + this.unitConfig.siteGroupAccountNumber + "/news", //上传文件存放路径
       tinyMceParams: {
         //编辑器参数设置
         name: "newsTinyMce",
@@ -240,11 +244,12 @@ export default {
         isTop: "0",
         isOriginal: "0"
       },
-      editorText: {//保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
+      editorText: {
+        //保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
         path: this.$route.path,
         content: ""
       },
-      selectedChannels: new Set(),
+      selectedChannels: [],
       channelsKeyArr: [],
       checkAll: false,
       isIndeterminate: false,
@@ -259,56 +264,57 @@ export default {
   mixins: [newsMethods],
   components: { editor, upload, breadCom, checkedTree },
   methods: {
-    
     laodNewsMsg() {
       const p = {};
 
       p.id = this.newsId;
       p.tableName = "news";
-      this.axios.getObjWithId(p).then(data=>{ 
-          this.newsEditform.type = data.type;
-          this.newsEditform.linkUrl = data.linkUrl;
-          this.newsEditform.tinyMceInfo = "";
-          this.newsEditform.author = data.author;
-          this.newsEditform.transfer = data.transfer;
-          this.newsEditform.editor = data.editor;
-          this.newsEditform.isAutoAppear = data.isAutoAppear + "";
-          this.newsEditform.isReview = data.isReview + "";
-          this.newsEditform.isBigImage = data.isBigImage + "";
+      this.axios.getObjWithId(p).then(data => {
+        this.newsEditform.type = data.type;
+        this.newsEditform.linkUrl = data.linkUrl;
+        this.newsEditform.tinyMceInfo = "";
+        this.newsEditform.author = data.author;
+        this.newsEditform.transfer = data.transfer;
+        this.newsEditform.editor = data.editor;
+        this.newsEditform.isAutoAppear = data.isAutoAppear + "";
+        this.newsEditform.isReview = data.isReview + "";
+        this.newsEditform.isBigImage = data.isBigImage + "";
 
-          if (data.releaseSite === 1) {
-            this.newsEditform.releaseTo.push("releaseSite");
-          }
-          if (data.releaseWx === 1) {
-            this.newsEditform.releaseTo.push("releaseWx");
-          }
-          if (data.releaseMicroblog === 1) {
-            this.newsEditform.releaseTo.push("releaseMicroblog");
-          }
-          if (data.releaseApp === 1) {
-            this.newsEditform.releaseTo.push("releaseApp");
-          }
-          (this.newsEditform.isTop = data.isTop + ""),
-            (this.newsEditform.isOriginal = data.isOriginal + ""),
-            (this.newsEditform.title = data.title);
+        if (data.releaseSite === 1) {
+          this.newsEditform.releaseTo.push("releaseSite");
+        }
+        if (data.releaseWx === 1) {
+          this.newsEditform.releaseTo.push("releaseWx");
+        }
+        if (data.releaseMicroblog === 1) {
+          this.newsEditform.releaseTo.push("releaseMicroblog");
+        }
+        if (data.releaseApp === 1) {
+          this.newsEditform.releaseTo.push("releaseApp");
+        }
+        (this.newsEditform.isTop = data.isTop + ""),
+          (this.newsEditform.isOriginal = data.isOriginal + ""),
+          (this.newsEditform.title = data.title);
 
-          this.newsEditform.appearDate = new Date(data.appearDate).Format("YYYY-MM-DD HH:mm:ss");
-          this.newsEditform.editTime = new Date(data.editTime).Format("YYYY-MM-DD HH:mm:ss");
-          this.editorText.content = data.content;
-          this.$refs.tinyMce.setContent(data.content);
+        this.newsEditform.appearDate = new Date(data.appearDate).Format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        this.newsEditform.editTime = new Date(data.editTime).Format(
+          "YYYY-MM-DD HH:mm:ss"
+        );
+        this.editorText.content = data.content;
+        this.$refs.tinyMce.setContent(data.content);
 
-          this.getNewsChannelAssociate();
-
+        this.getNewsChannelAssociate();
       });
     },
     getNewsChannelAssociate() {
-      
       const p = {};
       p.sql = `select channelId as id from channelNewsAssociate where newsId = '${this.newsId}'`;
-      
-      this.axios.getObjs(p).then(data=>{
+
+      this.axios.getObjs(p).then(data => {
         data.forEach(element => {
-          this.selectedChannels.add(element);
+          this.selectedChannels.push(element);
         });
       });
     },
@@ -319,7 +325,7 @@ export default {
       status,contextPath,saveUrl,newFileName,originalFileName,smallPicture 
       from newsAnnex where newsId ='${this.newsId}' order by serialNumber asc`;
 
-      this.axios.getObjs(p).then(data=>{
+      this.axios.getObjs(p).then(data => {
         for (const item of data) {
           item.info = "";
           item.isFirst = item.isFirst ? "0" : "1";
@@ -330,13 +336,13 @@ export default {
         }
         this.fileListData = data;
       });
-
     },
     reloadData() {
       //重置表单
       this.laodNewsMsg();
       this.loadNewsAnnexes();
     },
+    //Todo
     update(formName) {
       //表单更新方法
       this.editorText = this.$refs.tinyMce.getMceContent(); //获取文本编辑器内容
@@ -461,9 +467,9 @@ export default {
           });
       }
     },
-    getCheckedNodes(checkedNodesSet){
-      this.selectedChannels=checkedNodesSet;
-    },
+    getCheckedNodes(checkedNodesSet) {
+      this.selectedChannels = checkedNodesSet;
+    }
   },
 };
 </script>

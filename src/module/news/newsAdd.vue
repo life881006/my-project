@@ -114,7 +114,7 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <checkedTree :treeHeight="mainContentHeight+10" @getCheckedNodes="getCheckedNodes"></checkedTree>
+        <checkedTree :selectedNode="selectedChannels" :treeHeight="mainContentHeight+10" @getCheckedNodes="getCheckedNodes"></checkedTree>
       </el-col>
 
       <el-col
@@ -244,7 +244,7 @@ export default {
         //裁切框大小
         width: 700,
         height: 360
-      },      
+      },
       annexRootPath: "/allWeb/huixue/"+this.unitConfig.siteGroupAccountNumber+"/news",
       fileListData: [], //附件列表（任意附件形式及裁切框公  用）
       newsAddform: {
@@ -275,7 +275,7 @@ export default {
         isShowMenuBar: true //是否显示菜单栏
       },
       editorText: {},//保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
-      selectedChannels: new Set(),
+      selectedChannels: [],
       //channelsKeyArr: [],//全选数组
       checkAll: false,
       isIndeterminate: false,
@@ -300,7 +300,7 @@ export default {
       } else {
         this.newsAddform.tinyMceInfo = "";
       }
-      if(this.selectedChannels.size==0){
+      if(this.selectedChannels.lenght==0){
         this.$message({
           type: "error",
           message: "请选择发布到的栏目",
@@ -400,7 +400,7 @@ export default {
     reset(formName) {
       //重置表单
       this.newsAddform.tinyMceInfo = "";
-      this.selectedChannels = new Set();
+      this.selectedChannels = [];
       this.newsAddform.releaseTo = [];
       this.checkAll = false;
       this.isIndeterminate = false;

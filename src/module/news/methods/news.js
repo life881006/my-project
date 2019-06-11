@@ -120,6 +120,14 @@
 		},
 		updateAnnexMsg(newsId) {
 			//更新附件上传后的newsId
+			if(this.fileListData.length==0){
+				this.$message({
+					type: "success",
+					message: "添加成功"
+				});
+				this.reset("newsAddform");
+				return false;
+			}
 			let annexes = [];
 			const c = {};
 			for (const [i, item] of this.fileListData.entries()) {

@@ -241,7 +241,7 @@ $axios.interceptors.response.use(response => { // 拦截请求后的状态
             data.data = s;
         }
     }
-    return data;
+    return data.data;
 }, error => {
     if (error && error.response) {
 
