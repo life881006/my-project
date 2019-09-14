@@ -1,9 +1,14 @@
 <template>
   <div id="homePage">
     <div :style="{height:mainTableHeight+'px',overflow:'auto'}">
+      
       <barChart :chartSize="chartSize" :chartData="chartData"></barChart>
       <lineChart :chartSize="chartSize"></lineChart>
       <pieChart :chartSize="chartSize"></pieChart>
+     
+      <el-button @click='changeItem'>新生报名</el-button>
+      <div class='panel'></div>
+      <div ref="aaa"></div>
     </div>
   </div>
 </template>
@@ -38,9 +43,21 @@ export default {
   mounted() {
   },
   methods: {
-    
+    changeItem(){
+      const newButton = new ButtonObj();
+      this.$nextTick(()=>{
+        this.$refs.aaa.innerHTML = newButton.name;
+      });
+    }
   }
 };
+
+function ButtonObj(){
+  var obj = {};
+  obj.name = "<el-button>新节点1</el-button>";
+
+  return obj;
+}
 </script>
 
 <style type="stylesheet/stylus" lang="stylus">

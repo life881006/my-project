@@ -3,7 +3,7 @@
     ref="newsAddform"
     :model="newsAddform"
     label-width="100px"
-    :style="{'height':mainContentHeight+115+'px',overflow:'hidden'}"
+    :style="{'height':mainContentHeight+105+'px',overflow:'hidden'}"
   >
     <!--基础设置栏-->
     <el-row class="toolBar">
@@ -114,7 +114,13 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <checkedTree :selectedNode="selectedChannels" :treeHeight="mainContentHeight+10" @getCheckedNodes="getCheckedNodes"></checkedTree>
+        <HxTree 
+        :treeData="channelsTreeData"
+        :isCheckTree="true"
+        :selectedNodes="selectedChannels" 
+        :treeHeight="mainContentHeight" 
+        @getCheckedNodes="getCheckedNodes"
+        ></HxTree>
       </el-col>
 
       <el-col
@@ -125,26 +131,7 @@
         :style="{'height':mainContentHeight+50+'px','overflow':'hidden'}"
       >
         <el-scrollbar class="mainScroll">
-          <!--         
-				<el-form-item label="文章分类" :rules="filter_inputs('required')" prop="checkedChannels">
-          <el-checkbox
-            :indeterminate="isIndeterminate"
-            v-model="checkAll"
-            @change="handleCheckAllChange"
-          >全选</el-checkbox>
-          <div style="margin: 15px 0;"></div>
-          <el-checkbox-group
-            v-model="newsAddform.checkedChannels"
-            @change="handleCheckedChannelChange"
-          >
-            <el-checkbox
-              v-for="channel in channels"
-              :label="channel.id"
-              :key="channel.id"
-            >{{channel.name}}</el-checkbox>
-          </el-checkbox-group>
-        </el-form-item> 
-          -->
+       
           <el-form-item label="标题" :rules="filter_inputs('required')" prop="title">
             <el-input v-model="newsAddform.title" placeholder="请输入内容"></el-input>
           </el-form-item>
@@ -172,9 +159,7 @@
                 <el-input v-model="newsAddform.editor"></el-input>
               </el-form-item>
             </el-col>
-          </el-row>
-
-          <el-row>
+            
             <el-col :span="8">
               <el-form-item label="发布时间" :rules="filter_inputs('required')" prop="appearDate">
                 <el-date-picker
@@ -204,7 +189,7 @@
             <upload
               :rootPath="annexRootPath"
               :fileListData="fileListData"
-              @getUploadedAnnex="getUploadedAnnex"
+              @uploadAnnex="uploadAnnex"
               @removeAnnexItem="removeAnnexItem"
             ></upload>
           </el-form-item>
@@ -231,7 +216,7 @@
 import editor from "@/components/util/tinyMce/tinyMce";
 import breadCom from "@/components/service/Breadcrumbs";
 import upload from "@/components/service/file-upload/index"; //任意格式图片上传
-import checkedTree from "./components/checkedTree";
+import HxTree from "@/components/util/Tree";
 //import cropper from "@/components/cropper/index"//裁切图片
 
 import newsMethods from "./methods/news"; //news公用方法
@@ -240,23 +225,23 @@ export default {
   name: "newsAdd",
   data() {
     return {
-      cropperSize: {
-        //裁切框大小
-        width: 700,
-        height: 360
-      },
-      annexRootPath: "/allWeb/huixue/"+this.unitConfig.siteGroupAccountNumber+"/news",
-      fileListData: [], //附件列表（任意附件形式及裁切框公  用）
+      // cropperSize: {
+      //   //裁切框大小
+      //   width: 700,
+      //   height: 360
+      // },
+      annexRootPath: "/allWeb/huixue/"+this.unitConfig.siteGroupAccountNumber+"/news",//上传文件存放路径
+      fileListData: [], //附件列表（任意附件形式及裁切框公用）
       newsAddform: {
         title: "",
         type: "0",
         linkUrl: "",
         tinyMceInfo: "",
-        author: this.user.realName,
-        transfer: this.user.realName,
+        author: this.user.user.realName,
+        transfer: this.user.user.realName,
         appearDate: new Date().Format("YYYY-MM-DD HH:mm:ss"),
         editTime: new Date().Format("YYYY-MM-DD HH:mm:ss"),
-        editor: this.user.realName,
+        editor: this.user.user.realName,
         isAutoAppear: "0",
         isReview: "0",
         isBigImage: "0",
@@ -275,21 +260,20 @@ export default {
         isShowMenuBar: true //是否显示菜单栏
       },
       editorText: {},//保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
-      selectedChannels: [],
-      //channelsKeyArr: [],//全选数组
       checkAll: false,
       isIndeterminate: false,
       annexesList: [],
+      channelsTreeData:[],
+      selectedChannels: [],
     };
   },
   props: ["mainContentHeight"],
-  components: { editor, breadCom, upload, checkedTree }, //cropper
-  mounted: function() {
-    //this.loadChannel();
+  components: { editor, breadCom, upload, HxTree }, //cropper
+  mounted: function() {    
+    this.getTreeDatas();
   },
   mixins:[newsMethods],
   methods: {
-    
     add(formName) {
       //表单添加方法
       this.editorText = this.$refs.tinyMce.getMceContent(); //获取文本编辑器内容
@@ -300,7 +284,7 @@ export default {
       } else {
         this.newsAddform.tinyMceInfo = "";
       }
-      if(this.selectedChannels.lenght==0){
+      if(this.selectedChannels.length==0){
         this.$message({
           type: "error",
           message: "请选择发布到的栏目",
@@ -311,63 +295,25 @@ export default {
         //验证
         if (valid) {
           //验证通过后操作
-          const json = {};
-
-          json.releaseSite = 0;
-          json.releaseApp = 0;
-          json.releaseWx = 0;
-          json.releaseMicroblog = 0;
-
-          const releaseToArr = this.newsAddform.releaseTo;
-          for (const item of releaseToArr) {
-            switch (item) {
-              case "releaseSite":
-                json.releaseSite = 1;
-                break;
-
-              case "releaseApp":
-                json.releaseApp = 1;
-                break;
-
-              case "releaseWx":
-                json.releaseWx = 1;
-                break;
-
-              case "releaseMicroblog":
-                json.releaseMicroblog = 1;
-                break;
-            }
-          }
-
-          json.unitId = this.user.unitId;
-          json.title = this.newsAddform.title;
+          const json = this.newsAddform;
+          json.channels = this.selectedChannels;
+          json.annexes = this.fileListData;
           json.content = this.editorText.html;
-          json.status = 0;
-          json.author = this.newsAddform.author;
-          json.transfer = this.newsAddform.transfer;
-          json.editor = this.newsAddform.editor;
-          json.editTime = this.newsAddform.editTime;
-          json.appearDate = this.newsAddform.appearDate;
-          json.readTimes = 0;
-          json.appearUserId = this.user.id;
+          json.unitId = this.user.unitId;
+          json.userId = this.user.userId;
 
-          json.isTop = this.newsAddform.isTop;
-          json.type = this.newsAddform.linkUrl == "" ? 0 : 1;
-
-          json.linkUrl = this.newsAddform.linkUrl;
-          json.isBigImage = this.newsAddform.isBigImage;
-          json.isReview = this.newsAddform.isReview;
-          json.isAutoAppear = this.newsAddform.isAutoAppear;
-          json.isOriginal = this.newsAddform.isOriginal;
-          json.lastTime = new Date().Format("YYYY-MM-DD HH:mm:ss");
-
-          const p = {};
-          p.json = json;
-          p.tableName = "news";
-
-          this.axios.add(p).then(data=>{
-            const newsId = data;
-            this.addChannelNewsAssociate(newsId);
+          this.axios.post("/news/addNews",json).then(data=>{
+            this.$message({
+              type:"success",
+              message:"信息添加成功"
+            })
+            this.reset("newsAddform");
+            let path = this.$route.path;
+            this.$store.dispatch('deleteSingleTag',path).then((items)=>{
+              this.$router.push({name:"newsList",params:{refresh:true}});
+              this.$route.meta.keepAlive=false;
+            });
+            //添加
           });
         } else {
           //验证不通过
@@ -375,27 +321,8 @@ export default {
         }
       });
     },
-
     getCheckedNodes(checkedNodesSet){
       this.selectedChannels=checkedNodesSet;
-    },
-    addChannelNewsAssociate(newsId) {
-      const p = {};
-      let arr = [];
-
-      for (const channelItem of this.selectedChannels) {
-        const json = {};
-        json.newsId = newsId;
-        json.channelId = channelItem.id;
-        arr.push(json);
-      }
-
-      p.array = arr;
-      p.tableName = "channelNewsAssociate";
-
-      this.axios.adds(p).then(data=>{
-        this.updateAnnexMsg(newsId);
-      });
     },
     reset(formName) {
       //重置表单
@@ -409,9 +336,6 @@ export default {
       this.fileListData = [];
       this.$store.dispatch("dropTextarea", this.$router.history.current.path);
     },
-    resTree() {
-      console.log("aaa");
-    }
   },
   watch: {
     // mainContentHeight(val) {

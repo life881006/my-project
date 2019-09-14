@@ -10,6 +10,16 @@ const visitTagsList = {
 		      title: visited.meta.title || 'no-name'
 		    }));
 		},
+		UPDATE_TAG:(state,visited)=>{
+			Array.from(state.visitedTags).forEach((item,index)=>{
+				if(item.path == visited.path){
+					state.visitedTags[index] = Object.assign({},visited,{
+						title: visited.meta.title || 'no-name'
+					})
+					//item.title = visited.meta.title;
+				}
+			})
+		},
 		DELETE_SINGLE_TAG:(state,path)=>{
 			for (const [i, v] of state.visitedTags.entries()) {//entries() 方法返回一个新的Array Iterator对象，该对象包含数组中每个索引的键/值对。
 		        if (v.path === path) {
@@ -48,6 +58,12 @@ const visitTagsList = {
 				return false;
 			}
 			commit("ADD_VISITED_TAGS",visited);
+		},
+		updateRouter({commit,state},visited){
+			return new Promise((resolve) => {//异步处理actions
+				commit('UPDATE_TAG', visited);
+				resolve([...state.visitedTags]);
+			})
 		},
 		deleteSingleTag({commit,state},path){
 			return new Promise((resolve) => {//异步处理actions

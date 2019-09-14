@@ -5,7 +5,7 @@
       <el-input class="input" v-model="ruleForm.username"></el-input>
     </el-form-item>
     <el-form-item label="密码" :rules="filter_inputs('required,space')" prop="password">
-      <el-input class="input" v-model="ruleForm.password" show-password></el-input>
+      <el-input class="input" v-model="ruleForm.password" ></el-input>
     </el-form-item>
     <div class="auditLine" id="auditLine">
       <span class="textBlock" id="textBlock">请拖动方块到最右侧</span>
@@ -36,8 +36,28 @@ export default {
 
   },
   methods: {
-    mouseDown: event => {
-      //简单的移动验证
+    /* 使用node服务器做中间时调用
+    searchStudent(){
+      const params = {
+        serialNumber:1,
+        name:'aaaaa',
+        val:'jjjjj',
+        description:'bbbb'
+      };
+      this.axios._prototype.post("/addParam",params).then(data=>{
+        console.log(data)
+      }).catch(error=>{
+        console.log(error);
+      });
+
+      
+      this.axios._prototype.get("/getStudent").then(data=>{
+        console.log(data)
+      }).catch(error=>{
+        console.log(error);
+      });
+    }, */
+    mouseDown: event => {//简单的移动验证
       let moveBlock = document.getElementById("moveBlock");
       let disX = event.clientX - moveBlock.offsetLeft;
       let disY = event.clientY - moveBlock.offsetTop;
@@ -104,141 +124,62 @@ export default {
           
           const p = {};
           p.name = this.ruleForm.username;
-          p.pwd = this.ruleForm.password;
+          p.pwd = btoa(this.ruleForm.password);
           
-          const c = {};
-          c.api = 'HX_EXT_API';
-          c.handler = '/https/user/loginByPwd.do';
-          
-          this.axios._post(c,p).then(data=>{
-            let status = data.status;
-            let userObj = data.obj;
-            let userId = userObj.id;
-            let unitId = userObj.unitId;
-            sessionStorage.setItem("userId", userId);//sessonStorage保存userId
-            sessionStorage.setItem("unitId", unitId);//sessonStorage保存unitId
-
-            if (status == 0) {
-                if (userObj.status == 0) {
-                  //alert("您的帐号还未审核通过，不能登录系统。");
-                  this.isDisabled = false;
-                  this.iconLoading = false;
-                } else if (userObj.status == 1) {
-                  switch (userObj.roleId) {
-                    case 1:
-                    case 4:
-                    case 5:
-                    case 6:
-                      let userToken = data.userToken.access_token;
-                      this.getUserInfoByToken(userToken);
-                    break;
-                    case 2:
-                      this.isDisabled = false;
-                      this.iconLoading = false;
-                    break;
-                    case 3:
-                      //window.location.href="../parents/notice.html";
-                    break;
-                    default:
-                      //alert("该角色功能开发中");
-                      this.isDisabled = false;
-                      this.iconLoading = false;
-                  }
-                } else {
-                  this.$message({
-                    title:"提示",
-                    message:"您的账号已被停用，不能登录系统"
-                  })
-                  //alert("您的帐号已被停用，不能登录系统。");
-                }
-              } else if (status == 1) {
-                //alert("登录密码不正确！");
+          this.axios.get("/login/getLogin",{params:p}).then(data=>{
+            
+            if(data.loginStatus != 1){
+              this.$message({
+                type: "warning",
+                message: data.message,
+              });
+              this.initLoginLine();
+            }else{
+              if (data.isValid == 0) {
                 this.$message({
-                  title:"提示",
-                  type:"error",
-                  message:"登录密码不正确"
-                })
-              } else if (status == 2) {
-                this.$message({
-                  title:"提示",
-                  type:"error",
-                  message:"账号不存在"
-                })
-                
-                
+                  type: "warning",
+                  message: "已在其他地方登录，请重新登录",
+                });
+                this.initLoginLine();
+                this.$router.push("/login");
               } else {
-                //alert("操作失败");
-                this.$message({
-                  title:"提示",
-                  type:"error",
-                  message:"操作失败"
-                })
+                const userInfo = {};
+                userInfo.user = data.user;
+                userInfo.userId = data.userId;
+                userInfo.unit = data.unit;
+                userInfo.unitId = data.unitId;
+                userInfo.classHeadGrades = data.classHeadGrades;
+                userInfo.grades = data.grades;
+                userInfo.userSubjectGradeAssociates = data.userSubjectGradeAssociates;
+                userInfo.depts  = data.depts;
+                userInfo.isAdmin = data.isAdmin;
+                userInfo.isClassHeader = data.isClassHeader;
+                userInfo.schoolYear = data.schoolYear;
+                userInfo.semester = data.semester;
+                userInfo.roleId = data.roleId;
+                const modules = formatModules(data.functionalModules);
+                
+                sessionStorage.setItem("unitConfig",JSON.stringify(data.unitConfig));
+                sessionStorage.setItem("modules",JSON.stringify(modules));
+                sessionStorage.setItem("user", JSON.stringify(userInfo));
+                //this.initLoginLine();
+                this.$router.push("/home");
               }
-
-              if(status!=0){
-                let auditLine = document.getElementById("auditLine");
-                let textBlock = document.getElementById("textBlock");
-                let moveBlock = document.getElementById("moveBlock");
-                textBlock.innerHTML = "请拖动方块到最右侧";
-                moveBlock.style.left = 0 + "px";
-                auditLine.style.backgroundColor = "#C0CCDA";
-                flag = null;
-                this.isDisabled = false;
-                this.iconLoading = false;
-              }
-          })
-        }
-      });
-    },
-    getUserInfoByToken(userToken) {
-      const p = {};
-      const c = {};
-      p.access_token = userToken;
-      c.url = this.baseConfig.url_base;
-      c.api = 'HX_EXT_API';
-      c.handler = '/https/userToken/getLoginInfoByToken.do';
-
-
-      this.axios._get(c,p).then(data=>{
-        let infoData = data;
-        if (infoData.isValid == 0) {
-          this.$message({
-            type: "warning",
-            message: "已在其他地方登录，请重新登录"
+            }
           });
-          this.$router.push("../login");
-        } else {
-          var userToken = infoData[0];
-          sessionStorage.setItem(
-            "unitConfig",
-            JSON.stringify(infoData.unitConfig)
-          );
-          sessionStorage.setItem("userInfo", JSON.stringify(infoData.user));
-          this.getUser(infoData.userId);
         }
       });
     },
-    getUser: function(userId) {
-      const p = {};
-      const c = {};
-      
-      p.id = userId;
-
-      c.url = this.baseConfig.url_base;
-      c.api = 'HX_EXT_API';
-      c.handler = '/https/user/queryUserInfo.do';
-
-      this.axios._get(c,p).then(data=>{
-          let userObj = data;
-          //格式化模块、项目
-          let userModules = formatModules(userObj.functionalModules);
-          userObj.functionalModules = userModules;
-          let userJson = JSON.stringify(userObj);
-          sessionStorage.setItem("user", userJson);
-          this.iconLoading = false;
-          this.isDisabled = false;
-          this.$router.push("/home");
-      })
+    initLoginLine(){
+      let auditLine = document.getElementById("auditLine");
+      let textBlock = document.getElementById("textBlock");
+      let moveBlock = document.getElementById("moveBlock");
+      this.iconLoading=false;
+      this.isDisabled=false;
+      textBlock.innerHTML = "请拖动方块到最右侧";
+      moveBlock.style.left = 0 + "px";
+      auditLine.style.backgroundColor = "#C0CCDA";
+      flag = null;
     }
   },
   watch: {
@@ -309,7 +250,7 @@ function formatModules(modulesObj) {
   width: 100px
 
 .auditLine 
-  width: 300px;
+  width: 300px
   border: 1px solid #dcdfe6;
   background-color: #C0CCDA;
   font-size: 12px;

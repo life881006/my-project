@@ -9,14 +9,15 @@
         <el-tree
           ref="elCheckedTree"
           id="elCheckedTree"
-          :default-expand-all="isExpandAll"
+          :default-expand-all="checkTree?true:false"
           node-key="id"
-          show-checkbox
-          :data="treeData"
+          :show-checkbox = checkTree
+          :expand-on-click-node="checkTree?false:true"
+          :data="data"
           :props="defaultProps"
           :default-checked-keys="selectedNodes"
           :style="{height:tHeight+'px'}"
-          @check-change="getCheckedNodes"
+          @node-click="nodeClick"
         ></el-tree>
       </el-scrollbar>
     </div>
@@ -27,56 +28,50 @@ export default {
   name: "checkedTree",
   data() {
     return {
-      treeData: [],
+      data: this.treeData,
+      checkTree: this.isCheckTree,
       checkedNodes: [],
       tHeight: this.treeHeight - 35, //树高
-      isExpandAll: true,
       defaultProps: {
         //树形结构默认设置
         id:"id",
         children: "children",
         label: "name"
       },
-      currentNodeIndex: "0",
+      currentNodeIndex: "",
     };
   },
-  computed:{
-    selectedNodes:function(){
-      let arr = [];
-      
-      for(const item of this.selectedNode){
-        arr.push(item.id);
-      }
-      return arr;
-    }
-  },
   mounted() {
-    this.loadChannel();
+    
   },
-  props: ["treeHeight","selectedNode"],
+  props: ["treeData","treeHeight","selectedNodes","isCheckTree"],
   methods: {
-    loadChannel() {
-      const sql = `SELECT id,name,pid FROM channel WHERE unitId = '${this.user.unitId}' order by serialNumber asc`;
-      const p = {};
-      p.sql = sql;
-
-      this.axios.getObjs(p).then(data=>{
-        this.treeData = this.formatTreeData(data);//按树状结构格式化结果集
-      })
-
-    },
+    
     resetTable() {
       this.$refs.elCheckedTree.setCheckedKeys([]);
     },
-    getCheckedNodes(data,ischecked,isChildrenChecked) {
-      if(ischecked && !data.children){
-        this.checkedNodes.push(data);
+    nodeClick(datas,node,self){
+      if(this.checkTree){
+        this.setNodeChecked(datas,node,self)
+      }else{
+        this.handleNodeClick(datas,node,self);
       }
+    },
+    setNodeChecked(datas,node,self) {
+      if(node.checked){
+        //取消
+        this.$refs.elCheckedTree.setChecked(node,false,true);
+      }else{
+        //添加
+        this.$refs.elCheckedTree.setChecked(node,true,true);
+      }
+      this.checkedNodes = this.$refs.elCheckedTree.getCheckedNodes(true);
       this.$emit("getCheckedNodes",this.checkedNodes);
       //this.$emit("refreshTableByTreeNode", data.index);
     },
-    nodeClick(data){
-      
+    handleNodeClick(data) {
+      //data ：节点数据
+      this.$emit("refreshTableByTreeNode", data.id);
     },
   },
   watch: {
@@ -84,8 +79,21 @@ export default {
       document.getElementById("elCheckedTree").style.height = val - 35 + "px";
     },
     treeData(val){
-      this.checkedTreeData = val;
+      this.data = val;
     },
+    selectedNodes(val){
+      if(val.length==0){
+        this.$refs.elCheckedTree.setCheckedKeys(val);
+      }else{
+        this.$nextTick(()=>{
+          let arr = [];
+          for(const item of val){
+            arr.push(item.id);
+          }
+          this.$refs.elCheckedTree.setCheckedKeys(arr);
+        })
+      }
+    }
   }
 };
 </script>

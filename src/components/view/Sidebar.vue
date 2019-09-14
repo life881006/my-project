@@ -46,19 +46,18 @@
 </template>
 
 <script>
-	
-	
 	export default{
 		name:'sideBar',
 		data: function(){
 			return {
 				isCollapse: this.sideBarWidth<1440?true:false,
+				asideModules: []
 			}
 		},
 		props:['sideBarHeight','sideBarWidth'],
-		created: function(){
-			const user = this.user;//挂载到Vue prototype中的User，用this直接调用			
-			this.asideModules = user.functionalModules;
+		created: function(){	
+			this.asideModules = JSON.parse(sessionStorage.getItem("modules"));
+			
 		},
 		mounted: function(){
 			document.getElementById('menu').style.height = this.sideBarHeight + "px";

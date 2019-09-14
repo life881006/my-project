@@ -135,7 +135,7 @@ export default {
     },
     setChanges(val) {
       const currentPath = this.$route.path;
-      let textareaObj = { path: currentPath, content: val };
+      let textareaObj = { name:this.MceEl.name, path: currentPath, content: val };
       this.textHtml = val;
       this.$store.dispatch("updateTextareaHtml", textareaObj);
     },

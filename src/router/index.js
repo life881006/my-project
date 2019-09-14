@@ -19,19 +19,19 @@ const router = new Router({
     		{
     			path:'newsList',
     			name:'newsList',
-    			meta:{title:'文章列表'},
+    			meta:{title:'文章列表',keepAlive:true},
     			component:() => import('@/module/news/newsList'),
     		},
     		{
 				path:'newsAdd',
     			name:'newsAdd',
-    			meta:{title:'添加文章'},
+    			meta:{title:'添加文章',keepAlive:true},
     			component:() => import('@/module/news/newsAdd'),
 			},
             {
                 path:'newsEdit',
                 name:'newsEdit',
-                meta:{title:'修改文章'},
+                meta:{title:'修改文章',keepAlive:true},
                 component:() => import('@/module/news/newsEdit'),
             }
     	]
@@ -88,10 +88,15 @@ const router = new Router({
     	title:'登录',
     	component: () => import('@/module/login'),	
     },{
+		path:'/',
+		name:'index',
+		title:'首页',
+		redirect:'/login'
+	},{
     	path:'*',
         redirect: 'pageNotFoundIndex',
         component: layout,
-    	title:'404页面',
+    	title:'未找到页面',
         children:[
             {
                 path:'pageNotFoundIndex',
@@ -108,6 +113,7 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
 	if(to.path==="/login" || to.path==="/regist"){
 //		sessionStorage.clear();
 //		localStorage.clear();
+		
 		next();
 	}else{
 		let user = JSON.parse(sessionStorage.getItem("user"));
@@ -133,10 +139,6 @@ router.beforeEach((to,from,next)=>{//全局导航守卫
                 Vue.prototype.unitConfig = JSON.parse(sessionStorage.getItem("unitConfig"));
             }
 
-            if(!Vue.prototype.userInfo){//Vue没有挂载时挂载userInfo对象
-                Vue.prototype.userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-            }
-			//
 			next();
 		}
 	}

@@ -42,7 +42,7 @@
 				}
 			}
 		},
-		props:["whereStr"],
+		props:["condition"],
 		methods : {
 			selectorValue: function(value) {//搜索框条件选择
 				let searchObj = {
@@ -64,13 +64,19 @@
 					this.$refs.normalSelect.focus();
 					return false;
 				}
-				let whereStr = "";
+				let conditions = [];
 				if(this.searchText===""){
 					
 				}else{
-					whereStr +=" where "+this.normalSelectValue+" like '%"+this.searchText+"%'";
+					const conditionObj = {};
+					conditionObj[this.normalSelectValue] = this.searchText;
+					if(!conditions.some((item)=>{
+						return item==this.normalSelectValue;
+					})){
+						conditions.push(conditionObj);
+					}
 				}
-				this.$emit("refreshTable",whereStr);//调用父组件刷新表格
+				this.$emit("refreshTable",conditions);//调用父组件刷新表格
 			},
 		},
 		watch : {

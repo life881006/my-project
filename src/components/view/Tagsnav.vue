@@ -50,7 +50,7 @@
 		computed:{
 			
 		},
-		mounted() {			
+		mounted() {
 		    this.addViewTags()
 		},
 		props:['visitList'],
@@ -161,14 +161,17 @@
 		    	document.getElementById("tagMenu").style.left = event.x+"px";
 		    	document.getElementById("tagMenu").style.top = event.y+"px";
 		    	this.tagsMenuShow = true;
-		    	
 		    },
 		    deleteCurrentTag(){
-		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
-		    	this.deleteTag(path);
+				let pathStart = this.currentTagPath.indexOf("#")+1;
+				let pathEnd = this.currentTagPath.indexOf("?")<0?this.currentTagPath.length:this.currentTagPath.indexOf("?");
+		    	const path = this.currentTagPath.substring(pathStart,pathEnd);
+				this.deleteTag(path);
 		    },
 		    deleteOthersTag(){
-		    	const path = this.currentTagPath.substr(this.currentTagPath.indexOf("#")+1,this.currentTagPath.length);
+				let pathStart = this.currentTagPath.indexOf("#")+1;
+				let pathEnd = this.currentTagPath.indexOf("?")<0?this.currentTagPath.length:this.currentTagPath.indexOf("?");
+		    	const path = this.currentTagPath.substring(pathStart,pathEnd);
 		    	this.$store.dispatch("deleteOthersTag",path).then((data)=>{
 		    		this.routerHistory = data;
 		    		this.$router.push(data[0]);

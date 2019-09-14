@@ -1,14 +1,14 @@
 <template>
 	<div id="" class="headerNav">
 		<el-col :xs="16" :sm="16" :md="16" :lg="16">
-			{{user.unitName}}
+			{{user.unit.name}}
 		</el-col>
 		<el-col :xs="8" :sm="8" :md="8" :lg="8" class="pull-right">
-			<img class="photo" :src="userInfo.photoPath" width="30px" height="30px"/>
+			<img class="photo" :src="user.user.photoPath" width="30px" height="30px"/>
 			
 			<el-dropdown class="functionalIcon headBtn" trigger="click">
 				<el-button type="text">
-				{{userInfo.realName}}
+				{{user.user.realName}}
 				<i class="el-icon-arrow-down"></i>
 				</el-button>
 				<el-dropdown-menu slot="dropdown">
@@ -76,7 +76,6 @@
 				sessionStorage.clear();
 				localStorage.clear();
 				this.$router.push("/login");
-				window.location.reload();
 			},
 			fullScreen:function(e){
 				screenfull.toggle();
@@ -87,9 +86,7 @@
 			openHelpDocument(){
 				console.log("aaa");
 			}
-			
 		}
-		
 	}
 </script>
 

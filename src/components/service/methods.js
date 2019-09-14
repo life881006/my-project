@@ -12,7 +12,6 @@ export default {//主表公共函数，mixins到module各组件中
 		handleSelectionChange(val) {//获取多选条数
 			this.multipleSelection = val;
 		},
-		
 	},
 	watch: {
 		mainContentHeight: function (val) {

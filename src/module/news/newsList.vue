@@ -3,7 +3,7 @@
     <el-row class="search">
       <el-col :xs="23" :sm="23" :md="23" :lg="23">
         <!--搜索框组件-->
-        <searchBar @refreshTable="refreshTableBySearch" :whereStr="whereStr"></searchBar>
+        <searchBar @refreshTable="refreshTableBySearch" :condition="conditions"></searchBar>
       </el-col>
 
       <el-col :xs="1" :sm="1" :md="1" :lg="1">
@@ -14,7 +14,13 @@
     <el-row>
       <!--树组件-->
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <tree @refreshTableByTreeNode="refreshTableByTreeNode" :treeHeight="mainTableHeight"></tree>
+        <HxTree 
+          :treeData="channelsTreeData"
+          :isCheckTree="false"  
+          :selectedNodes="[]" 
+          @refreshTableByTreeNode="refreshTableByTreeNode" 
+          :treeHeight="mainTableHeight"
+        ></HxTree>
       </el-col>
       <el-col :xs="19" :sm="19" :md="19" :lg="19">
         <el-table
@@ -246,7 +252,7 @@
         </el-table>
 
         <div class="paginationArea">
-          <operations @refreshTableOperation="refreshTable" :selectedData="dataSelections"></operations>
+          <operations @refreshTableByPages="refreshTableByPages" :selectedData="dataSelections"></operations>
           <pagination
             @setPageSize="setPageSize"
             @setCurrentPage="setCurrentPage"
@@ -265,6 +271,9 @@
         {{new Date(currentItem.appearDate).Format("YYYY-MM-DD") }}
       </div>
       <div class="dialogMain" v-html="currentItem.content"></div>
+      <div v-for="item of currentViewAnnex" :key="item.id">
+        <img :src="item.contextPath+item.saveUrl+item.newFileName">
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -274,12 +283,10 @@ import publicMethod from "@/components/service/methods"; //公共方法
 import pagination from "@/components/service/Pagination"; //分页组件
 
 import searchBar from "./components/search"; //公共组件
-import tree from "./components/tree"; //公共组件
+import HxTree from "@/components/util/Tree"; //公共组件
 import operations from "./components/operations"; //公共组件
 
 import newsMethods from "@/module/news/methods/news"; //news公用方法
-
-let sortType = "desc";
 
 export default {
   data() {
@@ -296,31 +303,38 @@ export default {
       },
       dataSelections: [], //主表选中记录合集
       dialogVisible: false, //对话框是否显示
-      currentNode: "0", //接收tree中点击的nodeIndex
-      whereStr: "", //whereStr
+      currentNode: "", //接收tree中点击的nodeIndex
+      conditions: [], //whereStr
       currentItem: {},//当前浏览的文章
-      currentViewAnnex: [] //当前浏览的文章附件
+      currentViewAnnex: [], //当前浏览的文章附件
+      channelsTreeData:[],
     };
   },
   props: ["mainContentHeight"],//主表高度
   mixins: [publicMethod, newsMethods],
-  components: { pagination, operations, tree, searchBar },
-  created() {},
+  components: { pagination, operations, HxTree, searchBar },
+  created() {
+    this.$route.meta.keepAlive=true;
+  },
+  
   mounted() {
     /*
      * 获取主表数据、保存的状态数据
      *
      * news.js
      */
-    const path = this.$router.history.current.path;
+    
+    this.getTreeDatas();
+    const path = this.$route.path;
     this.$store.dispatch("getPagination", path).then(data => {
       //获取vuex保存的分页状态
       this.pageObj = Object.assign(this.pageObj, data);
       this.$store.dispatch("getCurrentSearch", path).then(data => {
         //获取vuex保存的搜索框状态
         if (data.path) {
-          this.whereStr =
-            " where " + data.normalSelect + " like '%" + data.searchText + "%'";
+          const conditionObj = {};
+          conditionObj[data.normalSelect] = data.searchText;
+          this.conditions.push(conditionObj);
         }
         this.getMainData();
       });
@@ -357,19 +371,12 @@ export default {
      */
     auditNews(row, status) {
       const p = {};
-      const c = {};
-      
-      p.sql =
-        "update news set status='" + status + "' where id = '" + row.id + "'";
-      
-      c.url = this.baseConfig.url_base;
-      c.api = "HX_API";
-      c.handler = "/https/news/exec.do";
-      
-      this.axios._post(c,p)
-        .then(data => {
-          row.status = status;
-        })
+      p.id = row.id;
+      p.status = status;
+
+      this.axios.put("/news/auditNews",p).then(data=>{
+        row.status = status;
+      })
     },
 
     /**
@@ -377,6 +384,7 @@ export default {
      */
 			
     setTop(row, status) {
+      
       const p = {};
       const c = {};
 
@@ -385,10 +393,9 @@ export default {
       c.url = this.baseConfig.url_base;
       c.api = "HX_API";
       c.handler = "/https/news/exec.do";
-      this.axios._post(c,p)
-        .then(data => {
-          row.isTop = status;
-        });
+      this.axios._post(c,p).then(data => {
+        row.isTop = status;
+      });
     },
     /*
 			查看
@@ -402,25 +409,13 @@ export default {
 			获得新闻附件
 			 */
     getAnnex(newsId) {
-      const p = {};
-      const c = {};
-      p.sql =
-        "select id,serialNumber,annexName,fileType,dirName,content,contextPath,saveUrl,newFileName from newsAnnex where newsId = '" +
-        newsId +
-        "' and status = 1 order by serialNumber asc";
-      
-      c.url = this.baseConfig.url_base,
-      c.api = "HX_API",
-      c.handler = "/https/newsAnnex/queryForMap.do";
-
-
-      this.axios._get(c,p).then(data => {
+      this.axios.get("/news/getAnnexes",{params:newsId}).then(data=>{
         this.currentViewAnnex = data;
       })
     },
     /*
-			修改
-			 */
+    修改
+    */
     gotoEdit(newsId) {
       this.$router.push({ name: "newsEdit", query: { id: newsId } });//请求模块
     },

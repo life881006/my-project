@@ -36,8 +36,8 @@
           <el-dropdown-menu slot="dropdown">
             <div v-if="isFirstButton" class="menuItem">
               <span class="label">首选图片</span>
-              <el-radio v-model="item.isFirst" label="0">否</el-radio>
               <el-radio v-model="item.isFirst" label="1">是</el-radio>
+              <el-radio v-model="item.isFirst" label="0">否</el-radio>
             </div>
             <div v-if="statusButton" class="menuItem">
               <span class="label">是否显示</span>
@@ -98,7 +98,7 @@ export default {
     return {
       Data: {
         rootPath: this.rootPath,
-        action: this.axios.fileUploadAction,//上传接口地址
+        action: this.axios.uploadAction,//上传接口地址
       },
       isFirstButton: true,
       statusButton: true,
@@ -113,34 +113,8 @@ export default {
   methods: {
     fileUploadSuccess(response, file, fileList) {
       //upload上传成功后钩子
-      const p = response.data;
-      const fileName = p.annexName.substring(0, p.annexName.lastIndexOf("."));
-      p.annexName = fileName;
-      p.info = "";
-      p.hover = false;
-      p.edit = false;
-      p.editSerialNumber = false;
-      if (this.isFirstButton) {
-        p.isFirst = "0";
-      }
-      if (this.statusButton) {
-        p.status = "1";
-      }
+      this.$emit("uploadAnnex",response);
 
-      p.fbScheme = this.unitConfig.fbScheme;
-      p.fbIp = this.unitConfig.fbIp;
-      p.fbPort = this.unitConfig.fbPort;
-      p.fbName = this.unitConfig.fbName;
-      p.fbRootPath = this.unitConfig.fbRootPath;
-
-      //传输文件
-      this.axios.transferFile(p).then(data => {
-        const filePathObj = data;
-        p.contextPath = filePathObj.contextPath;
-        p.storageLocation = filePathObj.storageLocation;
-
-        this.$emit("getUploadedAnnex", p);
-      })
     },
     removeAnnexItem(index) {
       this.$emit("removeAnnexItem", index);

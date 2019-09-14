@@ -1,7 +1,7 @@
 {
     "data":{
         "webName":"",
-        "serverApiName":"DB_API",
+        "serverApiName":"HX_GLOBAL_API",
         "serverName":"HX",
         "req_path":"/net/requestHandleEncode.do",
         "req_agent_hanlder": "/net/requestAgent.do",

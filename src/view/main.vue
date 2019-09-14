@@ -8,9 +8,10 @@
 			</el-header>
 			<el-main>
 				<transition name="fade-transform" mode="out-in">
-					<keep-alive :include="keepAliveMenu">
-					<router-view :mainContentHeight="mainContentHeight"></router-view>
+					<keep-alive v-if="$route.meta.keepAlive">
+						<router-view :mainContentHeight="mainContentHeight"></router-view>
 					</keep-alive>
+					<router-view v-else :mainContentHeight="mainContentHeight"></router-view>
 				</transition>
 			</el-main>
 		</el-container>

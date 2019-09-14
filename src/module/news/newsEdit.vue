@@ -3,7 +3,7 @@
     ref="newsEditform"
     :model="newsEditform"
     label-width="100px"
-    :style="{'height':mainContentHeight+115+'px',overflow:'hidden'}"
+    :style="{'height':mainContentHeight+105+'px',overflow:'hidden'}"
   >
     <!--基础设置栏-->
     <div class="toolBar">
@@ -110,8 +110,8 @@
 
       <div class="operations">
         <el-form-item label-width="0px" class="right">
-          <el-button type="primary" icon="el-icon-success" @click="update('newsEditform')">提交</el-button>
-          <el-button @click="reloadData()">重置</el-button>
+          <el-button type="primary" icon="el-icon-success" @click="update">提交</el-button>
+          <el-button @click="reloadData">重置</el-button>
         </el-form-item>
       </div>
     </div>
@@ -119,11 +119,15 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-        <checkedTree
-          :selectedNode="selectedChannels"
+
+        <hx-tree
+          :treeData="channelsTreeData"
+          :isCheckTree="true"
+          :selectedNodes="selectedChannels"
           :treeHeight="mainContentHeight+10"
           @getCheckedNodes="getCheckedNodes"
-        ></checkedTree>
+        ></hx-tree>
+
       </el-col>
       <el-col
         :xs="19"
@@ -188,8 +192,8 @@
           <el-form-item label="上传附件">
             <upload
               :rootPath="annexRootPath"
-              :fileListData="fileListData"
-              @getUploadedAnnex="getUploadedAnnex"
+              :fileListData="fileListData" 
+              @uploadAnnex="uploadAnnex" 
               @removeAnnexItem="removeAnnexItem"
             ></upload>
           </el-form-item>
@@ -203,7 +207,7 @@
 import editor from "@/components/util/tinyMce/tinyMce";
 import breadCom from "@/components/service/Breadcrumbs";
 import upload from "@/components/service/file-upload/index"; //任意格式图片上传
-import checkedTree from "./components/checkedTree";
+import HxTree from "@/components/util/Tree";
 
 import newsMethods from "./methods/news"; //news公用方法
 
@@ -249,27 +253,41 @@ export default {
         path: this.$route.path,
         content: ""
       },
-      selectedChannels: [],
       channelsKeyArr: [],
       checkAll: false,
       isIndeterminate: false,
-      annexesList: []
+      channelsTreeData:[],
+      selectedChannels: [],
     };
   },
   mounted() {
+    this.getTreeDatas();
     this.laodNewsMsg();
-    this.loadNewsAnnexes();
+  },
+  activated() {
+    this.$store.dispatch("updateRouter",this.$route);
+    
+    this.newsId = this.$route.query.id;
+    this.selectedChannels = [];
+    this.channelsKeyArr = [];
+    this.channelsTreeData = [];
+    
+    this.fileListData = [];
+    this.getTreeDatas();
+    this.laodNewsMsg();
   },
   props: ["mainContentHeight"],
   mixins: [newsMethods],
-  components: { editor, upload, breadCom, checkedTree },
+  components: { editor, upload, breadCom, HxTree},
   methods: {
     laodNewsMsg() {
       const p = {};
 
       p.id = this.newsId;
       p.tableName = "news";
-      this.axios.getObjWithId(p).then(data => {
+
+      this.axios.get("/news/getNews",{params:this.newsId}).then(data=>{
+        this.newsEditform.id = data.id;
         this.newsEditform.type = data.type;
         this.newsEditform.linkUrl = data.linkUrl;
         this.newsEditform.tinyMceInfo = "";
@@ -292,9 +310,9 @@ export default {
         if (data.releaseApp === 1) {
           this.newsEditform.releaseTo.push("releaseApp");
         }
-        (this.newsEditform.isTop = data.isTop + ""),
-          (this.newsEditform.isOriginal = data.isOriginal + ""),
-          (this.newsEditform.title = data.title);
+        this.newsEditform.isTop = data.isTop + "",
+        this.newsEditform.isOriginal = data.isOriginal + "",
+        this.newsEditform.title = data.title;
 
         this.newsEditform.appearDate = new Date(data.appearDate).Format(
           "YYYY-MM-DD HH:mm:ss"
@@ -305,170 +323,84 @@ export default {
         this.editorText.content = data.content;
         this.$refs.tinyMce.setContent(data.content);
 
-        this.getNewsChannelAssociate();
-      });
-    },
-    getNewsChannelAssociate() {
-      const p = {};
-      p.sql = `select channelId as id from channelNewsAssociate where newsId = '${this.newsId}'`;
+        let channels = [];
 
-      this.axios.getObjs(p).then(data => {
-        data.forEach(element => {
-          this.selectedChannels.push(element);
+        data.channels.forEach(element => {
+          const item = {};
+          item.id = element.channelId;
+          channels.push(item);
+
         });
-      });
-    },
-    loadNewsAnnexes() {
-      var p = {};
-      p.sql = `select 
-      id,serialNumber,annexName,fileType,fileSize,dirName,content,isFirst,
-      status,contextPath,saveUrl,newFileName,originalFileName,smallPicture 
-      from newsAnnex where newsId ='${this.newsId}' order by serialNumber asc`;
+        this.selectedChannels = channels;
 
-      this.axios.getObjs(p).then(data => {
-        for (const item of data) {
-          item.info = "";
-          item.isFirst = item.isFirst ? "0" : "1";
-          item.status = item.status ? "1" : "0";
-          item.hover = false;
-          item.edit = false;
-          item.editSerialNumber = false;
-        }
-        this.fileListData = data;
-      });
+        let annexes = [];
+
+        data.annexes.forEach(element => {
+          element.info = "";
+          element.isFirst = element.isFirst ? "0" : "1";
+          element.status = element.status ? "1" : "0";
+          element.hover = false;
+          element.edit = false;
+          element.editSerialNumber = false;
+          annexes.push(element);
+        })
+        this.fileListData = annexes
+      })
     },
     reloadData() {
       //重置表单
       this.laodNewsMsg();
-      this.loadNewsAnnexes();
     },
-    //Todo
-    update(formName) {
+    update() {
       //表单更新方法
       this.editorText = this.$refs.tinyMce.getMceContent(); //获取文本编辑器内容
 
-      if (this.editorText.text === "") {
+      if (this.editorText.html === "") {
         //文本编辑器纯文本内容验证
         this.newsEditform.tinyMceInfo = "请填写文章正文";
         return false;
       } else {
         this.newsEditform.tinyMceInfo = "";
       }
-      this.$refs[formName].validate(valid => {
+
+      if(this.selectedChannels.length==0){
+        this.$message({
+          type: "error",
+          message: "请选择发布到的栏目",
+        });
+        return false;
+      }
+
+      this.$refs['newsEditform'].validate(valid => {
         //验证
         if (valid) {
           //验证通过后操作
-          var p = {};
-          p.releaseSite = 0;
-          p.releaseApp = 0;
-          p.releaseWx = 0;
-          p.releaseMicroblog = 0;
+          const json = this.newsEditform;
 
-          const releaseToArr = this.newsEditform.releaseTo;
-          for (const item of releaseToArr) {
-            switch (item) {
-              case "releaseSite":
-                p.releaseSite = 1;
-                break;
+          json.channels = this.selectedChannels;
+          json.annexes = this.fileListData;
+          json.content = this.editorText.html;
+          json.unitId = this.user.unitId;
+          json.userId = this.user.userId;
 
-              case "releaseApp":
-                p.releaseApp = 1;
-                break;
-
-              case "releaseWx":
-                p.releaseWx = 1;
-                break;
-
-              case "releaseMicroblog":
-                p.releaseMicroblog = 1;
-                break;
+          this.axios.put("/news/updateNews",json).then((data)=>{
+            if(data.data=="true"){
+              this.$message({
+                type:"success",
+                message:"已更新"
+              });
+              let path = this.$route.path;
+              this.$store.dispatch('deleteSingleTag',path).then((items)=>{
+                this.$router.push({name:"newsList",params:{refresh:true}});
+                this.$route.meta.keepAlive=false;
+              });
             }
-          }
-          p.id = this.newsId;
-          p.unitId = this.user.unitId;
-          p.title = this.newsEditform.title;
-          p.content = this.editorText.html;
-          p.status = 0;
-          p.author = this.newsEditform.author;
-          p.transfer = this.newsEditform.transfer;
-          p.editor = this.newsEditform.editor;
-          p.editTime = this.newsEditform.editTime;
-          p.appearDate = this.newsEditform.appearDate;
-          p.readTimes = 0;
-          p.appearUserId = this.user.id;
-
-          p.isTop = this.newsEditform.isTop;
-          p.type = this.newsEditform.linkUrl == "" ? 0 : 1;
-
-          p.linkUrl = this.newsEditform.linkUrl;
-          p.isBigImage = this.newsEditform.isBigImage;
-          p.isReview = this.newsEditform.isReview;
-          p.isAutoAppear = this.newsEditform.isAutoAppear;
-          p.isOriginal = this.newsEditform.isOriginal;
-          p.lastTime = new Date().Format("YYYY-MM-DD HH:MM:SS");
-
-          this.axios({
-            method: "post",
-            url: this.baseConfig.url_base,
-            data: this.getData("HX_API", "/https/news/update.do", p),
-            dataType: "json",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-            }
-          })
-            .then(result => {
-              this.updateChannelNewsAssociate(
-                this.newsEditform.checkedChannels
-              );
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        } else {
-          //验证不通过
-          return false;
+          });
         }
       });
     },
-    updateChannelNewsAssociate(checked_channelId) {
-      const p = {};
-      p.sql =
-        "delete from channelNewsAssociate where newsId = '" + this.newsId + "'";
-
-      this.axios({
-        method: "post",
-        url: this.baseConfig.url_base,
-        data: this.getData("HX_API", "/https/channelNewsAssociate/exec.do", p),
-        dataType: "json"
-      })
-        .then(result => {
-          this.addChannelNewsAssociate(checked_channelId);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    addChannelNewsAssociate(checked_channelId) {
-      for (const channelId of checked_channelId) {
-        var p = {};
-        p.newsId = this.newsId;
-        p.channelId = channelId;
-        this.axios({
-          method: "post",
-          url: this.baseConfig.url_base,
-          data: this.getData("HX_API", "/https/channelNewsAssociate/add.do", p),
-          dataType: "json"
-        })
-          .then(result => {
-            this.updateAnnexMsg();
-          })
-          .catch(error => {
-            console.log(error);
-          });
-      }
-    },
-    getCheckedNodes(checkedNodesSet) {
-      this.selectedChannels = checkedNodesSet;
+    getCheckedNodes(checkedNodes) {
+        this.selectedChannels = checkedNodes;
     }
   },
 };
