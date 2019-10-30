@@ -10,6 +10,6 @@ const toolBar = `styleselect
  emoticons image | 
  alignleft aligncenter alignright alignjustify | 
  bullist numlist outdent indent | 
- print preview fullpage `;
+ print preview fullpage `
 
 export default toolBar

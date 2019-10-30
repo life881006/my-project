@@ -2,16 +2,15 @@ import moment from 'moment'
 // 定义变量
 
 export default {
-  install(Vue, options) {
-    
+  install (Vue, options) {
     Vue.prototype.$trim = function (str) {
-      str = str.replace(/\ +/g, '')
+      str = str.replace(/\+/g, '')
       str = str.replace(/[ ]/g, '')
       str = str.replace(/[\r\n]/g, '')
       return str
     }
-    
-    //根据id，pid格式化tree
+
+    // 根据id，pid格式化tree
     Vue.prototype.formatTreeData = function (list) {
       let temp = []
       let tree = []
@@ -20,7 +19,7 @@ export default {
         temp[list[i].id] = list[i]
       }
       for (let i in temp) {
-        if (temp[i].pid && temp[i].pid != '0') {
+        if (temp[i].pid && temp[i].pid !== '0') {
           if (!temp[temp[i].pid].children) {
             temp[temp[i].pid].children = []
           }
@@ -33,12 +32,14 @@ export default {
       return trueTree
     }
 
+    // eslint-disable-next-line no-extend-native
     Date.prototype.Format = function (fmt) {
       // 调用案例
       // new Date(1552294515381).Format("YYYY年MM月DD日 HH:mm:SS");
       return moment(this).format(fmt)
     }
 
+    // eslint-disable-next-line no-extend-native
     Date.prototype.farFromNow = function () {
       // 调用案例
       // new Date(1552294515381).farFromNow();
@@ -62,8 +63,8 @@ export default {
   }
 }
 
-//递归树
-function formatData(parentNode, eArr) {
+// 递归树
+function formatData (parentNode, eArr) {
   for (let i in parentNode) {
     if (parentNode[i].children) {
       let subEmptyArr = []

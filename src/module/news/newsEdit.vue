@@ -119,7 +119,6 @@
     <breadCom></breadCom>
     <el-row>
       <el-col :xs="5" :sm="5" :md="5" :lg="5">
-
         <hx-tree
           :treeData="channelsTreeData"
           :isCheckTree="true"
@@ -127,7 +126,6 @@
           :treeHeight="mainContentHeight+10"
           @getCheckedNodes="getCheckedNodes"
         ></hx-tree>
-
       </el-col>
       <el-col
         :xs="19"
@@ -192,8 +190,8 @@
           <el-form-item label="上传附件">
             <upload
               :rootPath="annexRootPath"
-              :fileListData="fileListData" 
-              @uploadAnnex="uploadAnnex" 
+              :fileListData="fileListData"
+              @uploadAnnex="uploadAnnex"
               @removeAnnexItem="removeAnnexItem"
             ></upload>
           </el-form-item>
@@ -204,206 +202,208 @@
 </template>
 
 <script>
-import editor from "@/components/util/tinyMce/tinyMce";
-import breadCom from "@/components/service/Breadcrumbs";
-import upload from "@/components/service/file-upload/index"; //任意格式图片上传
-import HxTree from "@/components/util/Tree";
+import editor from '@/components/util/tinyMce/tinyMce'
+import breadCom from '@/components/service/Breadcrumbs'
+import upload from '@/components/service/file-upload/index' // 任意格式图片上传
+import HxTree from '@/components/util/Tree'
 
-import newsMethods from "./methods/news"; //news公用方法
+import newsMethods from './methods/news' // news公用方法
 
 export default {
-  name: "",
-  data() {
+  name: '',
+  data () {
     return {
       newsId: this.$route.query.id,
       annexRootPath:
-        "/allWeb/huixue/" + this.unitConfig.siteGroupAccountNumber + "/news", //上传文件存放路径
+        '/allWeb/huixue/' + this.unitConfig.siteGroupAccountNumber + '/news', // 上传文件存放路径
       tinyMceParams: {
-        //编辑器参数设置
-        name: "newsTinyMce",
-        width: "99.7%",
-        height: "200px",
-        plugins: [], //编辑器插件,不填写加载默认插件
-        toolBar: [], //工具栏图标显示，不填写加载默认图标
-        styleFormats: [], //文本编辑器中内容样式
-        isShowMenuBar: true //是否显示菜单栏
+        // 编辑器参数设置
+        name: 'newsTinyMce',
+        width: '99.7%',
+        height: '200px',
+        plugins: [], // 编辑器插件,不填写加载默认插件
+        toolBar: [], // 工具栏图标显示，不填写加载默认图标
+        styleFormats: [], // 文本编辑器中内容样式
+        isShowMenuBar: true // 是否显示菜单栏
       },
-      fileListData: [], //附件列表
+      fileListData: [], // 附件列表
       newsEditform: {
-        id: "",
-        title: "",
+        id: '',
+        title: '',
         checkedChannels: [],
-        type: "0",
-        linkUrl: "",
-        tinyMceInfo: "",
-        author: "",
-        transfer: "",
-        appearDate: "",
-        editTime: "",
-        editor: "",
-        isAutoAppear: "0",
-        isReview: "0",
-        isBigImage: "0",
+        type: '0',
+        linkUrl: '',
+        tinyMceInfo: '',
+        author: '',
+        transfer: '',
+        appearDate: '',
+        editTime: '',
+        editor: '',
+        isAutoAppear: '0',
+        isReview: '0',
+        isBigImage: '0',
         releaseTo: [],
-        isTop: "0",
-        isOriginal: "0"
+        isTop: '0',
+        isOriginal: '0'
       },
       editorText: {
-        //保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
+        // 保存到VUEX的编辑器内容，参数path：调用组件路径，content：编辑器内容
         path: this.$route.path,
-        content: ""
+        content: ''
       },
       channelsKeyArr: [],
       checkAll: false,
       isIndeterminate: false,
-      channelsTreeData:[],
-      selectedChannels: [],
-    };
+      channelsTreeData: [],
+      selectedChannels: []
+    }
   },
-  mounted() {
-    this.getTreeDatas();
-    this.laodNewsMsg();
+  mounted () {
+    this.getTreeDatas()
+    this.laodNewsMsg()
   },
-  activated() {
-    this.$store.dispatch("updateRouter",this.$route);
-    
-    this.newsId = this.$route.query.id;
-    this.selectedChannels = [];
-    this.channelsKeyArr = [];
-    this.channelsTreeData = [];
-    
-    this.fileListData = [];
-    this.getTreeDatas();
-    this.laodNewsMsg();
+  activated () {
+    this.$store.dispatch('updateRouter', this.$route)
+
+    this.newsId = this.$route.query.id
+    this.selectedChannels = []
+    this.channelsKeyArr = []
+    this.channelsTreeData = []
+
+    this.fileListData = []
+    this.getTreeDatas()
+    this.laodNewsMsg()
   },
-  props: ["mainContentHeight"],
+  props: ['mainContentHeight'],
   mixins: [newsMethods],
-  components: { editor, upload, breadCom, HxTree},
+  components: { editor, upload, breadCom, HxTree },
   methods: {
-    laodNewsMsg() {
-      const p = {};
+    laodNewsMsg () {
+      const p = {}
 
-      p.id = this.newsId;
-      p.tableName = "news";
+      p.id = this.newsId
+      p.tableName = 'news'
 
-      this.axios.get("/news/getNews",{params:this.newsId}).then(data=>{
-        this.newsEditform.id = data.id;
-        this.newsEditform.type = data.type;
-        this.newsEditform.linkUrl = data.linkUrl;
-        this.newsEditform.tinyMceInfo = "";
-        this.newsEditform.author = data.author;
-        this.newsEditform.transfer = data.transfer;
-        this.newsEditform.editor = data.editor;
-        this.newsEditform.isAutoAppear = data.isAutoAppear + "";
-        this.newsEditform.isReview = data.isReview + "";
-        this.newsEditform.isBigImage = data.isBigImage + "";
+      this.axios.get('/news/getNews', { params: this.newsId }).then(data => {
+        this.newsEditform.id = data.id
+        this.newsEditform.type = data.type
+        this.newsEditform.linkUrl = data.linkUrl
+        this.newsEditform.tinyMceInfo = ''
+        this.newsEditform.author = data.author
+        this.newsEditform.transfer = data.transfer
+        this.newsEditform.editor = data.editor
+        this.newsEditform.isAutoAppear = data.isAutoAppear + ''
+        this.newsEditform.isReview = data.isReview + ''
+        this.newsEditform.isBigImage = data.isBigImage + ''
 
         if (data.releaseSite === 1) {
-          this.newsEditform.releaseTo.push("releaseSite");
+          this.newsEditform.releaseTo.push('releaseSite')
         }
         if (data.releaseWx === 1) {
-          this.newsEditform.releaseTo.push("releaseWx");
+          this.newsEditform.releaseTo.push('releaseWx')
         }
         if (data.releaseMicroblog === 1) {
-          this.newsEditform.releaseTo.push("releaseMicroblog");
+          this.newsEditform.releaseTo.push('releaseMicroblog')
         }
         if (data.releaseApp === 1) {
-          this.newsEditform.releaseTo.push("releaseApp");
+          this.newsEditform.releaseTo.push('releaseApp')
         }
-        this.newsEditform.isTop = data.isTop + "",
-        this.newsEditform.isOriginal = data.isOriginal + "",
-        this.newsEditform.title = data.title;
+        this.newsEditform.isTop = data.isTop + ''
+        this.newsEditform.isOriginal = data.isOriginal + ''
+        this.newsEditform.title = data.title
 
         this.newsEditform.appearDate = new Date(data.appearDate).Format(
-          "YYYY-MM-DD HH:mm:ss"
-        );
+          'YYYY-MM-DD HH:mm:ss'
+        )
         this.newsEditform.editTime = new Date(data.editTime).Format(
-          "YYYY-MM-DD HH:mm:ss"
-        );
-        this.editorText.content = data.content;
-        this.$refs.tinyMce.setContent(data.content);
+          'YYYY-MM-DD HH:mm:ss'
+        )
+        this.editorText.content = data.content
+        this.$refs.tinyMce.setContent(data.content)
 
-        let channels = [];
+        let channels = []
 
         data.channels.forEach(element => {
-          const item = {};
-          item.id = element.channelId;
-          channels.push(item);
+          const item = {}
+          item.id = element.channelId
+          channels.push(item)
+        })
+        this.selectedChannels = channels
 
-        });
-        this.selectedChannels = channels;
-
-        let annexes = [];
+        let annexes = []
 
         data.annexes.forEach(element => {
-          element.info = "";
-          element.isFirst = element.isFirst ? "0" : "1";
-          element.status = element.status ? "1" : "0";
-          element.hover = false;
-          element.edit = false;
-          element.editSerialNumber = false;
-          annexes.push(element);
+          element.info = ''
+          element.isFirst = element.isFirst ? '0' : '1'
+          element.status = element.status ? '1' : '0'
+          element.hover = false
+          element.edit = false
+          element.editSerialNumber = false
+          annexes.push(element)
         })
         this.fileListData = annexes
       })
     },
-    reloadData() {
-      //重置表单
-      this.laodNewsMsg();
+    reloadData () {
+      // 重置表单
+      this.laodNewsMsg()
     },
-    update() {
-      //表单更新方法
-      this.editorText = this.$refs.tinyMce.getMceContent(); //获取文本编辑器内容
+    update () {
+      // 表单更新方法
+      this.editorText = this.$refs.tinyMce.getMceContent() // 获取文本编辑器内容
 
-      if (this.editorText.html === "") {
-        //文本编辑器纯文本内容验证
-        this.newsEditform.tinyMceInfo = "请填写文章正文";
-        return false;
+      if (this.editorText.html === '') {
+        // 文本编辑器纯文本内容验证
+        this.newsEditform.tinyMceInfo = '请填写文章正文'
+        return false
       } else {
-        this.newsEditform.tinyMceInfo = "";
+        this.newsEditform.tinyMceInfo = ''
       }
 
-      if(this.selectedChannels.length==0){
+      if (this.selectedChannels.length === 0) {
         this.$message({
-          type: "error",
-          message: "请选择发布到的栏目",
-        });
-        return false;
+          type: 'error',
+          message: '请选择发布到的栏目'
+        })
+        return false
       }
 
       this.$refs['newsEditform'].validate(valid => {
-        //验证
+        // 验证
         if (valid) {
-          //验证通过后操作
-          const json = this.newsEditform;
+          // 验证通过后操作
+          const json = this.newsEditform
 
-          json.channels = this.selectedChannels;
-          json.annexes = this.fileListData;
-          json.content = this.editorText.html;
-          json.unitId = this.user.unitId;
-          json.userId = this.user.userId;
+          json.channels = this.selectedChannels
+          json.annexes = this.fileListData
+          json.content = this.editorText.html
+          json.unitId = this.user.unitId
+          json.userId = this.user.userId
 
-          this.axios.put("/news/updateNews",json).then((data)=>{
-            if(data.data=="true"){
+          this.axios.put('/news/updateNews', json).then(data => {
+            if (data.data === 'true') {
               this.$message({
-                type:"success",
-                message:"已更新"
-              });
-              let path = this.$route.path;
-              this.$store.dispatch('deleteSingleTag',path).then((items)=>{
-                this.$router.push({name:"newsList",params:{refresh:true}});
-                this.$route.meta.keepAlive=false;
-              });
+                type: 'success',
+                message: '已更新'
+              })
+              let path = this.$route.path
+              this.$store.dispatch('deleteSingleTag', path).then(items => {
+                this.$router.push({
+                  name: 'newsList',
+                  params: { refresh: true }
+                })
+                this.$route.meta.keepAlive = false
+              })
             }
-          });
+          })
         }
-      });
+      })
     },
-    getCheckedNodes(checkedNodes) {
-        this.selectedChannels = checkedNodes;
+    getCheckedNodes (checkedNodes) {
+      this.selectedChannels = checkedNodes
     }
-  },
-};
+  }
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus" scoped>

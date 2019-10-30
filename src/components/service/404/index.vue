@@ -11,22 +11,22 @@
 
 <script>
 export default {
-  name: "notFoundPage",
-  data() {
-    return {};
+  name: 'notFoundPage',
+  data () {
+    return {}
   },
 
-  mounted() {},
-  props: [""],
+  mounted () {},
+  props: [''],
   mixins: [],
   components: {},
   methods: {
-    backToHome() {
-      this.$router.push("/home");
+    backToHome () {
+      this.$router.push('/home')
     }
   },
   watch: {}
-};
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

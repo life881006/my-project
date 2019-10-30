@@ -1,8 +1,7 @@
 
-
 export default {// 表单提交信息验证模块
 
-  install(Vue, options) {
+  install (Vue, options) {
     const checkInput = (rule, value, callback) => { // validator对应的参数
       if (!checkInputValue(value)) { // 调用校验方法
         callback(new Error('输入内容中存在非法字符'))
@@ -35,7 +34,7 @@ export default {// 表单提交信息验证模块
   }
 }
 
-function checkInputValue(value) { // 校验调用的方法
+function checkInputValue (value) { // 校验调用的方法
   let patt = new RegExp('select|insert|update|delete')
   if (patt.test(value)) {
     return false

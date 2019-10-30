@@ -57,7 +57,7 @@
               :src="item.contextPath+item.saveUrl+item.newFileName"
             >
           </a>
-          
+
           <a v-else :href="item.contextPath+item.saveUrl+item.newFileName" target="_blank">
             <img
               :src="item.contextPath+'/web2/layout/images/file/'+item.fileType+'.png'"
@@ -93,53 +93,52 @@
 
 <script>
 export default {
-  name: "upload",
-  data() {
+  name: 'upload',
+  data () {
     return {
       Data: {
         rootPath: this.rootPath,
-        action: this.axios.uploadAction,//上传接口地址
+        action: this.axios.uploadAction // 上传接口地址
       },
       isFirstButton: true,
       statusButton: true,
       ifShowList: false,
-      fileList: this.fileListData, //附件集合
-      originalName: ""
-    };
+      fileList: this.fileListData, // 附件集合
+      originalName: ''
+    }
   },
-  props: ["rootPath", "fileListData"],
+  props: ['rootPath', 'fileListData'],
   mixins: [],
   components: {},
   methods: {
-    fileUploadSuccess(response, file, fileList) {
-      //upload上传成功后钩子
-      this.$emit("uploadAnnex",response);
-
+    fileUploadSuccess (response, file, fileList) {
+      // upload上传成功后钩子
+      this.$emit('uploadAnnex', response)
     },
-    removeAnnexItem(index) {
-      this.$emit("removeAnnexItem", index);
+    removeAnnexItem (index) {
+      this.$emit('removeAnnexItem', index)
     },
-    editName(item, name) {
-      //编辑文件名
-      item.edit = true;
-      this.originalName = name;
+    editName (item, name) {
+      // 编辑文件名
+      item.edit = true
+      this.originalName = name
     },
-    saveName(item) {
-      //保存文件名
-      if (item.name == "") {
-        item.info = "请输入名称";
-        return false;
+    saveName (item) {
+      // 保存文件名
+      if (item.name === '') {
+        item.info = '请输入名称'
+        return false
       }
-      item.info = "";
-      item.edit = !item.edit;
+      item.info = ''
+      item.edit = !item.edit
     }
   },
   watch: {
-    fileListData(val) {
-      this.fileList = val;
+    fileListData (val) {
+      this.fileList = val
     }
   }
-};
+}
 </script>
 
 <style scoped="scoped" lang="stylus" rel="stylesheet/stylus">

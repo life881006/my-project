@@ -8,7 +8,7 @@ import getters from './getters'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
-  modules:{//状态集合
+  modules: {// 状态集合
     visitTags,
     pagination,
     search,
@@ -16,13 +16,13 @@ const store = new Vuex.Store({
   },
   getters/*,
   mutations:{
-    
+
   },
   actions:{
     increment({commit}){
       commit("INCREMENT")
     }
-  }*/
+  } */
 })
 
 export default store
