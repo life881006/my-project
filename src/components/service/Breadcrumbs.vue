@@ -11,22 +11,22 @@
 
 <script>
 export default {
-  name: "breadCp",
-  data() {
+  name: 'breadCp',
+  data () {
     return {
       breadList: []
-    };
+    }
   },
-  beforeCreate() {},
-  mounted() {
-    this.breadList = this.$route.matched;
+  beforeCreate () {},
+  mounted () {
+    this.breadList = this.$route.matched
   },
-  props: [""],
+  props: [''],
   mixins: [],
   components: {},
   methods: {},
   watch: {}
-};
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

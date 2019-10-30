@@ -57,7 +57,7 @@
           </el-table-column>
           <el-table-column prop="icon" align="center" label="荣誉图标" min-width="14%">
             <template slot-scope="scope">
-              <img :src="scope.row.icon" min-width="80px" height="80px">
+              <img :src="scope.row.icon" min-width="80px" height="80px" />
             </template>
           </el-table-column>
           <el-table-column
@@ -76,7 +76,7 @@
           <el-table-column align="center" label="取前几名" prop="ranking" min-width="12%"></el-table-column>
           <el-table-column align="center" label="起始值" prop="beginValue" min-width="12%"></el-table-column>
           <el-table-column align="center" label="结束值" prop="endValue" min-width="12%">
-            <template ></template>
+            <template></template>
           </el-table-column>
           <el-table-column align="center" label="操作" min-width="12%">
             <template slot-scope="scope">
@@ -125,19 +125,18 @@
       <div class="dialogMain">
         <router-view :visibleAttr="dialogVisible"></router-view>
       </div>
-      <!--
-		  <span slot="footer" class="dialog-footer">
-		    <el-button @click="dialogVisible = false">取 消</el-button>
-		    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-		  </span>
+      <!--<span slot="footer" class="dialog-footer">
+<el-button @click="dialogVisible = false">取 消</el-button>
+<el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+</span>
       -->
     </el-dialog>
   </div>
 </template>
 
 <script>
-import publicMethod from "@/components/service/methods"; //公共方法
-import pagination from "@/components/service/Pagination"; //分页组件
+import publicMethod from '@/components/service/methods' // 公共方法
+import pagination from '@/components/service/Pagination' // 分页组件
 
 const pageInfo = {
   hasPrePage: false,
@@ -147,18 +146,18 @@ const pageInfo = {
   currentPage: 1,
   totalCount: 16,
   everyPage: 1
-};
+}
 const tableInfo = {
   data: [
     {
       serialNumber: 1,
       endValue: 0,
       isDeleted: 0,
-      name: "热爱班级星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '热爱班级星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "1",
+      id: '1',
       beginValue: 0,
       awardRule: 0
     },
@@ -166,11 +165,11 @@ const tableInfo = {
       serialNumber: 1,
       endValue: 0,
       isDeleted: 0,
-      name: "热爱班级星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '热爱班级星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "2",
+      id: '2',
       beginValue: 0,
       awardRule: 0
     },
@@ -178,11 +177,11 @@ const tableInfo = {
       serialNumber: 1,
       endValue: 0,
       isDeleted: 0,
-      name: "热爱班级星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '热爱班级星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "3",
+      id: '3',
       beginValue: 0,
       awardRule: 0
     },
@@ -190,12 +189,12 @@ const tableInfo = {
       serialNumber: 2,
       endValue: 0,
       isDeleted: 0,
-      name: "举止文明星",
+      name: '举止文明星',
       icon:
-        "http://s1.jshuixue.com:8082/SAASClient/allWeb/huixue/pj_medalicon/2018/3/20180308120251_27.png",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+        'http://s1.jshuixue.com:8082/SAASClient/allWeb/huixue/pj_medalicon/2018/3/20180308120251_27.png',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "6e750c0d38a2403ba48523ab0c7b3f8d",
+      id: '6e750c0d38a2403ba48523ab0c7b3f8d',
       beginValue: 0,
       awardRule: 0
     },
@@ -203,11 +202,11 @@ const tableInfo = {
       serialNumber: 3,
       endValue: 3,
       isDeleted: 0,
-      name: "学习勤奋星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '学习勤奋星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "4b080f4dae254158a658b91b42c71a73",
+      id: '4b080f4dae254158a658b91b42c71a73',
       beginValue: 1,
       awardRule: 0
     },
@@ -215,11 +214,11 @@ const tableInfo = {
       serialNumber: 4,
       endValue: 3,
       isDeleted: 0,
-      name: "做操认真星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '做操认真星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "150e6808ca2e40318f8be70ee9c05934",
+      id: '150e6808ca2e40318f8be70ee9c05934',
       beginValue: 1,
       awardRule: 0
     },
@@ -227,11 +226,11 @@ const tableInfo = {
       serialNumber: 5,
       endValue: 3,
       isDeleted: 0,
-      name: "劳动积极星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '劳动积极星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "a20687f683004f7aaec7a0fc966c70b01",
+      id: 'a20687f683004f7aaec7a0fc966c70b01',
       beginValue: 1,
       awardRule: 0
     },
@@ -239,11 +238,11 @@ const tableInfo = {
       serialNumber: 6,
       endValue: 3,
       isDeleted: 0,
-      name: "遵守纪律星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '遵守纪律星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "94c328b66d0b465a84d1f7b7c2f87b801",
+      id: '94c328b66d0b465a84d1f7b7c2f87b801',
       beginValue: 1,
       awardRule: 0
     },
@@ -251,11 +250,11 @@ const tableInfo = {
       serialNumber: 7,
       endValue: 10,
       isDeleted: 0,
-      name: "保护环境星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '保护环境星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 0,
-      id: "53b212ca9df84d6c9edded8e3676a0c71",
+      id: '53b212ca9df84d6c9edded8e3676a0c71',
       beginValue: 5,
       awardRule: 1
     },
@@ -263,11 +262,11 @@ const tableInfo = {
       serialNumber: 1,
       endValue: 0,
       isDeleted: 0,
-      name: "热爱班级星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '热爱班级星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "8b46697d43814fe4b63dea5996eeaf761",
+      id: '8b46697d43814fe4b63dea5996eeaf761',
       beginValue: 0,
       awardRule: 0
     },
@@ -275,12 +274,12 @@ const tableInfo = {
       serialNumber: 2,
       endValue: 0,
       isDeleted: 0,
-      name: "举止文明星",
+      name: '举止文明星',
       icon:
-        "http://s1.jshuixue.com:8082/SAASClient/allWeb/huixue/pj_medalicon/2018/3/20180308120251_27.png",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+        'http://s1.jshuixue.com:8082/SAASClient/allWeb/huixue/pj_medalicon/2018/3/20180308120251_27.png',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "1",
+      id: '1',
       beginValue: 0,
       awardRule: 0
     },
@@ -288,11 +287,11 @@ const tableInfo = {
       serialNumber: 3,
       endValue: 3,
       isDeleted: 0,
-      name: "学习勤奋星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '学习勤奋星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "32",
+      id: '32',
       beginValue: 1,
       awardRule: 0
     },
@@ -300,11 +299,11 @@ const tableInfo = {
       serialNumber: 4,
       endValue: 3,
       isDeleted: 0,
-      name: "做操认真星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '做操认真星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "14",
+      id: '14',
       beginValue: 1,
       awardRule: 0
     },
@@ -312,11 +311,11 @@ const tableInfo = {
       serialNumber: 5,
       endValue: 3,
       isDeleted: 0,
-      name: "劳动积极星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '劳动积极星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "4214",
+      id: '4214',
       beginValue: 1,
       awardRule: 0
     },
@@ -324,11 +323,11 @@ const tableInfo = {
       serialNumber: 6,
       endValue: 3,
       isDeleted: 0,
-      name: "遵守纪律星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '遵守纪律星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 3,
-      id: "23131",
+      id: '23131',
       beginValue: 1,
       awardRule: 0
     },
@@ -336,40 +335,39 @@ const tableInfo = {
       serialNumber: 7,
       endValue: 10,
       isDeleted: 0,
-      name: "保护环境星",
-      icon: "",
-      unitId: "c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e",
+      name: '保护环境星',
+      icon: '',
+      unitId: 'c7e1370a-a3f4-4d6e-b513-ae18b1fa8d1e',
       ranking: 0,
-      id: "252",
+      id: '252',
       beginValue: 5,
       awardRule: 1
     }
   ],
   status: 0,
-  msg: "0"
-};
+  msg: '0'
+}
 export default {
-  data() {
+  data () {
     return {
-      mainTableHeight: this.mainContentHeight + "px", //主表高度
-      treeHeight: this.mainContentHeight + 25 + "px",
-      tableData: tableInfo.data, //主表数据
-      multipleSelection: [], //主表选中记录合集
+      mainTableHeight: this.mainContentHeight + 'px', // 主表高度
+      treeHeight: this.mainContentHeight + 25 + 'px',
+      tableData: tableInfo.data, // 主表数据
+      multipleSelection: [], // 主表选中记录合集
 
       treeData: [
-        
         {
-          //树形结构数据,label标签名、children子元素
-          label: "第一级",
-          index: "aaa",
+          // 树形结构数据,label标签名、children子元素
+          label: '第一级',
+          index: 'aaa',
           children: [
             {
-              label: "第二级",
-              index: "bbb",
+              label: '第二级',
+              index: 'bbb',
               children: [
                 {
-                  index: "ccc",
-                  label: "第三级"
+                  index: 'ccc',
+                  label: '第三级'
                 }
               ]
             }
@@ -377,212 +375,215 @@ export default {
         }
       ],
       defaultProps: {
-        children: "children",
-        label: "label"
+        children: 'children',
+        label: 'label'
       },
-      ePage: pageInfo.everyPage, //每页记录数
-      cPage: pageInfo.currentPage, //当前记录数
+      ePage: pageInfo.everyPage, // 每页记录数
+      cPage: pageInfo.currentPage, // 当前记录数
       tCount: pageInfo.totalCount,
 
       options: [
         {
-          //select内容
-          value: "aaaaddsadsad",
-          label: "bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          // select内容
+          value: 'aaaaddsadsad',
+          label: 'bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
         },
         {
-          value: "cccdsadsadsa",
-          label: "bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+          value: 'cccdsadsadsa',
+          label: 'bbbeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
         }
       ],
-      selectOptions: "", //select选择的值
-      searchText: "", //搜索框内容
+      selectOptions: '', // select选择的值
+      searchText: '', // 搜索框内容
       pageList: this.$store.state.pagination.paginationList,
       currentPath: this.$router.history.current.path,
-      dialogVisible: false //对话框是否显示
-    };
+      dialogVisible: false // 对话框是否显示
+    }
   },
-  props: ["mainContentHeight"],
-  mixins: [publicMethod], //引用主表公有方法
+  props: ['mainContentHeight'],
+  mixins: [publicMethod], // 引用主表公有方法
 
   components: { pagination },
 
-  created() {
+  created () {
     for (let item of this.pageList) {
       if (item.path === this.currentPath) {
-        this.ePage = item.everyPage;
-        this.cPage = item.currentPage;
-        return false;
+        this.ePage = item.everyPage
+        this.cPage = item.currentPage
+        return false
       }
     }
-    pageInfo.path = this.$router.history.current.path;
-    this.$store.dispatch("paginationAdd", pageInfo); //将页码信息插入
+    pageInfo.path = this.$router.history.current.path
+    this.$store.dispatch('paginationAdd', pageInfo) // 将页码信息插入
   },
-  mounted() {
-    const searchList = this.$store.state.search.searchList;
-    const path = this.$router.history.current.path;
+  mounted () {
+    const searchList = this.$store.state.search.searchList
+    const path = this.$router.history.current.path
     for (let item of searchList) {
       if (path === item.path) {
-        this.searchText = item.searchText;
-        this.selectOptions = item.selectOption1;
+        this.searchText = item.searchText
+        this.selectOptions = item.selectOption1
       }
     }
   },
   methods: {
-    handleSelectionChange(data) {
-      console.log(data);
+    handleSelectionChange (data) {
+      console.log(data)
     },
-    handleCurrentChange(val) {
-      this.cPage = val;
+    handleCurrentChange (val) {
+      this.cPage = val
       for (let item of this.pageList) {
         if (item.path === this.currentPath) {
-          item.currentPage = val;
-          return false;
+          item.currentPage = val
+          return false
         }
       }
     },
-    setEveryPage() {
-      let inputEveryPage = Number(
-        document.getElementById("everpageNumber").value
-      );
+    setEveryPage () {
+      let inputEveryPage = Number(document.getElementById('everpageNumber').value)
       if (inputEveryPage === 0) {
-        return false;
+        return false
       }
       if (inputEveryPage > this.tCount) {
-        let h = this.$createElement; //elementUi创建html元素
+        let h = this.$createElement // elementUi创建html元素
         this.$message({
-          //h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
-          message: h("p", null, [
-            //h('span',null,'出现错误：'),
+          // h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
+          message: h('p', null, [
+            // h('span',null,'出现错误：'),
             h(
-              "i",
-              { style: "color:red;font-weight:bolder" },
-              "您输入每页条数超过总条数,请重新输入"
+              'i',
+              { style: 'color:red;font-weight:bolder' },
+              '您输入每页条数超过总条数,请重新输入'
             )
           ])
-        });
-        document.getElementById("everpageNumber").value = "";
-        return false;
+        })
+        document.getElementById('everpageNumber').value = ''
+        return false
       }
-      this.cPage = Math.ceil(this.tCount / inputEveryPage);
+      this.cPage = Math.ceil(this.tCount / inputEveryPage)
       for (let item of this.pageList) {
         if (item.path === this.currentPath) {
-          this.ePage = inputEveryPage;
-          item.everyPage = inputEveryPage;
-          return false;
+          this.ePage = inputEveryPage
+          item.everyPage = inputEveryPage
+          return false
         }
       }
     },
-    aaa() {
-      alert("审核通过");
+    aaa () {
+      alert('审核通过')
     },
-    bbb() {
-      alert("审核不通过");
+    bbb () {
+      alert('审核不通过')
     },
-    handleNodeClick(data) {
+    handleNodeClick (data) {
       this.treeHeight =
-        this.mainContentHeight + 50 + Math.random(0, 0.1) + "px";
+        this.mainContentHeight + 50 + Math.random(0, 0.1) + 'px'
     },
-    getPageSize(pageSize) {
-      this.ePage = pageSize;
+    getPageSize (pageSize) {
+      this.ePage = pageSize
+      let inputEveryPage = Number(document.getElementById('everpageNumber').value)
 
       for (let item of this.pageList) {
         if (item.path === this.currentPath) {
-          this.ePage = inputEveryPage;
-          item.everyPage = inputEveryPage;
-          break;
+          this.ePage = inputEveryPage
+          item.everyPage = inputEveryPage
+          break
         }
       }
 
-      let maxPage = Math.ceil(this.tCount / inputEveryPage);
+      let maxPage = Math.ceil(this.tCount / inputEveryPage)
       if (this.pageObj.currentPage > maxPage) {
-        //设置每页条数后，如果当前页超过总页数，则设为最大总页数
-        this.pageObj.currentPage = maxPage;
-        this.cPage = maxPage;
+        // 设置每页条数后，如果当前页超过总页数，则设为最大总页数
+        this.pageObj.currentPage = maxPage
+        this.cPage = maxPage
       }
-      this.pageObj.everyPage = inputEveryPage;
+      this.pageObj.everyPage = inputEveryPage
 
-      this.getNewsMainData();
+      this.getNewsMainData()
     },
-    getCurrentPage(pageNumber) {
-      this.cPage = pageNumber;
+    getCurrentPage (pageNumber) {
+      this.cPage = pageNumber
       for (let item of this.pageList) {
         if (item.path === this.currentPath) {
-          item.currentPage = pageNumber;
-          break;
+          item.currentPage = pageNumber
+          break
         }
       }
-      this.pageObj.currentPage = pageNumber;
-      this.getNewsMainData();
+      this.pageObj.currentPage = pageNumber
+      this.getNewsMainData()
     },
-    addPanel: function() {
-      this.dialogVisible = true;
-      this.$router.push("/student/studentList/add");
+    addPanel: function () {
+      this.dialogVisible = true
+      this.$router.push('/student/studentList/add')
     },
-    changeValue: function(value) {
+    changeValue: function (value) {
       let searchObj = {
         path: this.$router.history.current.path,
         selectOption1: value,
         searchText: this.searchText
-      };
-      this.selectOptions = value;
-      this.$store.dispatch("searchAdd", searchObj);
-      let obj = this.options.find(function(item) {
-        return item.value == value;
-      });
+      }
+      this.selectOptions = value
+      this.$store.dispatch('searchAdd', searchObj)
     }
   },
   watch: {
-    searchText: function(val) {
-      if (val == undefined) {
-        return false;
+    searchText: function (val) {
+      if (val === undefined) {
+        return false
       }
-      this.searchText = val;
+      this.searchText = val
       let searchObj = {
         path: this.$router.history.current.path,
         selectOption1: this.selectOptions,
         searchText: val
-      };
-      this.$store.dispatch("searchAdd", searchObj);
+      }
+      this.$store.dispatch('searchAdd', searchObj)
     },
-    mainContentHeight: function(val) {
-      this.treeHeight = val + 25 + "px";
+    mainContentHeight: function (val) {
+      this.treeHeight = val + 25 + 'px'
     }
   }
-};
+}
 </script>
 
 <style lang="stylus" scoped="scoped">
-@import url("../../style/mainList.css");
+@import url('../../style/mainList.css');
 
 >>> .el-pagination__jump {
   margin-left: 10px;
 }
+
 >>> .el-input-group__prepend {
   padding: 0px 5px;
 }
+
 >>> #everpageNumber {
   text-align: center;
   padding: 0px 5px;
 }
+
 >>> .el-pager li {
   min-width: 30.5px;
 }
+
 .paginationComponent {
   padding-top: 2px;
   display: inline-block;
   float: right;
 }
+
 .el-pagination {
   width: auto;
   text-align: right;
   padding: 0px 5px;
   float: left;
 }
+
 .paginationComponent .el-input {
   width: 90px;
   float: left;
 }
+
 span {
   float: left;
   margin-right: 5px;
@@ -591,14 +592,17 @@ span {
   font-size: 14px;
   color: #888;
 }
+
 .el-tree {
   background-color: inherit;
   padding: 5px;
 }
+
 .treeObj {
   background-color: #fefefe;
   padding: 0px 20px 0px 10px;
 }
+
 .treeInner > .title {
   font-size: 14px;
   padding: 6px 0px 6px 20px;
@@ -611,11 +615,13 @@ span {
 >>> #selectOption1 {
   width: 120px;
 }
+
 @media only screen and (min-width: 100px) and (max-width: 1200px) {
   >>> .el-pager li {
     min-width: auto;
     padding: 0px 5px;
   }
+
   >>> .el-pagination__jump {
     margin-left: 5px;
   }

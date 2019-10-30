@@ -81,29 +81,29 @@
 </template>
 
 <script>
-import breadCom from "@/components/service/Breadcrumbs";
+import breadCom from '@/components/service/Breadcrumbs'
 
 export default {
-  name: "modifyUserInfo",
-  data() {
+  name: 'modifyUserInfo',
+  data () {
     return {
       editUserName: true,
       editUserNameInput: false,
 
-      tabsActive: "userInfo",
+      tabsActive: 'userInfo',
       userInfoForm: {
-        schoolName: "dsadsa",
-        loginName: "aaaaa",
-        realName: "dsadsa",
+        schoolName: 'dsadsa',
+        loginName: 'aaaaa',
+        realName: 'dsadsa',
         sex: 1
       }
-    };
+    }
   },
   components: { breadCom },
   methods: {
-    tabHandleClick(tab, event) {}
+    tabHandleClick (tab, event) {}
   }
-};
+}
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">

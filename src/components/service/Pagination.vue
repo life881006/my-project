@@ -24,74 +24,73 @@
 
 <script>
 export default {
-  name: "pagination",
-  data() {
+  name: 'pagination',
+  data () {
     return {
       page: this.pageObj,
-      currentPath: this.$router.history.current.path, //当前路由
-      everyPage: Number(this.pageObj.everyPage),
-    };
+      currentPath: this.$router.history.current.path, // 当前路由
+      everyPage: Number(this.pageObj.everyPage)
+    }
   },
-  created() {
-    
+  created () {
+
   },
-  props: ["pageObj"],
+  props: ['pageObj'],
   methods: {
-    handleCurrentChange(val) {
-      this.page.currentPage = val;
+    handleCurrentChange (val) {
+      this.page.currentPage = val
       for (let item of this.$store.state.pagination.paginationList) {
         if (item.path === this.currentPath) {
-          item.currentPage = val;
-          break;
+          item.currentPage = val
+          break
         }
       }
-      this.$emit("setCurrentPage", this.page); //子组件给父组件传值
+      this.$emit('setCurrentPage', this.page) // 子组件给父组件传值
     },
-    setEveryPage() {
-      if(this.page.everyPage == this.everyPage){
-        return false;
+    setEveryPage (inputEveryPage) {
+      if (this.page.everyPage === this.everyPage) {
+        return false
       }
-      this.$set(this.page,"everyPage",this.everyPage);
+      this.$set(this.page, 'everyPage', this.everyPage)
       for (let item of this.$store.state.pagination.paginationList) {
         if (item.path === this.currentPath) {
-          item.everyPage = inputEveryPage;
-          break;
+          item.everyPage = inputEveryPage
+          break
         }
       }
-      let maxPage = Math.ceil(this.page.totalCount / this.everyPage);
+      let maxPage = Math.ceil(this.page.totalCount / this.everyPage)
       if (this.page.currentPage > maxPage) {
-        //设置每页条数后，如果当前页超过总页数，则设为最大总页数
-        this.page.currentPage = maxPage;
+        // 设置每页条数后，如果当前页超过总页数，则设为最大总页数
+        this.page.currentPage = maxPage
       }
-      this.$emit("setPageSize", this.page); //子组件给父组件传值
+      this.$emit('setPageSize', this.page) // 子组件给父组件传值
     }
   },
   watch: {
     pageObj: {
-      handler(newValue, oldValue) {
-        this.page = newValue;
+      handler (newValue, oldValue) {
+        this.page = newValue
       },
       deep: true
     },
-    everyPage(newValue,oldValue){
-      if(newValue === oldValue){
-        return false;
-      }else if(newValue === 0 || isNaN(newValue)){
-        this.everyPage = oldValue;
-      }else if(this.page.totalCount<newValue){
+    everyPage (newValue, oldValue) {
+      if (newValue === oldValue) {
+        return false
+      } else if (newValue === 0 || isNaN(newValue)) {
+        this.everyPage = oldValue
+      } else if (this.page.totalCount < newValue) {
         this.$message({
-          //h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
-          message: "您输入每页条数超过总条数,请重新输入",
-          type: "error"
-        });
-        this.everyPage = oldValue;
-      }else{
-        this.everyPage = newValue;
-        
+          // h:创建html元素，（）中第一个是html标签，第二个是样式模板，第三个是文本
+          message: '您输入每页条数超过总条数,请重新输入',
+          type: 'error'
+        })
+        this.everyPage = oldValue
+      } else {
+        this.everyPage = newValue
       }
     }
   }
-};
+}
 </script>
 
 <style scoped="scoped" lang="stylus">
